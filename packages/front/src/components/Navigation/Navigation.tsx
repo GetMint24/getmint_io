@@ -2,7 +2,7 @@
 
 import styles from './Navigation.module.css';
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname  } from "next/navigation";
 import clsx from "clsx";
 
 interface NavLinkProps {
@@ -12,8 +12,8 @@ interface NavLinkProps {
 }
 
 function NavLink({ href, title, cost }: NavLinkProps) {
-    const router = useRouter();
-    const isActive = router.asPath === href;
+    const pathname = usePathname ();
+    const isActive = pathname === href;
 
     return (
         <Link href={href} className={clsx(styles.link, isActive && styles.linkActive)}>
@@ -34,7 +34,7 @@ export default function Navigation() {
         <nav className={styles.nav}>
             <NavLink href="/" title="Mint" cost={20} />
             <NavLink href="/bridge" title="Bridge NFT" cost={10} />
-            {/*<NavLink href="/" title="Leaderbord" />*/}
+            {/*<NavLink href="/leaderboard" title="Leaderbord" />*/}
         </nav>
     )
 }
