@@ -22,6 +22,10 @@
     height: 100%;
 }
 
+.bg > div {
+    position: relative;
+}
+
 .bgHero {
     position: absolute;
     width: 576px;

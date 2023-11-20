@@ -1,0 +1,67 @@
+.nav {
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 12px;
+    background: #161D27;
+    box-shadow: 0 4px 32px 0 rgba(100, 123, 205, 0.32);
+}
+
+.link {
+    color: rgba(255, 255, 255, .6);
+    border-radius: 8px;
+    transition: .3s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.link > div {
+    padding: 4px 12px;
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: relative;
+    z-index: 1;
+}
+
+.link:before {
+    content: '';
+    position: absolute;
+    transition: .3s ease-out;
+    background: linear-gradient(122deg, #2EA5FB, #4340E1);
+    opacity: 0;
+    visibility: hidden;
+    width: 100%;
+    height: 100%;
+}
+
+.linkActive {
+    color: #fff;
+}
+
+.linkActive:before {
+    opacity: 1;
+    visibility: visible;
+}
+
+.link:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, .04);
+}
+
+.costLabel {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 4px 5px;
+    border-radius: 4px;
+    background: #303044;
+}
+
+.costLabel > span {
+    background: linear-gradient(122deg, #2EA5FB 9.89%, #4340E1 73.1%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
