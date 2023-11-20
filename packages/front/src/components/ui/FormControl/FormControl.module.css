@@ -1,0 +1,26 @@
+.control:first-of-type,
+.control + .control {
+    margin-bottom: 24px;
+}
+
+.header {
+    margin-bottom: 12px;
+}
+
+.title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.optional {
+    font-weight: 400;
+    opacity: 0.64;
+    font-size: 14px;
+}
+
+.extra {
+    font-size: 14px;
+    opacity: 0.64;
+    margin: 0;
+    padding-top: 8px;
+}

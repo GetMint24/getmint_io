@@ -1,10 +1,5 @@
-import Card from "../components/ui/Card/Card";
-import styles from './page.module.css';
+import Page from "./mint/page";
 
 export default function Home() {
-    return (
-        <Card className={styles.page} title="Mint">
-            CardProps
-        </Card>
-    )
+    return <Page />;
 }

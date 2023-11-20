@@ -1,13 +1,26 @@
 import { ReactNode } from "react";
+import clsx from "clsx";
+
 import styles from './Button.module.css';
 
 interface ButtonProps {
     children: ReactNode;
+    block?: boolean;
+    rounded?: boolean;
+    small?: boolean;s
 }
 
-export default function Button({ children, ...props }: ButtonProps) {
+export default function Button({ children, block, rounded, small, className, ...props }: ButtonProps) {
     return (
-        <button className={styles.button} type="button" {...props}>
+        <button
+            type="button"
+            {...props}
+            className={clsx(styles.button, className, {
+                [styles.rounded]: rounded,
+                [styles.block]: block,
+                [styles.small]: small
+            })}
+        >
             {children}
         </button>
     )

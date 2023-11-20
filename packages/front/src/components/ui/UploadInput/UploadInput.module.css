@@ -1,0 +1,58 @@
+.control {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.64);
+    font-size: 14px;
+    border-radius: 12px;
+    border: 1px dashed rgba(255, 255, 255, 0.16);
+    transition: .3s ease-out;
+    cursor: pointer;
+}
+
+.inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.control:hover {
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.control input {
+    display: none;
+}
+
+.imageWrapper {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    display: inline-flex;
+}
+
+.image,
+.dropImage {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: 0.3s ease-out;
+}
+
+.dropImage,
+.control:hover .image{
+    opacity: 0;
+    visibility: hidden;
+}
+
+.image,
+.control:hover .dropImage {
+    opacity: 1;
+    visibility: visible;
+}

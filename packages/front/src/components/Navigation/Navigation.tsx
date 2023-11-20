@@ -1,9 +1,11 @@
 'use client'
 
-import styles from './Navigation.module.css';
 import Link from "next/link";
 import { usePathname  } from "next/navigation";
 import clsx from "clsx";
+
+import styles from './Navigation.module.css';
+import CostLabel from "../CostLabel/CostLabel";
 
 interface NavLinkProps {
     href: string;
@@ -19,11 +21,7 @@ function NavLink({ href, title, cost }: NavLinkProps) {
         <Link href={href} className={clsx(styles.link, isActive && styles.linkActive)}>
             <div>
                 <span>{title}</span>
-                {Boolean(cost) && (
-                    <div className={styles.costLabel}>
-                        <span>+{cost}XP</span>
-                    </div>
-                )}
+                {Boolean(cost) && <CostLabel cost={cost as number} />}
             </div>
         </Link>
     )
