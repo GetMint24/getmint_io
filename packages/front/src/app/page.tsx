@@ -1,11 +1,10 @@
-import styles from './page.module.css'
-import Header from "../components/layout/Header/Header";
-import Footer from "../components/layout/Footer/Footer";
+import Card from "../components/ui/Card/Card";
+import styles from './page.module.css';
 
 export default function Home() {
     return (
-        <>
-            Main page
-        </>
+        <Card className={styles.page} title="Mint">
+            CardProps
+        </Card>
     )
 }
