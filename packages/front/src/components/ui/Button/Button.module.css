@@ -1,0 +1,22 @@
+.button {
+    outline: 0;
+    background: linear-gradient(122deg, #2EA5FB, #4340E1);
+    color: #fff;
+    font-weight: 600;
+    padding: 16px 20px;
+    font-family: inherit;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    transition: 300ms ease-out;
+}
+
+.button:hover {
+    box-shadow: 0 2px 12px 0 rgba(53, 102, 196, 0.80);
+}
+
+.button:active {
+    transform: scale(0.95);
+}
