@@ -14,10 +14,10 @@ export default function ConnectWallet() {
 
     useEffect(() => {
         setIsClient(true);
-    }, [])
+    }, []);
 
     if (!isClient) {
-        return <Button>Connecting...</Button>;
+        return <Button>Connect a Wallet</Button>;
     }
 
     return (
