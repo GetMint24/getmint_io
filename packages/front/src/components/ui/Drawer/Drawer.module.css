@@ -1,0 +1,11 @@
+.drawer:global(.ant-drawer-content) {
+    border-radius: 12px 0 0 12px;
+    border-left: 1px solid rgba(255, 255, 255, 0.12);
+    background: #161D27;
+    padding: 24px;
+    color: #fff;
+}
+
+.drawer :global(.ant-drawer-body) {
+    padding: 0;
+}
