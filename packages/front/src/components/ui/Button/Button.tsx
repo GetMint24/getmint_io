@@ -7,7 +7,7 @@ interface ButtonProps {
     children: ReactNode;
     block?: boolean;
     rounded?: boolean;
-    small?: boolean;s
+    small?: boolean;
 }
 
 export default function Button({ children, block, rounded, small, className, ...props }: ButtonProps) {

@@ -1,14 +1,16 @@
 import Logo from "../../Logo/Logo";
 import styles from './Header.module.css';
-import Button from "../../ui/Button/Button";
 import Navigation from "../../Navigation/Navigation";
+import ConnectWallet from "../../ConnectWallet/ConnectWallet";
 
 export default function Header() {
     return (
-        <div className={styles.header}>
-            <Logo />
-            <Navigation />
-            <Button>Connect Metamask</Button>
-        </div>
-    )
+        <>
+            <div className={styles.header}>
+                <Logo />
+                <Navigation />
+                <ConnectWallet />
+            </div>
+        </>
+    );
 }
