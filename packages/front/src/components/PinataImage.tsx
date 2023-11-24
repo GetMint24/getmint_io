@@ -3,6 +3,6 @@ interface PinataImageProps {
     name?: string;
 }
 
-export default function PinataImage({ hash, name }) {
-    return <img src={`${process.env.PINATA_DOMAIN}/ipfs/${hash}`} alt={name || ''} />
+export default function PinataImage({ hash, name }: PinataImageProps) {
+    return <img src={`https://apricot-characteristic-grasshopper-875.mypinata.cloud/ipfs/${hash}`} alt={name || ''} />
 }

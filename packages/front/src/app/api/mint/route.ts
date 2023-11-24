@@ -1,4 +1,21 @@
+import { NextRequest } from "next/server";
 import axios from "axios";
+
+import { MintDto } from "../../../common/MintDto";
+
+export async function GET(request: NextRequest) {
+    const searchParams = request.nextUrl.searchParams;
+    const id = searchParams.get('id');
+
+    const data = {
+        id,
+        name: 'Fox Geometric',
+        description: 'Description Description Description',
+        imageHash: 'QmdUqFGTunepKfuG9QSTATgP84ox3bSxi7RS3PzosStB1t'
+    } as MintDto;
+
+    return Response.json(data);
+}
 
 export async function POST(request: Request) {
     try {
@@ -24,9 +41,10 @@ export async function POST(request: Request) {
         const { IpfsHash } = response.data;
 
         return Response.json({
-            success: true,
-            message: 'Mint created',
-            imageIpfsHash: IpfsHash
+            id: 1,
+            name: 'Fox Geometric',
+            description: 'Description Description Description',
+            imageHash: IpfsHash
         });
     } catch (e) {
         console.error(e);
