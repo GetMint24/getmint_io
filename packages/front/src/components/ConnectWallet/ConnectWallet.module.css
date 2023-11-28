@@ -21,3 +21,15 @@ button.btn {
     -webkit-mask-composite: xor;
     mask-composite: exclude;
 }
+
+.dropdownBtn {
+    padding: 12px;
+    cursor: pointer;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    transition: .3s ease-out;
+}
+
+.dropdownBtn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
