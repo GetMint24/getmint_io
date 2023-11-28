@@ -9,8 +9,8 @@ export default function UploadInput({ ...props }) {
 
             <div className={styles.inner}>
                 <div className={styles.imageWrapper}>
-                    <Image className={styles.image} src="/svg/upload-picture.svg" width={24} height={24} />
-                    <Image className={styles.dropImage} src="/svg/upload-drop.svg" width={24} height={24} />
+                    <Image className={styles.image} src="/svg/upload-picture.svg" width={24} height={24} alt="" />
+                    <Image className={styles.dropImage} src="/svg/upload-drop.svg" width={24} height={24} alt="" />
                 </div>
                 <p>Drag and Drop or click to upload</p>
             </div>
