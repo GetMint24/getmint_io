@@ -35,7 +35,7 @@ export default function Page() {
         return (
             <Card className={styles.page} title={(
                 <div className={styles.title}>
-                    <span><Image src="/svg/congratulations.svg" width={32} height={32} /> Congratulations!</span>
+                    <span><Image src="/svg/congratulations.svg" width={32} height={32} alt="Congratulations" /> Congratulations!</span>
                     {/*<CostLabel cost={20} large />*/}
                 </div>
             )}>

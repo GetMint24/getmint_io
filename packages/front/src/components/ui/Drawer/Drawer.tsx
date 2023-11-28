@@ -6,12 +6,13 @@ import styles from './Drawer.module.css';
 interface DrawerProps {
     isOpen: boolean;
     children: ReactNode;
+    placement?: 'left' | 'right' | 'top' | 'bottom';
     onClose: () => void;
 }
 
-export default function UiDrawer({ isOpen, children, onClose }: DrawerProps) {
+export default function UiDrawer({ isOpen, children, onClose, placement }: DrawerProps) {
     return (
-        <Drawer closeIcon={false} className={styles.drawer} open={isOpen} placement="right" onClose={onClose}>
+        <Drawer closeIcon={false} className={styles.drawer} open={isOpen} placement={placement ?? 'right'} onClose={onClose}>
             {children}
         </Drawer>
     )

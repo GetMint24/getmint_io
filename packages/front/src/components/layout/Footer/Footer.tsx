@@ -22,6 +22,16 @@ export default function Footer() {
                     <Image src="/svg/socials/twitter.svg" width={28} height={28} alt="Twitter" />
                     <span>Twitter</span>
                 </FooterLink>
+
+                <FooterLink href="#">
+                    <Image src="/svg/socials/gitbook.svg" width={28} height={28} alt="GitBook" />
+                    <span>GitBook</span>
+                </FooterLink>
+
+                <FooterLink href="#">
+                    <Image src="/svg/socials/medium.svg" width={28} height={28} alt="Medium" />
+                    <span>Medium</span>
+                </FooterLink>
             </div>
 
             <FooterLink href="#">
