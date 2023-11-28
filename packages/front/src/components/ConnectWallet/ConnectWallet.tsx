@@ -27,10 +27,12 @@ export default function ConnectWallet() {
     const [isClient, setIsClient] = useState(false);
 
     const chainsMenu = useMemo(() => {
-        const items: MenuProps['items'] = chains.toSorted((a, b) => a.name.localeCompare(b.name)).map(c => ({
-            key: c.id,
-            label: c.name
-        }));
+        const items: MenuProps['items'] = [...chains]
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map(c => ({
+                key: c.id,
+                label: c.name
+            }));
 
         return items;
     }, [chains]);
@@ -40,7 +42,7 @@ export default function ConnectWallet() {
             'Arbitrum One': '/svg/chains/arbitrum.svg'
         }
 
-        return paths[chain.name] || '';
+        return paths[chain?.name] || '';
     }, [chain]);
 
     const handleSwitchNetwork = (chainId: number) => {
