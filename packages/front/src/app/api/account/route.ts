@@ -3,6 +3,7 @@ import Joi from "joi";
 import { BadRequest } from "../utils/responses";
 import { AccountDto } from "../../../common/dto/AccountDto";
 import { BalanceLogType } from "../../../common/enums/BalanceLogType";
+import { BalanceOperation } from "../../../common/enums/BalanceOperation";
 
 interface CreateAccountDto {
     metamaskAddress: string;
@@ -19,15 +20,26 @@ export async function GET(request: Request) {
         return new BadRequest('Metamask account not provided');
     }
 
-    const total = await prisma.balanceLog.findFirst({
-        orderBy: {
-            createdAt: 'desc'
-        }
+    const user = await prisma.user.findFirst({
+        where: { metamaskWalletAddress }
+    });
+
+    if (!user) {
+        return new BadRequest('User not found');
+    }
+
+    const total = await prisma.balanceLog.aggregate({
+        where: { userId: user.id },
+        _sum: { amount: true }
     });
 
     const aggregateByType = (type: BalanceLogType) => {
         return prisma.balanceLog.aggregate({
-            where: { type },
+            where: {
+                userId: user.id,
+                type,
+                operation: BalanceOperation.Debit
+            },
             _sum: { amount: true },
             _count: { amount: true }
         });
@@ -41,7 +53,7 @@ export async function GET(request: Request) {
 
     const accountDto: AccountDto = {
         balance: {
-            total: total?.balance || 0,
+            total: total._sum.amount || 0,
             mints: mints._sum.amount || 0,
             mintsCount: mints._count.amount,
             bridges: bridges._sum.amount || 0,
