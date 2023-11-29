@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { useAccount, useDisconnect } from "wagmi";
 import clsx from "clsx";
-import { Avatar, Flex, message } from 'antd';
+import { Avatar, Flex, message, Spin } from 'antd';
 
 import styles from './Account.module.css';
 import Button from "../../ui/Button/Button";
@@ -11,16 +11,18 @@ import FormControl from "../../ui/FormControl/FormControl";
 import Input from "../../ui/Input/Input";
 import AccountAddress from "../../AccountAddress/AccountAddress";
 import AppStore from "../../../store/AppStore";
+import { observer } from "mobx-react-lite";
+import { useEffect } from "react";
 
 interface RewardItemProps {
     name: string;
-    cost: number;
+    amount: number;
     count?: number;
     isTotal?: boolean;
 }
 
-function RewardItem({ name, cost, count, isTotal }: RewardItemProps) {
-    const costLabel = `${cost} XP`;
+function RewardItem({ name, amount, count, isTotal }: RewardItemProps) {
+    const costLabel = `${amount} XP`;
 
     return (
         <Flex justify="space-between" align="center" className={clsx(isTotal && styles.rewardItemTotal)}>
@@ -33,8 +35,8 @@ function RewardItem({ name, cost, count, isTotal }: RewardItemProps) {
     )
 }
 
-export default function Account() {
-    const { closeAccountDrawer } = AppStore;
+function Account() {
+    const { closeAccountDrawer, account, fetchAccount } = AppStore;
     const [messageApi, contextHolder] = message.useMessage();
 
     const { address, connector } = useAccount();
@@ -48,6 +50,10 @@ export default function Account() {
         await navigator.clipboard.writeText(refferalLink);
         await messageApi.info('Your refferal link has copied!');
     };
+
+    useEffect(() => {
+        void fetchAccount();
+    }, []);
 
     return (
         <div className={styles.account}>
@@ -95,14 +101,33 @@ export default function Account() {
                         </FormControl>
                     </div>
                     <div className={styles.divider}></div>
-                    <div className={styles.rewardsList}>
-                        <RewardItem name="Refferals" count={0} cost={0} />
-                        <RewardItem name="Twitter activity" cost={0} />
-                        <RewardItem name="Mints" count={0} cost={0} />
-                        <RewardItem name="Bridges" count={0} cost={0} />
-                    </div>
-                    <div className={styles.divider}></div>
-                    <div><RewardItem name="Total" cost={0} isTotal /></div>
+                    {account ? (
+                        <>
+                            <div className={styles.rewardsList}>
+                                <RewardItem
+                                    name="Refferals"
+                                    count={account.balance.refferalsCount}
+                                    amount={account.balance.refferals}
+                                />
+                                <RewardItem
+                                    name="Twitter activity"
+                                    amount={account.balance.twitterActivity}
+                                />
+                                <RewardItem
+                                    name="Mints"
+                                    count={account.balance.mintsCount}
+                                    amount={account.balance.mints}
+                                />
+                                <RewardItem
+                                    name="Bridges"
+                                    count={account.balance.bridgesCount}
+                                    amount={account.balance.bridges}
+                                />
+                            </div>
+                            <div className={styles.divider}></div>
+                            <div><RewardItem name="Total" amount={account.balance.total} isTotal /></div>
+                        </>
+                    ) : <Spin />}
                 </div>
             </main>
 
@@ -125,3 +150,5 @@ export default function Account() {
         </div>
     );
 }
+
+export default observer(Account);

@@ -1,6 +1,6 @@
 export interface MintDto {
     id: number;
-    imageHash: string;
+    pinataImageHash: string;
     name: string;
     description?: string;
 }
@@ -8,5 +8,5 @@ export interface MintDto {
 export interface CreateMintDto {
     name: string;
     description?: string;
-    userId: number;
+    metamaskWalletAddress: string;
 }

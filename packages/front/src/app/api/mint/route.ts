@@ -1,53 +1,117 @@
-import { NextRequest } from "next/server";
 import axios from "axios";
 
-import { MintDto } from "../../../common/MintDto";
+import prisma from "../../../utils/prismaClient";
+import { BadRequest, InternalError } from "../utils/responses";
+import { BalanceOperation } from "../../../common/enums/BalanceOperation";
+import { BalanceLogType } from "../../../common/enums/BalanceLogType";
+import { BalanceOperationCost } from "../../../common/enums/BalanceOperationCost";
 
-export async function GET(request: NextRequest) {
-    const searchParams = request.nextUrl.searchParams;
-    const id = searchParams.get('id');
-
-    const data = {
-        id: id ?? 1,
-        name: 'Fox Geometric',
-        description: 'Description Description Description',
-        imageHash: 'QmdUqFGTunepKfuG9QSTATgP84ox3bSxi7RS3PzosStB1t'
-    } as MintDto;
-
-    return Response.json(data);
-}
-
+/**
+ * Mint операция
+ */
 export async function POST(request: Request) {
+    const metamaskWalletAddress = request.headers.get('X-Metamask-Address');
+
+    if (!metamaskWalletAddress) {
+        return new BadRequest('Metamask account not provided');
+    }
+
     try {
+        const user = await prisma.user.findFirst({
+            where: { metamaskWalletAddress }
+        });
+
+        if (!user) {
+            return new BadRequest('User Not Found');
+        }
+
         const formData = await request.formData();
 
-        const name: string = formData.get('name') as unknown as string;
-        const description: string | null = formData.get('description') as unknown as string | null;
         const image: File = formData.get('image') as unknown as File;
+        const name: string = formData.get('name') as unknown as string;
+        const description: string | null = formData.get('description') as unknown as string;
 
-        const pinataFormData = new FormData();
-        pinataFormData.append('file', image);
-        pinataFormData.append('pinataMetadata', JSON.stringify({
+        const pinataImageHash = await sendNFTImage(image, name, description);
+
+        const createdNFT = await createNFT({
             name,
-            keyvalues: { description }
-        }));
+            description,
+            pinataImageHash,
+            userId: user.id
+        });
 
-        const response = await axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", pinataFormData, {
+        return Response.json(createdNFT);
+    } catch (e) {
+        console.error(e);
+        return new InternalError(e);
+    }
+}
+
+async function sendNFTImage(image: File, name: string, description: string = ''): Promise<string> {
+    const pinataFormData = new FormData();
+
+    pinataFormData.append('file', image);
+    pinataFormData.append('pinataMetadata', JSON.stringify({
+        name,
+        keyvalues: { description }
+    }));
+
+    const response = await axios.post(
+        'https://api.pinata.cloud/pinning/pinFileToIPFS',
+        pinataFormData,
+        {
             headers: {
                 Authorization: `Bearer ${process.env.PINATA_JWT}`,
             },
+        }
+    );
+
+    const { IpfsHash } = response.data;
+
+    return IpfsHash;
+}
+
+interface CreateNFTDto {
+    name: string;
+    description?: string;
+    pinataImageHash: string;
+    userId: number;
+}
+
+async function createNFT(data: CreateNFTDto) {
+    return prisma.$transaction(async (context) => {
+        const nft = await context.nft.create({
+            data: {
+                name: data.name,
+                description: data.description,
+                pinataImageHash: data.pinataImageHash,
+                userId: data.userId,
+            }
         });
 
-        const { IpfsHash } = response.data;
+        let balance = BalanceOperationCost.Mint;
 
-        return Response.json({
-            id: 1,
-            name: 'Fox Geometric',
-            description: 'Description Description Description',
-            imageHash: IpfsHash
+        const lastBalanceLogRecord = await context.balanceLog.findFirst({
+            orderBy: {
+                createdAt: 'desc'
+            }
         });
-    } catch (e) {
-        console.error(e);
-        return Response.json({ error: 'Internal Server Error' }, { status: 500 });
-    }
+
+        if (lastBalanceLogRecord) {
+            balance = lastBalanceLogRecord.balance + BalanceOperationCost.Mint;
+        }
+
+        await context.balanceLog.create({
+           data: {
+               userId: data.userId,
+               operation: BalanceOperation.Debit,
+               description: 'Начисление за Mint',
+               type: BalanceLogType.Mint,
+               amount: BalanceOperationCost.Mint,
+               balance,
+           }
+        });
+
+        return nft;
+    });
 }

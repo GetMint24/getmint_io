@@ -14,7 +14,7 @@ import styles from './ConnectWallet.module.css';
 
 export default function ConnectWallet() {
     const [messageApi, contextHolder] = message.useMessage();
-    const { openAccountDrawer, setWalletConnected } = AppStore;
+    const { openAccountDrawer, setWalletConnected, setWalletAddress } = AppStore;
     const { address, isConnected, isConnecting } = useAccount();
     const { chain, chains } = useNetwork();
     const { reset, switchNetwork, error } = useSwitchNetwork(
@@ -69,6 +69,10 @@ export default function ConnectWallet() {
     useEffect(() => {
         setWalletConnected(isConnected);
     }, [isConnected]);
+
+    useEffect(() => {
+        setWalletAddress(address as string);
+    }, [address]);
 
     if (!isClient) {
         return <Button className={styles.btn}>Connect a Wallet</Button>;

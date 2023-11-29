@@ -40,7 +40,8 @@ model BalanceLog {
   createdAt   DateTime         @default(now()) @map("created_at")
   userId      Int              @map("user_id")
   user        User             @relation(fields: [userId], references: [id])
-  cost        Int
+  amount      Int
+  balance     Int
   operation   BalanceOperation
   type        BalanceLogType
   description String?
@@ -49,14 +50,14 @@ model BalanceLog {
 }
 
 enum BalanceOperation {
-  ARRIVAL
-  EXPENSE
+  credit
+  debit
 }
 
 enum BalanceLogType {
-  REFFERAL
-  TWITTER_ACTIVITY_DAILY
-  TWITTER_GETMINT_SUBSCRIPTION
-  MINT
-  BRIDGE
+  refferal
+  twitter_activity_daily
+  twitter_getmint_subscription
+  mint
+  bridge
 }

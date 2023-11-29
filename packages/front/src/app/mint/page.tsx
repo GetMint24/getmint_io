@@ -8,10 +8,10 @@ import Image from "next/image";
 
 import styles from './page.module.css';
 import Card from "../../components/ui/Card/Card";
-import MintForm, { MintFormData } from "./components/MintForm/MintForm";
+import MintForm, { MintSubmitEvent } from "./components/MintForm/MintForm";
 import CostLabel from "../../components/CostLabel/CostLabel";
 import PinataImage from "../../components/PinataImage";
-import { CreateMintDto, MintDto } from "../../common/MintDto";
+import { MintDto } from "../../common/dto/MintDto";
 import ApiService from "../../services/ApiService";
 import AppStore from "../../store/AppStore";
 
@@ -19,7 +19,8 @@ function Page() {
     const [messageApi, contextHolder] = message.useMessage();
     const [isMinted, setIsMinted] = useState<boolean>(false);
     const [nft, setNft] = useState<MintDto>();
-    const { walletConnected, openAccountDrawer } = AppStore;
+    const [isNFTPending, setIsNFTPending] = useState<boolean>(false);
+    const { walletConnected, openAccountDrawer, fetchAccount } = AppStore;
 
     const { address } = useAccount();
     const { config } = usePrepareContractWrite({
@@ -36,37 +37,40 @@ function Page() {
         functionName: 'mint',
     });
     const { data, write, writeAsync, error } = useContractWrite(config);
-    const { isLoading, isSuccess } = useWaitForTransaction({
+    const { isLoading, isSuccess, isFetched } = useWaitForTransaction({
         hash: data?.hash,
     })
 
-    const handleGetMint = useCallback(async (data: MintFormData) => {
+    const handleGetMint = useCallback(async (data: MintSubmitEvent) => {
         if (!walletConnected) {
             openAccountDrawer();
             messageApi.info('Connect a wallet before Mint!');
             return;
         }
 
+        setIsNFTPending(true);
+
         try {
             if (writeAsync) {
-                await writeAsync();
-                /*const response = await ApiService.createMint(data.file!, {
+                // await writeAsync();
+
+                const nft = await ApiService.createMint(data.image!, {
                     name: data.name,
                     description: data.description,
-                    userId: 1
-                });*/
-
-                setNft({
-                    id: 1,
-                    name: 'Fox Geometric',
-                    description: 'Description Description Description',
-                    imageHash: 'QmdUqFGTunepKfuG9QSTATgP84ox3bSxi7RS3PzosStB1t'
+                    metamaskWalletAddress: address as string
                 });
+
+                console.log(nft);
+
+                setNft(nft);
                 setIsMinted(true);
+
+                await fetchAccount();
             } else {
                 await messageApi.warning('Sorry! Something went wrong');
             }
         } catch (e) {
+            setIsNFTPending(false);
             await messageApi.warning('Error: User rejected the request');
         }
     }, [write, walletConnected, writeAsync]);
@@ -79,7 +83,7 @@ function Page() {
                     {/*<CostLabel cost={20} large />*/}
                 </div>
             )}>
-                <PinataImage hash={nft.imageHash} name={nft.name} />
+                <PinataImage hash={nft.pinataImageHash} name={nft.name} />
                 {nft.description && <p>{nft.description}</p>}
                 <a href={`https://etherscan.io/tx/${data?.hash}`}>Etherscan</a>
             </Card>
@@ -90,7 +94,7 @@ function Page() {
         <>
             {contextHolder}
 
-            <Card className={styles.page} title={(
+            <Card className={styles.page} isLoading={isLoading || isNFTPending} title={(
                 <div className={styles.title}>
                     <span>Mint</span>
                     <CostLabel cost={20} large />

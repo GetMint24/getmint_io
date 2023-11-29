@@ -1,9 +1,13 @@
 import Image from "next/image";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, InputHTMLAttributes, useState } from "react";
 
 import styles from './UploadInput.module.css';
 
-export default function UploadInput({ ...props }) {
+interface UploadInputProps extends InputHTMLAttributes<HTMLInputElement> {
+    onUpload?: (file: File) => void;
+}
+
+export default function UploadInput({ onUpload, ...props }: UploadInputProps) {
     const [selected, setSelected] = useState<string>('');
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -11,8 +15,17 @@ export default function UploadInput({ ...props }) {
             return;
         }
 
-        props?.onChange(event);
-        setSelected(event.target.files[0].name);
+        if (props.onChange) {
+            props?.onChange(event);
+        }
+
+        const file = event.target.files[0];
+
+        if (onUpload) {
+            onUpload(file);
+        }
+
+        setSelected(file.name);
     }
 
     return (

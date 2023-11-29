@@ -4,6 +4,7 @@
     background: rgba(26, 34, 49, 0.72);
     box-shadow: 0 8px 12px 0 rgba(53, 102, 196, 0.26), 0 4px 32px 0 rgba(100, 123, 205, 0.32);
     backdrop-filter: blur(18px);
+    position: relative;
 }
 
 .cardHead {
@@ -20,5 +21,14 @@
     padding-top: 24px;
 }
 
-.cardBody {
+.loading .cardBody {
+    opacity: 0.35;
+    pointer-events: none;
+}
+
+.spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
