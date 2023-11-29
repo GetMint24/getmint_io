@@ -3,15 +3,18 @@ import { useConnect } from "wagmi";
 
 import Button from "../../ui/Button/Button";
 import styles from './ConnectWallet.module.css';
+import AppStore from "../../../store/AppStore";
 
 const ConnectorIcon = {
     'MetaMask': <Image src="/svg/metamask.svg" width={32} height={32} alt="MetaMask" />
 }
 
-export default function ConnectWallet({ onClose }) {
+export default function ConnectWallet() {
+    const { closeAccountDrawer } = AppStore;
+
     const { connect, connectors, isLoading, pendingConnector } =
         useConnect({
-            onSuccess: onClose
+            onSuccess: closeAccountDrawer
         });
 
     return (

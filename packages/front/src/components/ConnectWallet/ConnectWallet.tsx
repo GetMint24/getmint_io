@@ -8,12 +8,13 @@ import Image from 'next/image';
 import Button from "../ui/Button/Button";
 import AccountDrawer from "../AccountDrawer/AccountDrawer";
 import AccountAddress from "../AccountAddress/AccountAddress";
+import AppStore from "../../store/AppStore";
 
 import styles from './ConnectWallet.module.css';
 
 export default function ConnectWallet() {
     const [messageApi, contextHolder] = message.useMessage();
-    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const { openAccountDrawer, setWalletConnected } = AppStore;
     const { address, isConnected, isConnecting } = useAccount();
     const { chain, chains } = useNetwork();
     const { reset, switchNetwork, error } = useSwitchNetwork(
@@ -57,12 +58,13 @@ export default function ConnectWallet() {
 
     useEffect(() => {
         if (error) {
-            console.log(error)
-            if (error?.['code'] === 4001) {
-                messageApi.warning('User rejected the request');
-            }
+            messageApi.warning('User rejected the request');
         }
     }, [error]);
+
+    useEffect(() => {
+        setWalletConnected(isConnected);
+    }, [isConnected]);
 
     if (!isClient) {
         return <Button className={styles.btn}>Connect a Wallet</Button>;
@@ -73,7 +75,7 @@ export default function ConnectWallet() {
             {contextHolder}
 
             {!isConnected ? (
-                <Button className={styles.btn} onClick={() => setIsOpen(true)}>
+                <Button className={styles.btn} onClick={openAccountDrawer}>
                     {isConnecting ? 'Connecting...' : 'Connect a Wallet'}
                 </Button>
             ) : (
@@ -97,18 +99,13 @@ export default function ConnectWallet() {
                         </Dropdown>
                     )}
 
-                    <Button className={styles.btn} onClick={() => setIsOpen(true)}>
+                    <Button className={styles.btn} onClick={openAccountDrawer}>
                         <AccountAddress address={address} />
                     </Button>
                 </Flex>
             )}
 
-            <AccountDrawer
-                isConnected={isConnected}
-                isOpen={isOpen}
-                onDisconnect={() => setIsOpen(false)}
-                onClose={() => setIsOpen(false)}
-            />
+            <AccountDrawer />
         </div>
     )
 }

@@ -1,18 +1,20 @@
 'use client'
 
+import { observer } from "mobx-react-lite";
+
 import Drawer from "../ui/Drawer/Drawer";
 import ConnectWallet from "./ConnectWallet/ConnectWallet";
 import Account from "./Account/Account";
+import AppStore  from "../../store/AppStore";
 
-export default function AccountDrawer({ isOpen, isConnected, onClose }) {
+function AccountDrawer() {
+    const { accountDrawerOpened, closeAccountDrawer, walletConnected } = AppStore;
 
     return (
-        <Drawer isOpen={isOpen} onClose={onClose}>
-            {
-                isConnected
-                    ? <Account onClose={onClose} />
-                    : <ConnectWallet onClose={onClose} />
-            }
+        <Drawer isOpen={accountDrawerOpened} onClose={closeAccountDrawer}>
+            {walletConnected ? <Account /> : <ConnectWallet />}
         </Drawer>
     )
 }
+
+export default observer(AccountDrawer);

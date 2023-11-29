@@ -12,11 +12,14 @@ import CostLabel from "../../components/CostLabel/CostLabel";
 import PinataImage from "../../components/PinataImage";
 import { CreateMintDto, MintDto } from "../../common/MintDto";
 import ApiService from "../../services/ApiService";
+import { observer } from "mobx-react-lite";
+import AppStore from "../../store/AppStore";
 
-export default function Page() {
+function Page() {
     const [messageApi, contextHolder] = message.useMessage();
     const [isMinted, setIsMinted] = useState<boolean>(false);
     const [nft, setNft] = useState<MintDto>();
+    const { walletConnected, openAccountDrawer } = AppStore;
 
     const { address } = useAccount();
     const { config } = usePrepareContractWrite({
@@ -38,6 +41,12 @@ export default function Page() {
     })
 
     const handleGetMint = useCallback(async (data: MintFormData) => {
+        if (!walletConnected) {
+            openAccountDrawer();
+            messageApi.info('Connect a wallet before Mint!');
+            return;
+        }
+
         try {
             await writeAsync();
             /*const response = await ApiService.createMint(data.file, {
@@ -56,7 +65,7 @@ export default function Page() {
         } catch (e) {
             messageApi.warning('Error: User rejected the request');
         }
-    }, [write]);
+    }, [write, walletConnected]);
 
     if (isMinted) {
         return (
@@ -88,3 +97,5 @@ export default function Page() {
         </>
     )
 }
+
+export default observer(Page);

@@ -10,6 +10,7 @@ import IconBtn from "../../ui/IconBtn/IconBtn";
 import FormControl from "../../ui/FormControl/FormControl";
 import Input from "../../ui/Input/Input";
 import AccountAddress from "../../AccountAddress/AccountAddress";
+import AppStore from "../../../store/AppStore";
 
 function RewardItem({ name, cost, count, isTotal }) {
     const costLabel = `${cost} XP`;
@@ -25,12 +26,13 @@ function RewardItem({ name, cost, count, isTotal }) {
     )
 }
 
-export default function Account({ onClose }) {
+export default function Account() {
+    const { closeAccountDrawer } = AppStore;
     const [messageApi, contextHolder] = message.useMessage();
 
     const { address, connector } = useAccount();
     const { disconnect } = useDisconnect({
-        onSuccess: onClose
+        onSuccess: closeAccountDrawer
     });
 
     const refferalLink = 'https://getmint.io/ref=031231480das';
@@ -114,5 +116,5 @@ export default function Account({ onClose }) {
                 </div>
             </footer>
         </div>
-    )
+    );
 }
