@@ -101,15 +101,22 @@ async function createNFT(data: CreateNFTDto) {
             balance = lastBalanceLogRecord.balance + BalanceOperationCost.Mint;
         }
 
-        await context.balanceLog.create({
+        const balanceLog = await context.balanceLog.create({
            data: {
                userId: data.userId,
                operation: BalanceOperation.Debit,
                description: 'Начисление за Mint',
                type: BalanceLogType.Mint,
                amount: BalanceOperationCost.Mint,
-               balance,
+               balance
            }
+        });
+
+        await context.mintLog.create({
+            data: {
+                balanceLogId: balanceLog.id,
+                nftId: nft.id
+            }
         });
 
         return nft;

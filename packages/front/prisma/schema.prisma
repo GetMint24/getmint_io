@@ -31,6 +31,7 @@ model Nft {
   createdAt       DateTime @default(now()) @map("created_at")
   userId          Int      @map("user_id")
   user            User     @relation(fields: [userId], references: [id])
+  mintLog         MintLog?
 
   @@map(name: "nfts")
 }
@@ -45,8 +46,19 @@ model BalanceLog {
   operation   BalanceOperation
   type        BalanceLogType
   description String?
+  mintLog     MintLog?
 
   @@map(name: "balance_logs")
+}
+
+model MintLog {
+  id           Int        @id @default(autoincrement())
+  nft          Nft        @relation(fields: [nftId], references: [id])
+  nftId        Int        @unique @map("nft_id")
+  balanceLog   BalanceLog @relation(fields: [balanceLogId], references: [id])
+  balanceLogId Int        @unique @map("balance_log_id")
+
+  @@map(name: "mint_logs")
 }
 
 enum BalanceOperation {

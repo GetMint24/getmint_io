@@ -90,7 +90,6 @@ export default function MintForm({ onSubmit }: MintFormProps) {
                         <Controller
                             name="description"
                             control={control}
-                            rules={{ required: true }}
                             render={({ field }) =>  (
                                 <Input {...field} type="text" placeholder="e.g. “This NFT will give you the mood”" />
                             )}
