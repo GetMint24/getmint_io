@@ -1,12 +1,16 @@
 import Image from "next/image";
+import { ChangeEvent, useState } from "react";
 
 import styles from './UploadInput.module.css';
-import { useState } from "react";
 
 export default function UploadInput({ ...props }) {
     const [selected, setSelected] = useState<string>('');
 
-    const handleChange = (event) => {
+    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+        if (!event.target.files) {
+            return;
+        }
+
         props?.onChange(event);
         setSelected(event.target.files[0].name);
     }

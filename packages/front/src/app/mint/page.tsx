@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { useAccount, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
+import { observer } from "mobx-react-lite";
 import { message } from 'antd';
 import Image from "next/image";
 
@@ -12,7 +13,6 @@ import CostLabel from "../../components/CostLabel/CostLabel";
 import PinataImage from "../../components/PinataImage";
 import { CreateMintDto, MintDto } from "../../common/MintDto";
 import ApiService from "../../services/ApiService";
-import { observer } from "mobx-react-lite";
 import AppStore from "../../store/AppStore";
 
 function Page() {
@@ -48,26 +48,30 @@ function Page() {
         }
 
         try {
-            await writeAsync();
-            /*const response = await ApiService.createMint(data.file, {
-                name: data.name,
-                description: data.description,
-                userId: 1
-            });*/
+            if (writeAsync) {
+                await writeAsync();
+                /*const response = await ApiService.createMint(data.file!, {
+                    name: data.name,
+                    description: data.description,
+                    userId: 1
+                });*/
 
-            setNft({
-                id: 1,
-                name: 'Fox Geometric',
-                description: 'Description Description Description',
-                imageHash: 'QmdUqFGTunepKfuG9QSTATgP84ox3bSxi7RS3PzosStB1t'
-            });
-            setIsMinted(true);
+                setNft({
+                    id: 1,
+                    name: 'Fox Geometric',
+                    description: 'Description Description Description',
+                    imageHash: 'QmdUqFGTunepKfuG9QSTATgP84ox3bSxi7RS3PzosStB1t'
+                });
+                setIsMinted(true);
+            } else {
+                await messageApi.warning('Sorry! Something went wrong');
+            }
         } catch (e) {
-            messageApi.warning('Error: User rejected the request');
+            await messageApi.warning('Error: User rejected the request');
         }
-    }, [write, walletConnected]);
+    }, [write, walletConnected, writeAsync]);
 
-    if (isMinted) {
+    if (isMinted && nft) {
         return (
             <Card className={styles.page} title={(
                 <div className={styles.title}>

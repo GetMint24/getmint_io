@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     const id = searchParams.get('id');
 
     const data = {
-        id,
+        id: id ?? 1,
         name: 'Fox Geometric',
         description: 'Description Description Description',
         imageHash: 'QmdUqFGTunepKfuG9QSTATgP84ox3bSxi7RS3PzosStB1t'

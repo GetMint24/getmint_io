@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import Image from "next/image";
 import { useConnect } from "wagmi";
 
@@ -5,7 +6,7 @@ import Button from "../../ui/Button/Button";
 import styles from './ConnectWallet.module.css';
 import AppStore from "../../../store/AppStore";
 
-const ConnectorIcon = {
+const ConnectorIcon: Record<string, ReactNode> = {
     'MetaMask': <Image src="/svg/metamask.svg" width={32} height={32} alt="MetaMask" />
 }
 

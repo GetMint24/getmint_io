@@ -39,11 +39,15 @@ export default function ConnectWallet() {
     }, [chains]);
 
     const chainLogo = useMemo(() => {
-        const paths = {
-            'Arbitrum One': '/svg/chains/arbitrum.svg'
+        if (chain) {
+            const paths: Record<string, string> = {
+                'Arbitrum One': '/svg/chains/arbitrum.svg'
+            }
+
+            return paths[chain.name] || '';
         }
 
-        return paths[chain?.name] || '';
+        return '';
     }, [chain]);
 
     const handleSwitchNetwork = (chainId: number) => {
@@ -58,7 +62,7 @@ export default function ConnectWallet() {
 
     useEffect(() => {
         if (error) {
-            messageApi.warning('User rejected the request');
+            void messageApi.warning('User rejected the request');
         }
     }, [error]);
 
@@ -80,14 +84,14 @@ export default function ConnectWallet() {
                 </Button>
             ) : (
                 <Flex gap={10}>
-                    {switchNetwork && (
+                    {switchNetwork && chain && (
                         <Dropdown
                             trigger={['click']}
                             menu={{
                                 items: chainsMenu,
                                 selectable: true,
-                                defaultSelectedKeys: [chain.id],
-                                onClick: ({ key }) => handleSwitchNetwork(key)
+                                defaultSelectedKeys: [String(chain.id)],
+                                onClick: ({ key }) => handleSwitchNetwork(parseInt(key))
                             }}
                         >
                             <Flex align="center" justify="center" gap={8} className={styles.dropdownBtn}>
@@ -99,9 +103,11 @@ export default function ConnectWallet() {
                         </Dropdown>
                     )}
 
-                    <Button className={styles.btn} onClick={openAccountDrawer}>
-                        <AccountAddress address={address} />
-                    </Button>
+                    {address && (
+                        <Button className={styles.btn} onClick={openAccountDrawer}>
+                            <AccountAddress address={address} />
+                        </Button>
+                    )}
                 </Flex>
             )}
 

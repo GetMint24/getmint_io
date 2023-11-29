@@ -1,7 +1,16 @@
 import clsx from "clsx";
 import styles from './FormControl.module.css';
+import { ReactNode } from "react";
 
-export default function FormControl({ title, children, extra, optional, className }) {
+interface FormControlProps {
+    title: string;
+    children: ReactNode;
+    extra?: ReactNode;
+    optional?: boolean;
+    className?: string;
+}
+
+export default function FormControl({ title, children, extra, optional, className }: FormControlProps) {
     return (
         <div className={clsx(styles.control, className)}>
             <label>

@@ -12,7 +12,14 @@ import Input from "../../ui/Input/Input";
 import AccountAddress from "../../AccountAddress/AccountAddress";
 import AppStore from "../../../store/AppStore";
 
-function RewardItem({ name, cost, count, isTotal }) {
+interface RewardItemProps {
+    name: string;
+    cost: number;
+    count?: number;
+    isTotal?: boolean;
+}
+
+function RewardItem({ name, cost, count, isTotal }: RewardItemProps) {
     const costLabel = `${cost} XP`;
 
     return (
@@ -37,9 +44,9 @@ export default function Account() {
 
     const refferalLink = 'https://getmint.io/ref=031231480das';
 
-    const handleCopy = () => {
-        navigator.clipboard.writeText(refferalLink);
-        messageApi.info('Your refferal link has copied!');
+    const handleCopy = async () => {
+        await navigator.clipboard.writeText(refferalLink);
+        await messageApi.info('Your refferal link has copied!');
     };
 
     return (
@@ -109,7 +116,7 @@ export default function Account() {
                                 <AccountAddress className={styles.connectorAddress} address={address} />
                             </div>
                         </Flex>
-                        <IconBtn tooltip="Logout" onClick={disconnect}>
+                        <IconBtn tooltip="Logout" onClick={() => disconnect()}>
                             <Image src="/svg/ui/logout.svg" width={24} height={24} alt="Logout" />
                         </IconBtn>
                     </Flex>

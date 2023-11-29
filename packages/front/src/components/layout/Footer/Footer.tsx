@@ -1,7 +1,13 @@
 import Image from "next/image";
 import styles from './Footer.module.css';
+import { ReactNode } from "react";
 
-function FooterLink({ href, children }) {
+interface FooterLinkProps {
+    href: string;
+    children: ReactNode;
+}
+
+function FooterLink({ href, children }: FooterLinkProps) {
     return (
         <a href={href} target="_blank" className={styles.link}>
             {children}

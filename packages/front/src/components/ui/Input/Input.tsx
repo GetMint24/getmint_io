@@ -1,6 +1,12 @@
+import { InputHTMLAttributes, ReactNode } from "react";
+
 import styles from './Input.module.css';
 
-export default function Input({ action, ...props }) {
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+    action?: ReactNode;
+}
+
+export default function Input({ action, ...props }: InputProps) {
     return (
         <div className={styles.inputWrapper}>
             <input type="text" {...props} className={styles.input} />

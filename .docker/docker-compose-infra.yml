@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: getmint_pg
+    restart: always
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    expose:
+      - 5434
+    ports:
+      - 5434:5432
+    volumes:
+      - ${PWD}/.docker/volumes/pg-db:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: getmint_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@pgadmin.com
+      PGADMIN_DEFAULT_PASSWORD: password
+    ports:
+      - 15432:80
+    volumes:
+      - ${PWD}/.docker/volumes/pg-admin:/var/lib/pgadmin
+    depends_on:
+      - postgres
+
+networks:
+  default:
+    external: true
+    name: localhost

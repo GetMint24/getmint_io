@@ -4,6 +4,7 @@ import styles from "./CostLabel.module.css";
 
 interface CostLabelProps {
     cost: number;
+    large?: boolean;
 }
 
 export default function CostLabel({ cost, large }: CostLabelProps) {

@@ -1,8 +1,14 @@
 import clsx from "clsx";
-import styles from './IconBtn.module.css';
 import { Tooltip } from "antd";
+import { ButtonHTMLAttributes } from "react";
 
-export default function IconBtn({ tooltip, ...props }) {
+import styles from './IconBtn.module.css';
+
+interface IconBtnProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+    tooltip?: string;
+}
+
+export default function IconBtn({ tooltip, ...props }: IconBtnProps) {
     return (
         <Tooltip title={tooltip}>
             <button {...props} className={clsx(styles.iconBtn, props.className)} />
