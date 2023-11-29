@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                     Int          @id @default(autoincrement())
+  createdAt              DateTime     @default(now()) @map("created_at")
+  metamaskWalletAddress  String       @unique @map("metamask_wallet_address")
+  followedGetmintTwitter Boolean      @default(false) @map("followed_getmint_twitter")
+  twitterEnabled         Boolean      @default(false) @map("twitter_enabled")
+  twitterLogin           String?      @map("twitter_login")
+  nfts                   Nft[]
+  balanceLogs            BalanceLog[]
+
+  @@map(name: "users")
+}
+
+model Nft {
+  id              Int      @id @default(autoincrement())
+  pinataImageHash String   @map("pinata_image_hash")
+  name            String
+  description     String?  @default("")
+  createdAt       DateTime @default(now()) @map("created_at")
+  userId          Int      @map("user_id")
+  user            User     @relation(fields: [userId], references: [id])
+
+  @@map(name: "nfts")
+}
+
+model BalanceLog {
+  id          Int              @id @default(autoincrement())
+  createdAt   DateTime         @default(now()) @map("created_at")
+  userId      Int              @map("user_id")
+  user        User             @relation(fields: [userId], references: [id])
+  cost        Int
+  operation   BalanceOperation
+  type        BalanceLogType
+  description String?
+
+  @@map(name: "balance_logs")
+}
+
+enum BalanceOperation {
+  ARRIVAL
+  EXPENSE
+}
+
+enum BalanceLogType {
+  REFFERAL
+  TWITTER_ACTIVITY_DAILY
+  TWITTER_GETMINT_SUBSCRIPTION
+  MINT
+  BRIDGE
+}
