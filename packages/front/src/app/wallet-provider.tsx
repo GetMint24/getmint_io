@@ -1,18 +1,21 @@
 'use client'
 
+import { ReactNode } from "react";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { arbitrum, base, mainnet } from "wagmi/chains";
+import { mainnet, sepolia } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
-import { ReactNode } from "react";
+import { alchemyProvider } from '@wagmi/core/providers/alchemy';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
     [
         mainnet,
-        arbitrum,
-        base,
+        sepolia,
     ],
-    [publicProvider()],
+    [
+        alchemyProvider({ apiKey: 'y6QC0M5M2SuotNrlDd61wBsNXHh_RjNi' }),
+        publicProvider()
+    ],
 );
 
 const config = createConfig({

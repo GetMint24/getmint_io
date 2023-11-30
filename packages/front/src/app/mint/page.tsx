@@ -1,7 +1,8 @@
 'use client';
 
 import { useCallback, useState } from "react";
-import { useAccount, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
+import { useAccount, useContractWrite, useNetwork, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
+import { fetchBalance } from '@wagmi/core'
 import { observer } from "mobx-react-lite";
 import { message } from 'antd';
 import Image from "next/image";
@@ -14,6 +15,9 @@ import PinataImage from "../../components/PinataImage";
 import { MintDto } from "../../common/dto/MintDto";
 import ApiService from "../../services/ApiService";
 import AppStore from "../../store/AppStore";
+import { parseEther } from "ethers";
+import { WalletAddress } from "../../common/types";
+import { CONTRACT_ADDRESS, NFT_COST } from "../../common/constants";
 
 function Page() {
     const [messageApi, contextHolder] = message.useMessage();
@@ -23,6 +27,7 @@ function Page() {
     const { walletConnected, openAccountDrawer, fetchAccount } = AppStore;
 
     const { address } = useAccount();
+
     const { config } = usePrepareContractWrite({
         address,
         abi: [
@@ -36,12 +41,13 @@ function Page() {
         ],
         functionName: 'mint',
     });
+
     const { data, write, writeAsync, error } = useContractWrite(config);
     const { isLoading, isSuccess, isFetched } = useWaitForTransaction({
         hash: data?.hash,
-    })
+    });
 
-    const handleGetMint = useCallback(async (data: MintSubmitEvent) => {
+    const mintNFT = useCallback(async (data: MintSubmitEvent) => {
         if (!walletConnected) {
             openAccountDrawer();
             messageApi.info('Connect a wallet before Mint!');
@@ -52,6 +58,16 @@ function Page() {
 
         try {
             if (writeAsync) {
+                const balance = await fetchBalance({
+                    address: address as WalletAddress
+                });
+
+                if (balance.value < NFT_COST) {
+                    messageApi.warning('Not enough funds to mint');
+                    setIsNFTPending(false);
+                    return;
+                }
+
                 // await writeAsync();
 
                 const nft = await ApiService.createMint(data.image!, {
@@ -60,18 +76,16 @@ function Page() {
                     metamaskWalletAddress: address as string
                 });
 
-                console.log(nft);
-
                 setNft(nft);
                 setIsMinted(true);
 
                 await fetchAccount();
             } else {
-                await messageApi.warning('Sorry! Something went wrong');
+                await messageApi.warning('Sorry! Something went wrong :(');
             }
         } catch (e) {
             setIsNFTPending(false);
-            await messageApi.warning('Error: User rejected the request');
+            await messageApi.error('User rejected the request');
         }
     }, [write, walletConnected, writeAsync]);
 
@@ -100,7 +114,7 @@ function Page() {
                     <CostLabel cost={20} large />
                 </div>
             )}>
-                <MintForm onSubmit={handleGetMint} />
+                <MintForm onSubmit={mintNFT} />
             </Card>
         </>
     )
