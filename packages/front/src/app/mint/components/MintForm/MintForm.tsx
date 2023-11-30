@@ -1,14 +1,14 @@
 'use client';
 
+import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 
 import Button from "../../../../components/ui/Button/Button";
 import FormControl from "../../../../components/ui/FormControl/FormControl";
+import UploadInput from "../../../../components/ui/UploadInput/UploadInput";
 import Input from "../../../../components/ui/Input/Input";
 
 import styles from './MintForm.module.css';
-import UploadInput from "../../../../components/ui/UploadInput/UploadInput";
-import { useState } from "react";
 
 export interface MintFormData {
     file: string;
@@ -27,7 +27,12 @@ interface MintFormProps {
 export default function MintForm({ onSubmit }: MintFormProps) {
     const [file, setFile] = useState<File | null>(null);
 
-    const { control, handleSubmit, setValue } = useForm<MintFormData>({
+    const {
+        control,
+        handleSubmit,
+        setValue,
+        formState: { errors },
+    } = useForm<MintFormData>({
         defaultValues: {
             file: '',
             name: '',
@@ -53,7 +58,11 @@ export default function MintForm({ onSubmit }: MintFormProps) {
     return (
         <>
             <form onSubmit={handleSubmit(submit)}>
-                <FormControl title="Upload File" extra="JPG, PNG, GIF, WEBM or SVG">
+                <FormControl
+                    title="Upload File"
+                    extra="JPG, PNG, GIF, WEBM or SVG"
+                    error={errors.file?.type === "required" ? 'Required field' : ''}
+                >
                     <Controller
                         name="file"
                         control={control}
@@ -68,7 +77,10 @@ export default function MintForm({ onSubmit }: MintFormProps) {
                     />
                 </FormControl>
 
-                <FormControl title="What shall we call the NFT?">
+                <FormControl
+                    title="What shall we call the NFT?"
+                    error={errors.name?.type === "required" ? 'Required field' : ''}
+                >
                     <div className={styles.withExtra}>
                         <Controller
                             name="name"

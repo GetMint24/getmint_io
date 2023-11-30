@@ -14,7 +14,7 @@ function AccountDrawer() {
         <Drawer isOpen={accountDrawerOpened} onClose={closeAccountDrawer}>
             {walletConnected ? <Account /> : <ConnectWallet />}
         </Drawer>
-    )
+    );
 }
 
 export default observer(AccountDrawer);

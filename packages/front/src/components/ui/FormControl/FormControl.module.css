@@ -24,3 +24,9 @@
     margin: 0;
     padding-top: 8px;
 }
+
+.alert {
+    padding-top: 8px;
+    color: #e03636;
+    font-size: 12px;
+}

@@ -42,7 +42,6 @@ model BalanceLog {
   userId      Int              @map("user_id")
   user        User             @relation(fields: [userId], references: [id])
   amount      Int
-  balance     Int
   operation   BalanceOperation
   type        BalanceLogType
   description String?

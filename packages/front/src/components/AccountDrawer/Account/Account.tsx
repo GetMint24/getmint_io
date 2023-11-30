@@ -55,6 +55,17 @@ function Account() {
         void fetchAccount();
     }, []);
 
+    if (!account) {
+        return (
+            <div className={styles.accountLoading}>
+                <Flex vertical align="center" justify="center" gap={12}>
+                    <Spin size="large" />
+                    <span>Loading account...</span>
+                </Flex>
+            </div>
+        )
+    }
+
     return (
         <div className={styles.account}>
             {contextHolder}

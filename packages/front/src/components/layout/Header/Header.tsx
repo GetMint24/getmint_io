@@ -1,7 +1,7 @@
 import Logo from "../../Logo/Logo";
 import styles from './Header.module.css';
 import Navigation from "../../Navigation/Navigation";
-import ConnectWallet from "../../ConnectWallet/ConnectWallet";
+import WalletActions from "../../WalletActions/WalletActions";
 
 export default function Header() {
     return (
@@ -9,7 +9,7 @@ export default function Header() {
             <div className={styles.header}>
                 <Logo />
                 <Navigation />
-                <ConnectWallet />
+                <WalletActions />
             </div>
         </>
     );

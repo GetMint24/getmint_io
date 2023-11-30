@@ -13,3 +13,8 @@ $ docker-compose -f ./.docker/docker-compose-infra.yml up -d
 ```bash
 $ docker network create localhost
 ```
+
+Перед запуском приложения потребуется выполнить команду в `packages/front`
+```bash
+$ npx prisma generate
+```

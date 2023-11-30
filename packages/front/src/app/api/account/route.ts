@@ -20,12 +20,16 @@ export async function GET(request: Request) {
         return new BadRequest('Metamask account not provided');
     }
 
-    const user = await prisma.user.findFirst({
+    let user = await prisma.user.findFirst({
         where: { metamaskWalletAddress }
     });
 
     if (!user) {
-        return new BadRequest('User not found');
+        user = await prisma.user.create({
+            data: {
+                metamaskWalletAddress
+            }
+        });
     }
 
     const total = await prisma.balanceLog.aggregate({
@@ -36,7 +40,7 @@ export async function GET(request: Request) {
     const aggregateByType = (type: BalanceLogType) => {
         return prisma.balanceLog.aggregate({
             where: {
-                userId: user.id,
+                userId: user!.id,
                 type,
                 operation: BalanceOperation.Debit
             },

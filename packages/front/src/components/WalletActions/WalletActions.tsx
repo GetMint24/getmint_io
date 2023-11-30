@@ -10,11 +10,12 @@ import AccountDrawer from "../AccountDrawer/AccountDrawer";
 import AccountAddress from "../AccountAddress/AccountAddress";
 import AppStore from "../../store/AppStore";
 
-import styles from './ConnectWallet.module.css';
+import styles from './WalletActions.module.css';
 
-export default function ConnectWallet() {
-    const [messageApi, contextHolder] = message.useMessage();
+export default function WalletActions() {
     const { openAccountDrawer, setWalletConnected, setWalletAddress } = AppStore;
+
+    const [messageApi, contextHolder] = message.useMessage();
     const { address, isConnected, isConnecting } = useAccount();
     const { chain, chains } = useNetwork();
     const { reset, switchNetwork, error } = useSwitchNetwork(

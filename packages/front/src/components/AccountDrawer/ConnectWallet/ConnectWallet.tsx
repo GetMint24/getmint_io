@@ -11,11 +11,15 @@ const ConnectorIcon: Record<string, ReactNode> = {
 }
 
 export default function ConnectWallet() {
-    const { closeAccountDrawer } = AppStore;
+    const { closeAccountDrawer, setWalletAddress, setWalletConnected } = AppStore;
 
     const { connect, connectors, isLoading, pendingConnector } =
         useConnect({
-            onSuccess: closeAccountDrawer
+            onSuccess: (data) => {
+                setWalletAddress(data.account);
+                setWalletConnected(true);
+                closeAccountDrawer();
+            }
         });
 
     return (

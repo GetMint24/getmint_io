@@ -88,19 +88,7 @@ async function createNFT(data: CreateNFTDto) {
                 userId: data.userId,
             }
         });
-
-        let balance = BalanceOperationCost.Mint;
-
-        const lastBalanceLogRecord = await context.balanceLog.findFirst({
-            orderBy: {
-                createdAt: 'desc'
-            }
-        });
-
-        if (lastBalanceLogRecord) {
-            balance = lastBalanceLogRecord.balance + BalanceOperationCost.Mint;
-        }
-
+        
         const balanceLog = await context.balanceLog.create({
            data: {
                userId: data.userId,
@@ -108,7 +96,6 @@ async function createNFT(data: CreateNFTDto) {
                description: 'Начисление за Mint',
                type: BalanceLogType.Mint,
                amount: BalanceOperationCost.Mint,
-               balance
            }
         });
 

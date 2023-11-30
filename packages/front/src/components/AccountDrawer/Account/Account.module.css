@@ -4,6 +4,13 @@
     height: 100%;
 }
 
+.accountLoading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
 .accountMain {
     flex: 1;
     display: flex;

@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useState } from "react";
-import { useAccount, useContractWrite, useNetwork, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
+import { useAccount, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
 import { fetchBalance } from '@wagmi/core'
 import { observer } from "mobx-react-lite";
 import { message } from 'antd';
@@ -15,9 +15,8 @@ import PinataImage from "../../components/PinataImage";
 import { MintDto } from "../../common/dto/MintDto";
 import ApiService from "../../services/ApiService";
 import AppStore from "../../store/AppStore";
-import { parseEther } from "ethers";
 import { WalletAddress } from "../../common/types";
-import { CONTRACT_ADDRESS, NFT_COST } from "../../common/constants";
+import { NFT_COST } from "../../common/constants";
 
 function Page() {
     const [messageApi, contextHolder] = message.useMessage();
@@ -42,8 +41,8 @@ function Page() {
         functionName: 'mint',
     });
 
-    const { data, write, writeAsync, error } = useContractWrite(config);
-    const { isLoading, isSuccess, isFetched } = useWaitForTransaction({
+    const { data, write, writeAsync } = useContractWrite(config);
+    const { isLoading  } = useWaitForTransaction({
         hash: data?.hash,
     });
 
