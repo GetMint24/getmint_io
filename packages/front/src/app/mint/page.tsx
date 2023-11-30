@@ -1,29 +1,27 @@
 'use client';
 
 import { useCallback, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAccount, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
 import { fetchBalance } from '@wagmi/core'
 import { observer } from "mobx-react-lite";
 import { message } from 'antd';
-import Image from "next/image";
 
 import styles from './page.module.css';
 import Card from "../../components/ui/Card/Card";
 import MintForm, { MintSubmitEvent } from "./components/MintForm/MintForm";
 import CostLabel from "../../components/CostLabel/CostLabel";
-import PinataImage from "../../components/PinataImage";
-import { MintDto } from "../../common/dto/MintDto";
 import ApiService from "../../services/ApiService";
 import AppStore from "../../store/AppStore";
 import { WalletAddress } from "../../common/types";
 import { NFT_COST } from "../../common/constants";
+import { AxiosError } from "axios";
 
 function Page() {
     const [messageApi, contextHolder] = message.useMessage();
-    const [isMinted, setIsMinted] = useState<boolean>(false);
-    const [nft, setNft] = useState<MintDto>();
     const [isNFTPending, setIsNFTPending] = useState<boolean>(false);
     const { walletConnected, openAccountDrawer, fetchAccount } = AppStore;
+    const router = useRouter();
 
     const { address } = useAccount();
 
@@ -75,8 +73,8 @@ function Page() {
                     metamaskWalletAddress: address as string
                 });
 
-                setNft(nft);
-                setIsMinted(true);
+                await messageApi.success('NFT Successfully minted');
+                router.push(`/mint/${nft.pinataImageHash}?successful=true`);
 
                 await fetchAccount();
             } else {
@@ -84,24 +82,15 @@ function Page() {
             }
         } catch (e) {
             setIsNFTPending(false);
+
+            if (e instanceof AxiosError) {
+                await messageApi.error(e?.response?.data?.message);
+                return;
+            }
+
             await messageApi.error('User rejected the request');
         }
     }, [write, walletConnected, writeAsync]);
-
-    if (isMinted && nft) {
-        return (
-            <Card className={styles.page} title={(
-                <div className={styles.title}>
-                    <span><Image src="/svg/congratulations.svg" width={32} height={32} alt="Congratulations" /> Congratulations!</span>
-                    {/*<CostLabel cost={20} large />*/}
-                </div>
-            )}>
-                <PinataImage hash={nft.pinataImageHash} name={nft.name} />
-                {nft.description && <p>{nft.description}</p>}
-                <a href={`https://etherscan.io/tx/${data?.hash}`}>Etherscan</a>
-            </Card>
-        )
-    }
 
     return (
         <>
