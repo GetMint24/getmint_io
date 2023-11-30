@@ -25,7 +25,7 @@ model User {
 
 model Nft {
   id              Int      @id @default(autoincrement())
-  pinataImageHash String   @map("pinata_image_hash")
+  pinataImageHash String   @unique @map("pinata_image_hash")
   name            String
   description     String?  @default("")
   createdAt       DateTime @default(now()) @map("created_at")

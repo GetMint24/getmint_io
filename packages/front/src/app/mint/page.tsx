@@ -110,7 +110,7 @@ function Page() {
             <Card className={styles.page} isLoading={isLoading || isNFTPending} title={(
                 <div className={styles.title}>
                     <span>Mint</span>
-                    <CostLabel cost={20} large />
+                    <CostLabel cost={20} size="large" />
                 </div>
             )}>
                 <MintForm onSubmit={mintNFT} />

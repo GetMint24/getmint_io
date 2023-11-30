@@ -7,7 +7,7 @@ export default function Page() {
         <Card title={(
             <div className={styles.title}>
                 <span>Bridge NFT</span>
-                <CostLabel cost={10} large />
+                <CostLabel cost={10} size="large" />
             </div>
         )}>
             CardProps

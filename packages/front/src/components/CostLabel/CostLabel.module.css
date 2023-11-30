@@ -13,7 +13,24 @@
     -webkit-text-fill-color: transparent;
 }
 
+.medium {
+    font-size: 16px;
+    font-weight: 500;
+}
+
 .large {
     font-size: 18px;
     font-weight: 700;
+}
+
+.success {
+    background: transparent;
+    border: 1px solid #52C83F;
+}
+
+.success > span {
+    background: transparent;
+    color: #52C83F;
+    -webkit-background-clip: initial;
+    -webkit-text-fill-color: initial;
 }

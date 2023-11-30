@@ -1,0 +1,57 @@
+.page {
+    max-width: 558px;
+    margin: auto;
+}
+
+.title {
+    font-size: 24px;
+    position: relative;
+    top: -2px;
+}
+
+.badge {
+    height: 27px;
+    line-height: 1;
+}
+
+.name {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.nft {
+    margin-bottom: 20px;
+}
+
+.image {
+    padding: 8px;
+    border-radius: 12px;
+    background: #171D2A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+}
+.tweetText {
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.64);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+button.tweetBtn {
+    padding: 13px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}

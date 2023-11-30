@@ -33,6 +33,14 @@ export async function POST(request: Request) {
 
         const pinataImageHash = await sendNFTImage(image, name, description);
 
+        const nftExists = await prisma.nft.findFirst({
+            where: { pinataImageHash }
+        });
+
+        if (nftExists) {
+            return new BadRequest('NFT already minted');
+        }
+
         const createdNFT = await createNFT({
             name,
             description,
@@ -88,7 +96,7 @@ async function createNFT(data: CreateNFTDto) {
                 userId: data.userId,
             }
         });
-        
+
         const balanceLog = await context.balanceLog.create({
            data: {
                userId: data.userId,
