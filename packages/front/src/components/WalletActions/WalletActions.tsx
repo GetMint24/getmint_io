@@ -65,15 +65,15 @@ export default function WalletActions() {
         if (error) {
             void messageApi.warning('User rejected the request');
         }
-    }, [error]);
+    }, [error, messageApi]);
 
     useEffect(() => {
         setWalletConnected(isConnected);
-    }, [isConnected]);
+    }, [isConnected, setWalletConnected]);
 
     useEffect(() => {
         setWalletAddress(address as string);
-    }, [address]);
+    }, [address, setWalletAddress]);
 
     if (!isClient) {
         return <Button className={styles.btn}>Connect a Wallet</Button>;

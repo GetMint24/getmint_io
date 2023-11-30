@@ -16,7 +16,7 @@ export default function AccountAddress({ address = '', withCopy, className }: Ac
 
     const value = useMemo(() => {
         return `${address?.slice(0, 6)}...${address?.slice(-5)}`;
-    }, []);
+    }, [address]);
 
     const handleCopy = async () => {
         await navigator.clipboard.writeText(address);

@@ -52,9 +52,8 @@ function Account() {
     };
 
     useEffect(() => {
-        console.log(123)
         void fetchAccount();
-    }, []);
+    }, [fetchAccount]);
 
     if (!account) {
         return (
