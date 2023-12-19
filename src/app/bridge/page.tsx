@@ -35,7 +35,7 @@ function Page() {
                     <CostLabel cost={10} size="large" />
                 </div>
             )}>
-                <strong>Your NFT</strong>
+                <div>Your NFT</div>
                 <NftList />
             </Card>
 

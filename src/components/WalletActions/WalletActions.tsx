@@ -11,6 +11,7 @@ import AccountAddress from "../AccountAddress/AccountAddress";
 import AppStore from "../../store/AppStore";
 
 import styles from './WalletActions.module.css';
+import { getChainLogo } from "../../utils/getChainLogo";
 
 interface Props {
     className?: string;
@@ -43,17 +44,7 @@ export default function WalletActions({ className }: Props) {
         return items;
     }, [chains]);
 
-    const chainLogo = useMemo(() => {
-        if (chain) {
-            const paths: Record<string, string> = {
-                'Arbitrum One': '/svg/chains/arbitrum.svg'
-            }
-
-            return paths[chain.name] || '';
-        }
-
-        return '';
-    }, [chain]);
+    const chainLogo = useMemo(() => getChainLogo(chain?.network!), [chain]);
 
     const handleSwitchNetwork = (chainId: number) => {
         if (switchNetwork) {
@@ -99,19 +90,19 @@ export default function WalletActions({ className }: Props) {
                             menu={{
                                 items: chainsMenu,
                                 selectable: true,
-                                defaultSelectedKeys: [String(1)],
+                                defaultSelectedKeys: [String(chain.id)],
                                 onClick: ({ key }) => handleSwitchNetwork(parseInt(key))
                             }}
                         >
                             <Flex align="center" justify="center" gap={8} className={styles.dropdownBtn}>
                                 {chainLogo && <Image src={chainLogo} width={24} height={24} alt="" />}
 
-                                <div className={styles.dropdownValue}>Arbitrum One</div>
+                                <div className={styles.dropdownValue}>{chain.name}</div>
 
-                                <Flex gap={4} align="center" className={styles.price}>
+                                {/*<Flex gap={4} align="center" className={styles.price}>
                                     <img src="/svg/ui/fuel.svg" />
                                     <span>$0.22</span>
-                                </Flex>
+                                </Flex>*/}
 
                                 <Image src="/svg/ui/dropdown-arrow.svg" width={24} height={24} alt="" />
                             </Flex>

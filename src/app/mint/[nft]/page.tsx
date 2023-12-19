@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import { notFound } from "next/navigation";
 import { Flex } from "antd";
 
 import styles from "./page.module.css";
@@ -9,8 +10,6 @@ import PinataImage from "../../../components/PinataImage";
 import CostLabel from "../../../components/CostLabel/CostLabel";
 import Button from "../../../components/ui/Button/Button";
 import ChainLabel from "../../../components/ChainLabel/ChainLabel";
-import RefuelSwitch from "../../../components/RefuelSwitch/RefuelSwitch";
-import WalletActions from "../../../components/WalletActions/WalletActions";
 import BridgeForm from "./components/BridgeForm/BridgeForm";
 
 interface NftPageProps {
@@ -19,9 +18,29 @@ interface NftPageProps {
 }
 
 export default async function NftPage({ params, searchParams }: NftPageProps) {
+    // TODO: Move to server side
     const nft = await prisma.nft.findFirst({
-        where: { pinataImageHash: params.nft }
+        where: { pinataImageHash: params.nft },
+        select: {
+            id: true,
+            pinataImageHash: true,
+            name: true,
+            description: true,
+            createdAt: true,
+            tokenId: true,
+            nftChainConnection: {
+                select: {
+                    chain: true
+                }
+            }
+        }
     });
+
+    if (!nft) {
+        return notFound()
+    }
+
+    const chain = nft?.nftChainConnection?.[0]?.chain;
 
     return (
         <Card className={styles.page} title={searchParams.successful && (
@@ -33,7 +52,7 @@ export default async function NftPage({ params, searchParams }: NftPageProps) {
         )}>
             {nft && (
                 <div className={styles.nft}>
-                    <h2 className={styles.name}>Name</h2>
+                    <h2 className={styles.name}>{nft.name}</h2>
                     <div className={styles.image}>
                         <PinataImage hash={nft.pinataImageHash} name={nft.name} />
                     </div>
@@ -42,7 +61,7 @@ export default async function NftPage({ params, searchParams }: NftPageProps) {
 
             <Flex gap={8} align="center" className={styles.chainInfo}>
                 <strong>Your NFT is now live on the</strong>
-                <ChainLabel src="/svg/chains/base.svg" label="Base network" labelClassName={styles.chainLabel} />
+                <ChainLabel network={chain?.network ?? ''} label={chain?.name ?? ''} labelClassName={styles.chainLabel} />
             </Flex>
 
             <BridgeForm className={styles.bridge} />

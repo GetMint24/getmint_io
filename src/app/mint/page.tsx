@@ -1,10 +1,10 @@
 'use client';
 
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAccount, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from "wagmi";
-import { fetchBalance } from '@wagmi/core'
+import { useAccount, useNetwork } from "wagmi";
 import { observer } from "mobx-react-lite";
+import { AxiosError } from "axios";
 import { message } from 'antd';
 
 import styles from './page.module.css';
@@ -13,9 +13,9 @@ import MintForm, { MintSubmitEvent } from "./components/MintForm/MintForm";
 import CostLabel from "../../components/CostLabel/CostLabel";
 import ApiService from "../../services/ApiService";
 import AppStore from "../../store/AppStore";
-import { WalletAddress } from "../../common/types";
-import { NFT_COST } from "../../common/constants";
-import { AxiosError } from "axios";
+import { CONTRACT_ADDRESS } from "../../common/constants";
+import { NetworkName } from "../../common/enums/NetworkName";
+import { mintNFT } from "../../core/contractController";
 
 function Page() {
     const [messageApi, contextHolder] = message.useMessage();
@@ -23,86 +23,69 @@ function Page() {
     const { walletConnected, openAccountDrawer, fetchAccount } = AppStore;
     const router = useRouter();
 
+    const { chain } = useNetwork();
     const { address } = useAccount();
 
-    const { config } = usePrepareContractWrite({
-        address,
-        abi: [
-            {
-                name: 'mint',
-                type: 'function',
-                stateMutability: 'nonpayable',
-                inputs: [],
-                outputs: [],
-            },
-        ],
-        functionName: 'mint',
-    });
+    const _mintNFT = async (data: MintSubmitEvent) => {
+        if (!walletConnected) {
+            openAccountDrawer();
+            messageApi.info('Connect a wallet before Mint!');
+            return;
+        }
 
-    const { data, write, writeAsync } = useContractWrite(config);
-    const { isLoading  } = useWaitForTransaction({
-        hash: data?.hash,
-    });
+        if (chain) {
+            setIsNFTPending(true);
 
-    const mintNFT = useCallback(async (data: MintSubmitEvent) => {
-        // if (!walletConnected) {
-        //     openAccountDrawer();
-        //     messageApi.info('Connect a wallet before Mint!');
-        //     return;
-        // }
-
-        setIsNFTPending(true);
-
-        try {
-            if (writeAsync) {
-                const balance = await fetchBalance({
-                    address: address as WalletAddress
+            try {
+                const result = await mintNFT({
+                    contractAddress: CONTRACT_ADDRESS[chain.network as NetworkName]
                 });
 
-                if (balance.value < NFT_COST) {
-                    messageApi.warning('Not enough funds to mint');
-                    setIsNFTPending(false);
+                console.log({result})
+
+                if (result.result) {
+                    const nft = await ApiService.createMint(data.image!, {
+                        name: data.name,
+                        description: data.description,
+                        metamaskWalletAddress: address as string,
+                        tokenId: result.blockId!,
+                        chainNetwork: chain?.network!,
+                        transactionHash: result?.transactionHash!
+                    });
+
+                    await messageApi.success('NFT Successfully minted');
+                    router.push(`/mint/${nft.pinataImageHash}?successful=true`);
+
+                    await fetchAccount();
+                } else {
+                    messageApi.warning(result.message);
+                }
+            } catch (e) {
+                setIsNFTPending(false);
+
+                if (e instanceof AxiosError) {
+                    await messageApi.error(e?.response?.data?.message);
                     return;
                 }
 
-                // await writeAsync();
-
-                const nft = await ApiService.createMint(data.image!, {
-                    name: data.name,
-                    description: data.description,
-                    metamaskWalletAddress: address as string
-                });
-
-                await messageApi.success('NFT Successfully minted');
-                router.push(`/mint/${nft.pinataImageHash}?successful=true`);
-
-                await fetchAccount();
-            } else {
-                await messageApi.warning('Sorry! Something went wrong :(');
+                await messageApi.error('Something went wrong :(');
+            } finally {
+                setIsNFTPending(false);
             }
-        } catch (e) {
-            setIsNFTPending(false);
-
-            if (e instanceof AxiosError) {
-                await messageApi.error(e?.response?.data?.message);
-                return;
-            }
-
-            await messageApi.error('User rejected the request');
         }
-    }, [write, walletConnected, writeAsync]);
+    };
 
     return (
         <>
             {contextHolder}
 
-            <Card className={styles.page} isLoading={isLoading || isNFTPending} title={(
+            <Card className={styles.page} isLoading={isNFTPending} title={(
                 <div className={styles.title}>
                     <span>Mint</span>
                     <CostLabel cost={20} size="large" />
                 </div>
             )}>
-                <MintForm onSubmit={mintNFT} />
+                <MintForm onSubmit={_mintNFT} />
                 <a href="https://twitter.com/intent/tweet" className="twitter-share-button">Tweet</a>
                 <a href="https://twitter.com/GetMint_io" className="twitter-follow-button">Follow</a>
             </Card>

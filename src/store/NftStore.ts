@@ -1,23 +1,30 @@
-import { Nft } from "@prisma/client";
 import { makeAutoObservable } from "mobx";
 import { enableStaticRendering } from "mobx-react-lite";
-import prisma from "../utils/prismaClient";
+import ApiService from "../services/ApiService";
+import { NFTDto } from "../common/dto/NFTDto";
 
 enableStaticRendering(typeof window === 'undefined');
 
 class NftStore {
-    nfts: Nft[] = [];
-    selectedNft: number | null = null;
+    loading: boolean = false;
+    nfts: NFTDto[] = [];
+    selectedNft: NFTDto | null = null;
 
     constructor() {
         makeAutoObservable(this);
     }
 
     async getNfts() {
-        this.nfts = await prisma.nft.findMany();
+        this.loading = true;
+
+        try {
+            this.nfts = await ApiService.getCollection();
+        } finally {
+            this.loading = false;
+        }
     }
 
-    setNft(nft: number | null) {
+    setNft(nft: NFTDto | null) {
         this.selectedNft = nft;
     }
 }
