@@ -2,18 +2,36 @@
 
 import { ReactNode } from "react";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { mainnet, sepolia } from "wagmi/chains";
+import {
+    arbitrum,
+    arbitrumNova,
+    avalanche,
+    base,
+    linea,
+    mantle,
+    optimism, polygon,
+    polygonZkEvm,
+    scroll,
+    zora
+} from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
-import { alchemyProvider } from '@wagmi/core/providers/alchemy';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
     [
-        mainnet,
-        sepolia,
+        base,
+        arbitrumNova,
+        arbitrum,
+        linea,
+        optimism,
+        avalanche,
+        zora,
+        scroll,
+        polygon,
+        polygonZkEvm,
+        mantle,
     ],
     [
-        alchemyProvider({ apiKey: 'y6QC0M5M2SuotNrlDd61wBsNXHh_RjNi' }),
         publicProvider()
     ],
 );

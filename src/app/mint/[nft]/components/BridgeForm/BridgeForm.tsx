@@ -34,9 +34,9 @@ export default function BridgeForm({ className }: Props) {
                 </Flex>
 
                 <Flex align="center" className={styles.bridgeScheme}>
-                    <ChainLabel src="/svg/chains/base.svg" label="Base network" justify="center" className={styles.label} />
+                    <ChainLabel network="base" label="Base network" justify="center" className={styles.label} />
                     <img src="/svg/scheme-arrow.svg" />
-                    <ChainLabel src="/svg/chains/arbitrum.svg" label="Arbitrum One" justify="center" className={styles.label} />
+                    <ChainLabel network="base" label="Arbitrum One" justify="center" className={styles.label} />
                 </Flex>
             </Flex>
         )

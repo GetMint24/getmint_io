@@ -11,12 +11,13 @@ datasource db {
 }
 
 model User {
-  id                     Int          @id @default(autoincrement())
+  id                     String       @id @default(uuid())
   createdAt              DateTime     @default(now()) @map("created_at")
   metamaskWalletAddress  String       @unique @map("metamask_wallet_address")
   followedGetmintTwitter Boolean      @default(false) @map("followed_getmint_twitter")
   twitterEnabled         Boolean      @default(false) @map("twitter_enabled")
   twitterLogin           String?      @map("twitter_login")
+  avatar                 String?
   nfts                   Nft[]
   balanceLogs            BalanceLog[]
 
@@ -24,22 +25,25 @@ model User {
 }
 
 model Nft {
-  id              Int      @id @default(autoincrement())
-  pinataImageHash String   @unique @map("pinata_image_hash")
-  name            String
-  description     String?  @default("")
-  createdAt       DateTime @default(now()) @map("created_at")
-  userId          Int      @map("user_id")
-  user            User     @relation(fields: [userId], references: [id])
-  mintLog         MintLog?
+  id                 String               @id @default(uuid())
+  pinataImageHash    String               @unique @map("pinata_image_hash")
+  pinataJsonHash     String               @unique @map("pinata_json_hash")
+  name               String
+  description        String?              @default("")
+  createdAt          DateTime             @default(now()) @map("created_at")
+  tokenId            Int
+  userId             String               @map("user_id")
+  user               User                 @relation(fields: [userId], references: [id])
+  mintLog            MintLog?
+  nftChainConnection NftChainConnection[]
 
   @@map(name: "nfts")
 }
 
 model BalanceLog {
-  id          Int              @id @default(autoincrement())
+  id          String           @id @default(uuid())
   createdAt   DateTime         @default(now()) @map("created_at")
-  userId      Int              @map("user_id")
+  userId      String           @map("user_id")
   user        User             @relation(fields: [userId], references: [id])
   amount      Int
   operation   BalanceOperation
@@ -51,13 +55,35 @@ model BalanceLog {
 }
 
 model MintLog {
-  id           Int        @id @default(autoincrement())
-  nft          Nft        @relation(fields: [nftId], references: [id])
-  nftId        Int        @unique @map("nft_id")
-  balanceLog   BalanceLog @relation(fields: [balanceLogId], references: [id])
-  balanceLogId Int        @unique @map("balance_log_id")
+  id              String     @id @default(uuid())
+  nft             Nft        @relation(fields: [nftId], references: [id])
+  nftId           String     @unique @map("nft_id")
+  balanceLog      BalanceLog @relation(fields: [balanceLogId], references: [id])
+  balanceLogId    String     @unique @map("balance_log_id")
+  transactionHash String     @unique @map("transaction_hash")
 
   @@map(name: "mint_logs")
+}
+
+model NftChainConnection {
+  id      String @id @default(uuid())
+  chain   Chain  @relation(fields: chainId, references: [id])
+  chainId String @map("chain_id")
+  nft     Nft    @relation(fields: nftId, references: [id])
+  nftId   String
+
+  @@map(name: "nft_chain_connection")
+}
+
+model Chain {
+  id                 String               @id @default(uuid())
+  name               String
+  network            String
+  chainId            Int                  @unique @map("chain_id")
+  lzChain            Int                  @map("lz_chain")
+  nftChainConnection NftChainConnection[]
+
+  @@map(name: "chains")
 }
 
 enum BalanceOperation {

@@ -1,1 +1,1 @@
-export type WalletAddress = `0x${string}`;
+export type CryptoAddress = `0x${string}`;
