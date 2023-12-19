@@ -1,0 +1,89 @@
+.list {
+    margin: 12px auto 0;
+}
+
+.listItem {
+    width: 252px;
+    padding: 16px;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+.image {
+    margin: 0 -8px;
+    padding: 8px;
+    border-radius: 12px;
+    background-color: #171d2a;
+    height: 224px;
+}
+
+.image img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.name {
+    font-size: 16px;
+}
+
+.xp {
+    margin-top: 11px;
+}
+
+.xp img {
+    width: 20px;
+}
+
+.xp span {
+    opacity: 0.64;
+}
+
+
+@media screen and (max-width: 768px) {
+    .list {
+        gap: 8px 4px !important;
+    }
+
+    .listItem {
+        width: 150px;
+        padding: 8px;
+        border-radius: 8px;
+        gap: 8px !important;
+    }
+
+    .chain {
+        gap: 4.79px !important;
+    }
+
+    .chainIcon {
+        width: 16px;
+        height: 16px;
+    }
+
+    .chainLabel {
+        font-size: 10px;
+    }
+
+    .image {
+        padding: 4.79px;
+        margin: 0;
+        height: 134px;
+        border-radius: 7.19px;
+    }
+
+    .name {
+        font-size: 12.679px;
+    }
+
+    .xp {
+        margin-top: 4px;
+    }
+
+    .xp img {
+        width: 16px;
+    }
+
+    .xp span {
+        font-size: 10px;
+    }
+}

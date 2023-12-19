@@ -12,7 +12,11 @@ import AppStore from "../../store/AppStore";
 
 import styles from './WalletActions.module.css';
 
-export default function WalletActions() {
+interface Props {
+    className?: string;
+}
+
+export default function WalletActions({ className }: Props) {
     const { openAccountDrawer, setWalletConnected, setWalletAddress } = AppStore;
 
     const [messageApi, contextHolder] = message.useMessage();
@@ -80,7 +84,7 @@ export default function WalletActions() {
     }
 
     return (
-        <div>
+        <div className={className}>
             {contextHolder}
 
             {!isConnected ? (
@@ -95,14 +99,20 @@ export default function WalletActions() {
                             menu={{
                                 items: chainsMenu,
                                 selectable: true,
-                                defaultSelectedKeys: [String(chain.id)],
+                                defaultSelectedKeys: [String(1)],
                                 onClick: ({ key }) => handleSwitchNetwork(parseInt(key))
                             }}
                         >
                             <Flex align="center" justify="center" gap={8} className={styles.dropdownBtn}>
                                 {chainLogo && <Image src={chainLogo} width={24} height={24} alt="" />}
 
-                                <div>{chain.name}</div>
+                                <div className={styles.dropdownValue}>Arbitrum One</div>
+
+                                <Flex gap={4} align="center" className={styles.price}>
+                                    <img src="/svg/ui/fuel.svg" />
+                                    <span>$0.22</span>
+                                </Flex>
+
                                 <Image src="/svg/ui/dropdown-arrow.svg" width={24} height={24} alt="" />
                             </Flex>
                         </Dropdown>

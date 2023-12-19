@@ -1,5 +1,5 @@
 .page {
-    max-width: 558px;
+    max-width: 468px;
     margin: auto;
 }
 
@@ -54,4 +54,49 @@ button.tweetBtn {
     align-items: center;
     justify-content: center;
     gap: 8px;
+}
+
+.chainInfo {
+    margin-bottom: 16px;
+}
+
+.chainInfo > strong {
+    font-size: 16px;
+}
+
+.chainLabel {
+    font-size: 16px !important;
+}
+
+.bridge {
+    margin-bottom: 24px;
+}
+
+
+@media screen and (max-width: 768px) {
+    .title {
+        font-size: 20px;
+    }
+
+    .titleIcon {
+        width: 24px;
+        height: 24px;
+    }
+
+    .name {
+        font-size: 16px;
+    }
+
+    .chainInfo {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+
+    .chainInfo > strong {
+        font-size: 14px;
+    }
+
+    .chainLabel {
+        font-size: 14px !important;
+    }
 }

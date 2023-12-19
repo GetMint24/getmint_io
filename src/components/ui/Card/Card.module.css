@@ -32,3 +32,21 @@
     top: 50%;
     transform: translate(-50%, -50%);
 }
+
+@media screen and (max-width: 768px) {
+    .card {
+        padding: 16px;
+    }
+
+    .cardHead {
+        padding-bottom: 20px;
+    }
+
+    .cardHeadTitle {
+        font-size: 20px;
+    }
+
+    .cardHead + .cardBody {
+        padding-top: 20px;
+    }
+}

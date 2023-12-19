@@ -34,3 +34,14 @@
     -webkit-background-clip: initial;
     -webkit-text-fill-color: initial;
 }
+
+
+@media screen and (max-width: 768px) {
+    .costLabel {
+        font-size: 12px;
+    }
+
+    .large, .medium {
+        font-size: 14px;
+    }
+}
