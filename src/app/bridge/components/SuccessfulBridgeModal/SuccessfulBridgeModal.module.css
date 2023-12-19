@@ -1,0 +1,53 @@
+.title {
+    font-size: 24px;
+}
+
+.name {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.image {
+    padding: 8px;
+    border-radius: 12px;
+    background-color: #171d2a;
+    height: 310px;
+    margin-top: 8px;
+}
+
+.image img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 12px;
+}
+
+.bridgeScheme {
+    padding: 8px;
+    border-radius: 12px;
+    background-color: #171d2a;
+    margin-top: 20px;
+}
+
+.label {
+    flex-grow: 1;
+}
+
+
+@media screen and (max-width: 768px) {
+    .title {
+        font-size: 20px;
+    }
+
+    .name {
+        font-size: 16px;
+    }
+
+    .bridgeScheme {
+        flex-direction: column !important;
+        gap: 4px;
+    }
+
+    .bridgeScheme img {
+        transform: rotate(90deg);
+    }
+}

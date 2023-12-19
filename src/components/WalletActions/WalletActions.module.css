@@ -2,6 +2,7 @@ button.btn {
     background: transparent;
     color: #fff;
     position: relative;
+    width: 100%;
 }
 
 .btn:before {
@@ -23,6 +24,7 @@ button.btn {
 }
 
 .dropdownBtn {
+    width: 100%;
     padding: 12px;
     cursor: pointer;
     border-radius: 12px;
@@ -32,4 +34,17 @@ button.btn {
 
 .dropdownBtn:hover {
     background: rgba(255, 255, 255, 0.1);
+}
+
+.dropdownValue {
+    flex-grow: 1;
+}
+
+.price {
+    opacity: 0.64;
+}
+
+.price img {
+    width: 16px;
+    height: 16px;
 }

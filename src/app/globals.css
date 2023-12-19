@@ -1,5 +1,5 @@
 :root {
-  --max-width: 1360px;
+  --max-width: 1400px;
 
   /*--main-gradient: #main/gradient*/
 }
@@ -41,4 +41,11 @@ a {
 
 strong {
   font-weight: 600;
+}
+
+
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 0;
+  }
 }

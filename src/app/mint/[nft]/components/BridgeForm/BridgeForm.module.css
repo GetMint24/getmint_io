@@ -1,0 +1,41 @@
+.bridgeTitle > span {
+    color: rgba(255, 255, 255, 0.64);
+}
+
+.bridgeTitle.successful > span {
+    margin-right: 4px;
+}
+
+.switch > span {
+    flex-grow: 1;
+}
+
+.dropdown {
+    flex-grow: 1;
+}
+
+.sendBtn {
+    width: 89px;
+    flex-shrink: 0;
+}
+
+.bridgeScheme {
+    padding: 12px 8px;
+    border-radius: 12px;
+    background-color: #171d2a;
+}
+
+.label {
+    flex-grow: 1;
+}
+
+
+@media screen and (max-width: 768px) {
+    .formActions {
+        flex-direction: column !important;
+    }
+
+    .sendBtn {
+        width: auto;
+    }
+}

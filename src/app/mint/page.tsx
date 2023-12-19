@@ -45,11 +45,11 @@ function Page() {
     });
 
     const mintNFT = useCallback(async (data: MintSubmitEvent) => {
-        if (!walletConnected) {
-            openAccountDrawer();
-            messageApi.info('Connect a wallet before Mint!');
-            return;
-        }
+        // if (!walletConnected) {
+        //     openAccountDrawer();
+        //     messageApi.info('Connect a wallet before Mint!');
+        //     return;
+        // }
 
         setIsNFTPending(true);
 
