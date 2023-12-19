@@ -103,6 +103,8 @@ function Page() {
                 </div>
             )}>
                 <MintForm onSubmit={mintNFT} />
+                <a href="https://twitter.com/intent/tweet" className="twitter-share-button">Tweet</a>
+                <a href="https://twitter.com/GetMint_io" className="twitter-follow-button">Follow</a>
             </Card>
         </>
     )

@@ -8,11 +8,18 @@ import Header from "../components/layout/Header/Header";
 import Footer from "../components/layout/Footer/Footer";
 import WalletProvider from "./wallet-provider";
 import StyledComponentsRegistry from "../components/AntdRegistry";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'GetMint',
+  twitter: {
+    card: 'summary',
+    title: 'title',
+    description: 'description',
+    images: '/example-nft.png',
+  },
 }
 
 export default function RootLayout({
@@ -53,6 +60,8 @@ export default function RootLayout({
           </StyledComponentsRegistry>
         </WalletProvider>
       </body>
+
+      <Script async src="https://platform.twitter.com/widgets.js" type="text/javascript" />
     </html>
   )
 }
