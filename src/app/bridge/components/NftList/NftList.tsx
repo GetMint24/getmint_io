@@ -1,5 +1,6 @@
-import { Flex, Image, Spin } from "antd";
+import { Flex, Spin } from "antd";
 import { observer } from "mobx-react-lite";
+import Image from "next/image";
 import PinataImage from "../../../../components/PinataImage";
 import NftStore from "../../../../store/NftStore";
 import ChainLabel from "../../../../components/ChainLabel/ChainLabel";
