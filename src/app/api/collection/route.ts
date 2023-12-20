@@ -27,15 +27,9 @@ export async function GET(request: Request) {
             description: true,
             createdAt: true,
             tokenId: true,
-            nftChainConnection: {
-                select: {
-                    chain: true
-                }
-            }
+            chain: true
         }
     }).then(list => list.map(item => {
-        const chain = item.nftChainConnection[0].chain;
-
         return ({
             id: item.id,
             name: item.name,
@@ -43,10 +37,10 @@ export async function GET(request: Request) {
             description: item.description,
             createdAt: item.createdAt,
             tokenId: item.tokenId,
-            chainNativeId: chain.chainId,
-            chainId: chain.id,
-            chainNetwork: chain.network,
-            chainName: chain.name
+            chainNativeId: item.chain.chainId,
+            chainId: item.chain.id,
+            chainNetwork: item.chain.network,
+            chainName: item.chain.name
         })
     }));
 

@@ -2,6 +2,7 @@ import { CreateMintDto, MintDto } from "../common/dto/MintDto";
 import { apiClient } from "../utils/api";
 import { AccountDto } from "../common/dto/AccountDto";
 import { NFTDto } from "../common/dto/NFTDto";
+import { BridgeDto } from "../common/dto/BridgeDto";
 
 class ApiService {
     async getAccount(): Promise<AccountDto> {
@@ -20,6 +21,10 @@ class ApiService {
 
         const response = await apiClient.post('mint', formData);
         return response.data;
+    }
+
+    async bridgeNFT(data: BridgeDto) {
+        await apiClient.post('bridge', data);
     }
 
     async getCollection() {

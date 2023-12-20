@@ -25,17 +25,19 @@ model User {
 }
 
 model Nft {
-  id                 String               @id @default(uuid())
-  pinataImageHash    String               @unique @map("pinata_image_hash")
-  pinataJsonHash     String               @unique @map("pinata_json_hash")
-  name               String
-  description        String?              @default("")
-  createdAt          DateTime             @default(now()) @map("created_at")
-  tokenId            Int
-  userId             String               @map("user_id")
-  user               User                 @relation(fields: [userId], references: [id])
-  mintLog            MintLog?
-  nftChainConnection NftChainConnection[]
+  id              String     @id @default(uuid())
+  pinataImageHash String     @unique @map("pinata_image_hash")
+  pinataJsonHash  String     @unique @map("pinata_json_hash")
+  name            String
+  description     String?    @default("")
+  createdAt       DateTime   @default(now()) @map("created_at")
+  tokenId         Int
+  userId          String     @map("user_id")
+  user            User       @relation(fields: [userId], references: [id])
+  mintLog         MintLog?
+  bridgeLog       BridgeLog?
+  chainId         String     @map("chain_id")
+  chain           Chain      @relation(fields: [chainId], references: [id])
 
   @@map(name: "nfts")
 }
@@ -50,6 +52,7 @@ model BalanceLog {
   type        BalanceLogType
   description String?
   mintLog     MintLog?
+  BridgeLog   BridgeLog?
 
   @@map(name: "balance_logs")
 }
@@ -65,23 +68,26 @@ model MintLog {
   @@map(name: "mint_logs")
 }
 
-model NftChainConnection {
-  id      String @id @default(uuid())
-  chain   Chain  @relation(fields: chainId, references: [id])
-  chainId String @map("chain_id")
-  nft     Nft    @relation(fields: nftId, references: [id])
-  nftId   String
+model BridgeLog {
+  id              String     @id @default(uuid())
+  nft             Nft        @relation(fields: [nftId], references: [id])
+  nftId           String     @unique @map("nft_id")
+  balanceLog      BalanceLog @relation(fields: [balanceLogId], references: [id])
+  balanceLogId    String     @unique @map("balance_log_id")
+  transactionHash String     @unique @map("transaction_hash")
+  previousChain   String
+  nextChain       String
 
-  @@map(name: "nft_chain_connection")
+  @@map(name: "bridge_logs")
 }
 
 model Chain {
-  id                 String               @id @default(uuid())
-  name               String
-  network            String
-  chainId            Int                  @unique @map("chain_id")
-  lzChain            Int                  @map("lz_chain")
-  nftChainConnection NftChainConnection[]
+  id      String @id @default(uuid())
+  name    String
+  network String
+  chainId Int    @unique @map("chain_id")
+  lzChain Int    @map("lz_chain")
+  Nft     Nft[]
 
   @@map(name: "chains")
 }
