@@ -1,11 +1,11 @@
 import axios from "axios";
+import { User } from "@prisma/client";
 
 import prisma from "../../../utils/prismaClient";
 import { BadRequest } from "../utils/responses";
 import { BalanceOperation } from "../../../common/enums/BalanceOperation";
 import { BalanceLogType } from "../../../common/enums/BalanceLogType";
 import { BalanceOperationCost } from "../../../common/enums/BalanceOperationCost";
-import { User } from "@prisma/client";
 
 /**
  * Mint операция
@@ -60,9 +60,9 @@ export async function POST(request: Request) {
         user,
         userId: user.id,
         tokenId,
-        chainNetwork,
+        chainId: chain.id,
         transactionHash
-    }, chain.id);
+    });
 
     return Response.json(createdNFT);
 }
@@ -114,11 +114,11 @@ interface CreateNFTDto {
     user: User;
     userId: string;
     tokenId: number;
-    chainNetwork: string;
+    chainId: string;
     transactionHash: string;
 }
 
-async function createNFT(data: CreateNFTDto, chainId: string) {
+async function createNFT(data: CreateNFTDto) {
     return prisma.$transaction(async (context) => {
         const nft = await context.nft.create({
             data: {
@@ -128,13 +128,7 @@ async function createNFT(data: CreateNFTDto, chainId: string) {
                 userId: data.userId,
                 pinataJsonHash: data.pinataJsonHash,
                 tokenId: data.tokenId,
-            }
-        });
-
-        await context.nftChainConnection.create({
-            data: {
-                nftId: nft.id,
-                chainId
+                chainId: data.chainId
             }
         });
 

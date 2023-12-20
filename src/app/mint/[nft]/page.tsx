@@ -28,19 +28,13 @@ export default async function NftPage({ params, searchParams }: NftPageProps) {
             description: true,
             createdAt: true,
             tokenId: true,
-            nftChainConnection: {
-                select: {
-                    chain: true
-                }
-            }
+            chain: true
         }
     });
 
     if (!nft) {
         return notFound()
     }
-
-    const chain = nft?.nftChainConnection?.[0]?.chain;
 
     return (
         <Card className={styles.page} title={searchParams.successful && (
@@ -61,7 +55,10 @@ export default async function NftPage({ params, searchParams }: NftPageProps) {
 
             <Flex gap={8} align="center" className={styles.chainInfo}>
                 <strong>Your NFT is now live on the</strong>
-                <ChainLabel network={chain?.network ?? ''} label={chain?.name ?? ''} labelClassName={styles.chainLabel} />
+                <ChainLabel
+                    network={nft?.chain?.network ?? ''}
+                    label={nft?.chain?.name ?? ''}
+                    labelClassName={styles.chainLabel} />
             </Flex>
 
             <BridgeForm className={styles.bridge} />
