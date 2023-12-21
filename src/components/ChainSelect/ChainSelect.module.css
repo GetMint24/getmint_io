@@ -1,0 +1,23 @@
+.select {
+    padding: 12px 8px 12px 12px;
+    cursor: pointer;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    transition: .3s ease-out;
+}
+
+.select:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.label {
+    flex-grow: 1;
+}
+
+.select > img {
+    flex-shrink: 0;
+}
+
+.price {
+    opacity: 0.64;
+}
