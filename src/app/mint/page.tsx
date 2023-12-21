@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAccount, useNetwork } from "wagmi";
 import { observer } from "mobx-react-lite";
@@ -16,6 +16,7 @@ import AppStore from "../../store/AppStore";
 import { CONTRACT_ADDRESS } from "../../common/constants";
 import { NetworkName } from "../../common/enums/NetworkName";
 import { mintNFT } from "../../core/contractController";
+import ChainStore from "../../store/ChainStore";
 
 function Page() {
     const [messageApi, contextHolder] = message.useMessage();
@@ -75,6 +76,10 @@ function Page() {
         }
     };
 
+    useEffect(() => {
+        ChainStore.getChains();
+    }, []);
+
     return (
         <>
             {contextHolder}
@@ -86,8 +91,6 @@ function Page() {
                 </div>
             )}>
                 <MintForm onSubmit={_mintNFT} />
-                <a href="https://twitter.com/intent/tweet" className="twitter-share-button">Tweet</a>
-                <a href="https://twitter.com/GetMint_io" className="twitter-follow-button">Follow</a>
             </Card>
         </>
     )

@@ -6,25 +6,28 @@ import NftList from "./components/NftList/NftList";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
 import NftStore from "../../store/NftStore";
+import ChainStore from "../../store/ChainStore";
 import NftModal from "./components/NftModal/NftModal";
 import SuccessfulBridgeModal from "./components/SuccessfulBridgeModal/SuccessfulBridgeModal";
 
 import styles from "./page.module.css";
 
 function Page() {
-    const [isSuccess, setIsSuccess] = useState(false);
+    // TODO: change when exist response bridge request
+    const [nftId, setNftId] = useState('');
 
-    const handleSubmit = () => {
+    const handleSubmit = (id: string) => {
         NftStore.setNft(null);
-        setIsSuccess(true);
+        setNftId(id);
     };
 
     const closeSuccessModal = () => {
-        setIsSuccess(false);
+        setNftId('');
     };
 
     useEffect(() => {
         NftStore.getNfts();
+        ChainStore.getChains();
     }, []);
 
     return (
@@ -40,7 +43,7 @@ function Page() {
             </Card>
 
             <NftModal onSubmit={handleSubmit} />
-            <SuccessfulBridgeModal open={isSuccess} onClose={closeSuccessModal} />
+            <SuccessfulBridgeModal nftId={nftId} onClose={closeSuccessModal} />
         </>
     )
 }

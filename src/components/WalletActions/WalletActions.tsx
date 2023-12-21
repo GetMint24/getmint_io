@@ -13,11 +13,7 @@ import AppStore from "../../store/AppStore";
 import styles from './WalletActions.module.css';
 import { getChainLogo } from "../../utils/getChainLogo";
 
-interface Props {
-    className?: string;
-}
-
-export default function WalletActions({ className }: Props) {
+export default function WalletActions() {
     const { openAccountDrawer, setWalletConnected, setWalletAddress } = AppStore;
 
     const [messageApi, contextHolder] = message.useMessage();
@@ -75,7 +71,7 @@ export default function WalletActions({ className }: Props) {
     }
 
     return (
-        <div className={className}>
+        <div>
             {contextHolder}
 
             {!isConnected ? (
@@ -98,11 +94,6 @@ export default function WalletActions({ className }: Props) {
                                 {chainLogo && <Image src={chainLogo} width={24} height={24} alt="" />}
 
                                 <div className={styles.dropdownValue}>{chain.name}</div>
-
-                                {/*<Flex gap={4} align="center" className={styles.price}>
-                                    <img src="/svg/ui/fuel.svg" />
-                                    <span>$0.22</span>
-                                </Flex>*/}
 
                                 <Image src="/svg/ui/dropdown-arrow.svg" width={24} height={24} alt="" />
                             </Flex>

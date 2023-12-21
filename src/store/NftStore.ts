@@ -8,7 +8,7 @@ enableStaticRendering(typeof window === 'undefined');
 class NftStore {
     loading: boolean = false;
     nfts: NFTDto[] = [];
-    selectedNft: NFTDto | null = null;
+    selectedNftId: string | null = null;
 
     constructor() {
         makeAutoObservable(this);
@@ -24,8 +24,16 @@ class NftStore {
         }
     }
 
-    setNft(nft: NFTDto | null) {
-        this.selectedNft = nft;
+    setNft(id: string | null) {
+        this.selectedNftId = id;
+    }
+
+    selectedNft() {
+        return this.nfts.find((nft) => nft.id === this.selectedNftId);
+    }
+
+    selectNftById(id: string) {
+        return this.nfts.find((nft) => nft.id === id);
     }
 }
 

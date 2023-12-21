@@ -5,9 +5,9 @@ import { Flex } from "antd";
 import clsx from "clsx";
 import CostLabel from "../../../../../components/CostLabel/CostLabel";
 import RefuelSwitch from "../../../../../components/RefuelSwitch/RefuelSwitch";
-import WalletActions from "../../../../../components/WalletActions/WalletActions";
 import Button from "../../../../../components/ui/Button/Button";
 import ChainLabel from "../../../../../components/ChainLabel/ChainLabel";
+import ChainSelect from "../../../../../components/ChainSelect/ChainSelect";
 
 import styles from "./BridgeForm.module.css";
 
@@ -52,7 +52,7 @@ export default function BridgeForm({ className }: Props) {
             <RefuelSwitch className={styles.switch} />
 
             <Flex gap={8} className={styles.formActions}>
-                <WalletActions className={styles.dropdown} />
+                <ChainSelect className={styles.dropdown} />
                 <Button className={styles.sendBtn} onClick={handleSubmit}>Send</Button>
             </Flex>
         </Flex>

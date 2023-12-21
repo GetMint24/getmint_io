@@ -3,6 +3,7 @@ import { apiClient } from "../utils/api";
 import { AccountDto } from "../common/dto/AccountDto";
 import { NFTDto } from "../common/dto/NFTDto";
 import { BridgeDto } from "../common/dto/BridgeDto";
+import { ChainDto } from "../common/dto/ChainDto";
 
 class ApiService {
     async getAccount(): Promise<AccountDto> {
@@ -29,6 +30,11 @@ class ApiService {
 
     async getCollection() {
         const response = await apiClient.get<NFTDto[]>('collection');
+        return response.data;
+    }
+
+    async getChains() {
+        const response = await apiClient.get<ChainDto[]>('chains');
         return response.data;
     }
 }
