@@ -2,6 +2,10 @@
     position: relative;
 }
 
+.withExtra input {
+    padding-right: 120px;
+}
+
 .generateButton {
     position: absolute;
     right: 12px;
