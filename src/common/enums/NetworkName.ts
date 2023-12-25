@@ -10,4 +10,6 @@ export enum NetworkName {
     Polygon = 'matic',
     PolygonzkEVM = 'polygon-zkevm',
     Mantle = 'mantle',
+    ZkSync = 'zksync-era',
+    BSC = 'bsc',
 }

@@ -19,7 +19,12 @@ $ docker network create localhost
 $ npx prisma generate
 ```
 
+# Добавление новой сети через seed
+1. Добавить новую сеть в prisma/seed
+2. Выполнить команду `npx prisma db seed`
 
+
+# Next.js
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 

@@ -7,11 +7,14 @@ import {
     arbitrumNova,
     avalanche,
     base,
+    bsc,
     linea,
     mantle,
-    optimism, polygon,
+    optimism,
+    polygon,
     polygonZkEvm,
     scroll,
+    zkSync,
     zora
 } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
@@ -30,6 +33,8 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
         polygon,
         polygonZkEvm,
         mantle,
+        zkSync,
+        bsc
     ],
     [
         publicProvider()

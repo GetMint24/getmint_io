@@ -12,6 +12,8 @@ const paths: Record<NetworkName, string> = {
     [NetworkName.Scroll]: '/svg/chains/scroll.svg',
     [NetworkName.Zora]: '/svg/chains/zora.svg',
     [NetworkName.Mantle]: '/svg/chains/mantle.svg',
+    [NetworkName.ZkSync]: '/svg/chains/zksync.svg',
+    [NetworkName.BSC]: '/svg/chains/bnb.svg',
 };
 
 export function getChainLogo(network: string) {
