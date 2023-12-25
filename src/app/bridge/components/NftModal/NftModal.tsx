@@ -18,6 +18,7 @@ import { SuccessfulBridgeData } from "../../types";
 import { bridgeNFT } from "../../../../core/contractController";
 import { CONTRACT_ADDRESS } from "../../../../common/constants";
 import { NetworkName } from "../../../../common/enums/NetworkName";
+import { useNetwork, useSwitchNetwork } from "wagmi";
 
 interface Props {
     onSubmit(data: SuccessfulBridgeData): void;
@@ -29,6 +30,9 @@ function NftModal({ onSubmit }: Props) {
     const [selectedChain, setSelectedChain] = useState<string>();
     const [isPending , setIsPending] = useState<boolean>(false);
     const [refuelEnabled, setRefuelEnable] = useState<boolean>(false);
+
+    const { chain: currentChain } = useNetwork();
+    const { switchNetworkAsync } = useSwitchNetwork();
 
     useEffect(() => {
         if (ChainStore.chains.length && nft) {
@@ -51,6 +55,10 @@ function NftModal({ onSubmit }: Props) {
             setIsPending(true);
 
             const chainToSend = ChainStore.getChainById(selectedChain!);
+
+            if (currentChain?.network !== nft.chainNetwork) {
+                await switchNetworkAsync?.(nft.chainNativeId);
+            }
 
             if (!chainToSend) {
                 notification.error({ message: 'Something went wrong :(' });
