@@ -10,6 +10,7 @@ import ChainLabel from "../../../../../components/ChainLabel/ChainLabel";
 import ChainSelect from "../../../../../components/ChainSelect/ChainSelect";
 
 import styles from "./BridgeForm.module.css";
+import ChainStore from "../../../../../store/ChainStore";
 
 
 interface Props {
@@ -52,7 +53,7 @@ export default function BridgeForm({ className }: Props) {
             <RefuelSwitch className={styles.switch} />
 
             <Flex gap={8} className={styles.formActions}>
-                <ChainSelect className={styles.dropdown} />
+                <ChainSelect chains={ChainStore.chains} className={styles.dropdown} />
                 <Button className={styles.sendBtn} onClick={handleSubmit}>Send</Button>
             </Flex>
         </Flex>
