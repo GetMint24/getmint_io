@@ -1,5 +1,5 @@
 export enum NetworkName {
-    Arbitrum = 'arbitrum-one',
+    Arbitrum = 'arbitrum',
     ArbitrumNova = 'arbitrum-nova',
     Base = 'base',
     LineaMainnet = 'linea-mainnet',

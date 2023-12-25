@@ -11,18 +11,23 @@ import NftModal from "./components/NftModal/NftModal";
 import SuccessfulBridgeModal from "./components/SuccessfulBridgeModal/SuccessfulBridgeModal";
 
 import styles from "./page.module.css";
+import { SuccessfulBridgeData } from "./types";
+import AppStore from "../../store/AppStore";
 
 function Page() {
-    // TODO: change when exist response bridge request
-    const [nftId, setNftId] = useState('');
+    const { fetchAccount } = AppStore;
+    const [successfulData, setSuccessfulData] = useState<SuccessfulBridgeData | null>();
 
-    const handleSubmit = (id: string) => {
+    const handleSubmit = async(data: SuccessfulBridgeData) => {
+        console.log(data);
         NftStore.setNft(null);
-        setNftId(id);
+        setSuccessfulData(data);
+        NftStore.getNfts();
+        await fetchAccount();
     };
 
     const closeSuccessModal = () => {
-        setNftId('');
+        setSuccessfulData(null);
     };
 
     useEffect(() => {
@@ -43,7 +48,9 @@ function Page() {
             </Card>
 
             <NftModal onSubmit={handleSubmit} />
-            <SuccessfulBridgeModal nftId={nftId} onClose={closeSuccessModal} />
+            {successfulData && (
+                <SuccessfulBridgeModal data={successfulData} onClose={closeSuccessModal} />
+            )}
         </>
     )
 }

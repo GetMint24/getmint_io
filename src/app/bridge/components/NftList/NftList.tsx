@@ -23,6 +23,7 @@ function NftList() {
         <Flex gap={12} justify="center" wrap="wrap" className={styles.list}>
             {nfts.map((nft) => (
                 <ListCard
+                    key={nft.id}
                     label={
                         <ChainLabel
                             network={nft.chainNetwork}
@@ -35,6 +36,7 @@ function NftList() {
                     image={<PinataImage hash={nft.pinataImageHash} name={nft.name} />}
                     title={nft.name}
                     xp={20}
+                    onClick={() => handleCardClick(nft)}
                     className={styles.listItem}
                 />
             ))}

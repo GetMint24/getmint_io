@@ -2,7 +2,7 @@ import { NetworkName } from "../common/enums/NetworkName";
 
 const paths: Record<NetworkName, string> = {
     [NetworkName.Arbitrum]: '/svg/chains/arbitrum.svg',
-    [NetworkName.ArbitrumNova]: '/svg/chains/arbitrum.svg',
+    [NetworkName.ArbitrumNova]: '/svg/chains/nova.svg',
     [NetworkName.Base]: '/svg/chains/base.svg',
     [NetworkName.PolygonzkEVM]: '/svg/chains/polygon-zkevm.svg',
     [NetworkName.Polygon]: '/svg/chains/polygon-zkevm.svg',
@@ -11,7 +11,7 @@ const paths: Record<NetworkName, string> = {
     [NetworkName.Optimism]: '/svg/chains/optimism.svg',
     [NetworkName.Scroll]: '/svg/chains/scroll.svg',
     [NetworkName.Zora]: '/svg/chains/zora.svg',
-    [NetworkName.Mantle]: '',
+    [NetworkName.Mantle]: '/svg/chains/mantle.svg',
 };
 
 export function getChainLogo(network: string) {

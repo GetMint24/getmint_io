@@ -20,7 +20,7 @@
     background-color: #161d27;
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 12px;
-    box-shadow: 0px 8px 12px 0px rgba(53, 102, 196, 0.26), 0px 4px 32px 0px rgba(100, 123, 205, 0.32);
+    box-shadow: 0 8px 12px 0 rgba(53, 102, 196, 0.26), 0 4px 32px 0 rgba(100, 123, 205, 0.32);
 }
 
 .close {
@@ -51,7 +51,9 @@
     background-color: #161d27;
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 12px;
-    box-shadow: 0px 8px 12px 0px rgba(53, 102, 196, 0.26), 0px 4px 32px 0px rgba(100, 123, 205, 0.32);
+    box-shadow: 0 8px 12px 0 rgba(53, 102, 196, 0.26), 0 4px 32px 0 rgba(100, 123, 205, 0.32);
+    position: relative;
+    overflow: hidden;
 }
 
 

@@ -1,15 +1,17 @@
 'use client'
 
+import { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname  } from "next/navigation";
 import clsx from "clsx";
 
 import styles from './Navigation.module.css';
 import CostLabel from "../CostLabel/CostLabel";
+import SoonLabel from "../SoonLabel/SoonLabel";
 
 interface NavLinkProps {
     href: string;
-    title: string;
+    title: string | ReactNode;
     cost?: number;
 }
 
@@ -32,7 +34,8 @@ export default function Navigation() {
         <nav className={styles.nav}>
             <NavLink href="/" title="Mint" cost={20} />
             <NavLink href="/bridge" title="Bridge NFT" cost={10} />
-            {/*<NavLink href="/leaderboard" title="Leaderbord" />*/}
+            <NavLink href="/leaderboard" title={<>Leaderboard <SoonLabel /></>} />
+            <NavLink href="/meme" title={<>Meme <SoonLabel /></>} />
         </nav>
     )
 }

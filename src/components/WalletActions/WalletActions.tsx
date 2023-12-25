@@ -75,8 +75,8 @@ export default function WalletActions() {
             {contextHolder}
 
             {!isConnected ? (
-                <Button className={styles.btn} onClick={openAccountDrawer}>
-                    {isConnecting ? 'Connecting...' : 'Connect a Wallet'}
+                <Button onClick={openAccountDrawer}>
+                    {isConnecting ? 'Connecting...' : 'Connect Metamask'}
                 </Button>
             ) : (
                 <Flex gap={10}>

@@ -1,26 +1,27 @@
 import { ethers } from "ethers";
 import { hexToNumber } from "web3-utils";
 import abi from "./abi.json";
+import { ChainDto } from "../common/dto/ChainDto";
+import { NetworkName } from "../common/enums/NetworkName";
+import axios, { AxiosResponse } from "axios";
 
 interface ControllerFunctionProps {
     contractAddress: string;
-    chainToSend?: {
-        id: number;
-        name: string;
-        network: string;
-        zlChain?: number;
-    }
+    chainToSend?: ChainDto;
 }
 
 interface ControllerFunctionResult {
     result: boolean;
     message: string;
     receipt?: any;
-    transactionHash?: string;
+    transactionHash: string;
     blockId?: number;
 }
 
 const TRANSACTION_WAIT: number = 60000;
+const LZ_VERSION = 1;
+
+const wait = () => new Promise(r => setTimeout(r, 100));
 
 /**
  * Mint NFT Functionality
@@ -41,7 +42,8 @@ export const mintNFT = async ({ contractAddress, chainToSend }: ControllerFuncti
     if (userBalance < mintFee) {
         return {
             result: false,
-            message: 'Not enough funds to mint'
+            message: 'Not enough funds to mint',
+            transactionHash: ''
         };
     }
 
@@ -50,6 +52,7 @@ export const mintNFT = async ({ contractAddress, chainToSend }: ControllerFuncti
 
     const txResponse = await contract['mint()'](options);
 
+    await wait();
     // Magic for working functionality. Don't remove
     console.log("Minting..", { id: chainToSend?.id, name: chainToSend?.name, hash: txResponse?.hash });
 
@@ -88,15 +91,42 @@ export const bridgeNFT = async (
     );
 
     const contract = new ethers.Contract(contractAddress, abi, signer);
-    const _dstChainId = chainToSend?.zlChain;
+    const _dstChainId = chainToSend?.lzChain;
 
-    const MIN_DST_GAS = await contract.minDstGasLookup(_dstChainId, 1);
+    const MIN_DST_GAS = await contract.minDstGasLookup(_dstChainId, LZ_VERSION);
 
     let adapterParams;
-    adapterParams = ethers.solidityPacked(
-        ["uint16", "uint256"],
-        [1, MIN_DST_GAS]
-    );
+    if (refuel) {
+        const REFUEL_AMOUNT_USD = 1;
+
+        const token = chainToSend?.network === NetworkName.Mantle ? 'MNT' : 'ETH';
+        const price = await fetchPrice(token);
+
+        if (!price) {
+            return {
+                result: false,
+                message: 'Something went wrong :(',
+                transactionHash: ''
+            }
+        }
+
+        const REFUEL_AMOUNT = (REFUEL_AMOUNT_USD / price).toFixed(4);
+
+        const refuelAmountEth = ethers.parseUnits(
+            REFUEL_AMOUNT,
+            18
+        );
+
+        adapterParams = ethers.solidityPacked(
+            ["uint16", "uint256", "uint256", "address"],
+            [2, MIN_DST_GAS, refuelAmountEth, sender]
+        );
+    } else {
+        adapterParams = ethers.solidityPacked(
+            ["uint16", "uint256"],
+            [LZ_VERSION, MIN_DST_GAS]
+        );
+    }
 
     const { nativeFee } = await contract.estimateSendFee(
         _dstChainId,
@@ -112,6 +142,7 @@ export const bridgeNFT = async (
         return {
             result: false,
             message: 'Not enough funds to send',
+            transactionHash: ''
         }
     }
 
@@ -142,6 +173,10 @@ export const bridgeNFT = async (
         bridgeOptions
     );
 
+    await wait();
+    // Magic for working functionality. Don't remove
+    console.log("Bridging..", { id: chainToSend?.id, name: chainToSend?.name, hash: transaction?.hash });
+
     const receipt = await transaction.wait(null, TRANSACTION_WAIT)
 
     return {
@@ -151,3 +186,28 @@ export const bridgeNFT = async (
         transactionHash: transaction?.hash
     };
 };
+
+async function fetchPrice(symbol: string): Promise<number | null> {
+    let fetchSymbol = ""
+    if (symbol == "MNT") {
+        fetchSymbol = "MANTLE"
+    } else {
+        fetchSymbol = symbol
+    }
+
+    const url: string = `https://min-api.cryptocompare.com/data/price?fsym=${fetchSymbol.toUpperCase()}&tsyms=USDT`
+
+    try {
+        const response: AxiosResponse = await axios.get(url, { timeout: 10000 })
+
+        if (response.status === 200 && response.data) {
+            return parseFloat(response.data.USDT) || 0
+        } else {
+            await new Promise(resolve => setTimeout(resolve, 1000))
+            return fetchPrice(symbol)
+        }
+    } catch (error) {
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        return fetchPrice(symbol)
+    }
+}

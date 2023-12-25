@@ -7,14 +7,15 @@ import NftStore from "../../../../store/NftStore";
 import PinataImage from "../../../../components/PinataImage";
 
 import styles from "./SuccessfulBridgeModal.module.css";
+import { SuccessfulBridgeData } from "../../types";
 
 interface Props {
-    nftId: string;
+    data: SuccessfulBridgeData;
     onClose?(): void;
 }
 
-function SuccessfulBridgeModal({ nftId, onClose }: Props) {
-    const nft = NftStore.selectNftById(nftId);
+function SuccessfulBridgeModal({ data, onClose }: Props) {
+    const nft = NftStore.selectNftById(data.nftId);
 
     if (!nft) {
         return null;
@@ -34,9 +35,19 @@ function SuccessfulBridgeModal({ nftId, onClose }: Props) {
             </Flex>
 
             <Flex align="center" className={styles.bridgeScheme}>
-                <ChainLabel network={nft.chainNetwork} label={nft.chainName} justify="center" className={styles.label} />
+                <ChainLabel
+                    network={data.previousChain.network}
+                    label={data.previousChain.name}
+                    justify="center"
+                    className={styles.label}
+                />
                 <Image src="/svg/scheme-arrow.svg" width={24} height={24} alt="" />
-                <ChainLabel network={nft.chainNetwork} label={nft.chainName} justify="center" className={styles.label} />
+                <ChainLabel
+                    network={data.nextChain.network}
+                    label={data.nextChain.name}
+                    justify="center"
+                    className={styles.label}
+                />
             </Flex>
         </UiModal>
     )
