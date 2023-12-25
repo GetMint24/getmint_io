@@ -17,7 +17,8 @@ class ChainStore {
         this.loading = true;
 
         try {
-            this.chains = await ApiService.getChains();
+            const chains = await ApiService.getChains();
+            this.chains = chains.sort((a, b) => a.name.localeCompare(b.name));
         } finally {
             this.loading = false;
         }

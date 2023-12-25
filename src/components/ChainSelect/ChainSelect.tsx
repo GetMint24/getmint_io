@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Dropdown, Flex, MenuProps } from "antd";
 import Image from "next/image";
 import { observer } from "mobx-react-lite";
@@ -7,17 +7,22 @@ import ChainStore from "../../store/ChainStore";
 import { getChainLogo } from "../../utils/getChainLogo";
 
 import styles from "./ChainSelect.module.css";
+import { ChainDto } from "../../common/dto/ChainDto";
 
 interface Props {
+    chains: ChainDto[];
     value?: string;
     className?: string;
     onChange?(value: string): void;
 }
 
-function ChainSelect({ value, className, onChange }: Props) {
-    const [selectedValue, setSelectedValue] = useState(value || '');
-    const chains = ChainStore.chains;
+function ChainSelect({ value, className, onChange, chains }: Props) {
+    const [selectedValue, setSelectedValue] = useState<string>('');
     const chain = ChainStore.getChainById(selectedValue);
+
+    useEffect(() => {
+        setSelectedValue(value!);
+    }, [value]);
 
     const items: MenuProps['items'] = useMemo(() => {
         return [...chains]

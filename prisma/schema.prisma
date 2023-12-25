@@ -25,19 +25,19 @@ model User {
 }
 
 model Nft {
-  id              String     @id @default(uuid())
-  pinataImageHash String     @unique @map("pinata_image_hash")
-  pinataJsonHash  String     @unique @map("pinata_json_hash")
+  id              String      @id @default(uuid())
+  pinataImageHash String      @unique @map("pinata_image_hash")
+  pinataJsonHash  String      @unique @map("pinata_json_hash")
   name            String
-  description     String?    @default("")
-  createdAt       DateTime   @default(now()) @map("created_at")
+  description     String?     @default("")
+  createdAt       DateTime    @default(now()) @map("created_at")
   tokenId         Int
-  userId          String     @map("user_id")
-  user            User       @relation(fields: [userId], references: [id])
-  mintLog         MintLog?
-  bridgeLog       BridgeLog?
-  chainId         String     @map("chain_id")
-  chain           Chain      @relation(fields: [chainId], references: [id])
+  userId          String      @map("user_id")
+  user            User        @relation(fields: [userId], references: [id])
+  mintLog         MintLog[]
+  bridgeLog       BridgeLog[]
+  chainId         String      @map("chain_id")
+  chain           Chain       @relation(fields: [chainId], references: [id])
 
   @@map(name: "nfts")
 }
@@ -52,7 +52,7 @@ model BalanceLog {
   type        BalanceLogType
   description String?
   mintLog     MintLog?
-  BridgeLog   BridgeLog?
+  bridgeLog   BridgeLog?
 
   @@map(name: "balance_logs")
 }
@@ -60,7 +60,7 @@ model BalanceLog {
 model MintLog {
   id              String     @id @default(uuid())
   nft             Nft        @relation(fields: [nftId], references: [id])
-  nftId           String     @unique @map("nft_id")
+  nftId           String     @map("nft_id")
   balanceLog      BalanceLog @relation(fields: [balanceLogId], references: [id])
   balanceLogId    String     @unique @map("balance_log_id")
   transactionHash String     @unique @map("transaction_hash")
@@ -71,7 +71,7 @@ model MintLog {
 model BridgeLog {
   id              String     @id @default(uuid())
   nft             Nft        @relation(fields: [nftId], references: [id])
-  nftId           String     @unique @map("nft_id")
+  nftId           String     @map("nft_id")
   balanceLog      BalanceLog @relation(fields: [balanceLogId], references: [id])
   balanceLogId    String     @unique @map("balance_log_id")
   transactionHash String     @unique @map("transaction_hash")

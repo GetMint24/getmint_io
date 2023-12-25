@@ -1,5 +1,8 @@
 import { observer } from "mobx-react-lite";
-import { Flex } from "antd";
+import { Flex, notification, Spin } from "antd";
+import { useEffect, useState } from "react";
+import clsx from "clsx";
+
 import NftStore from "../../../../store/NftStore";
 import UiModal from "../../../../components/ui/Modal/Modal";
 import Button from "../../../../components/ui/Button/Button";
@@ -8,20 +11,74 @@ import ChainSelect from "../../../../components/ChainSelect/ChainSelect";
 import PinataImage from "../../../../components/PinataImage";
 
 import styles from "./NftModal.module.css";
+import ApiService from "../../../../services/ApiService";
+import ChainStore from "../../../../store/ChainStore";
+import { ChainDto } from "../../../../common/dto/ChainDto";
+import { SuccessfulBridgeData } from "../../types";
+import { bridgeNFT } from "../../../../core/contractController";
+import { CONTRACT_ADDRESS } from "../../../../common/constants";
+import { NetworkName } from "../../../../common/enums/NetworkName";
 
 interface Props {
-    onSubmit?(id: string): void;
+    onSubmit(data: SuccessfulBridgeData): void;
 }
 
 function NftModal({ onSubmit }: Props) {
     const nft = NftStore.selectedNft();
+    const [_chains, setChains] = useState<ChainDto[]>([]);
+    const [selectedChain, setSelectedChain] = useState<string>();
+    const [isPending , setIsPending] = useState<boolean>(false);
+    const [refuelEnabled, setRefuelEnable] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (ChainStore.chains.length && nft) {
+            const _chains = ChainStore.chains.filter(x => x.id !== nft?.chainId);
+            setChains(_chains);
+            setSelectedChain(_chains?.[0]?.id);
+        }
+    }, [ChainStore.chains, nft]);
+
+    if (!nft) {
+        return null;
+    }
 
     const handleClose = () => {
         NftStore.setNft(null);
     };
 
-    const handleSubmit = () => {
-        onSubmit?.(nft?.id || '');
+    const handleSubmit = async () => {
+        try {
+            setIsPending(true);
+
+            const chainToSend = ChainStore.getChainById(selectedChain!);
+
+            if (!chainToSend) {
+                notification.error({ message: 'Something went wrong :(' });
+                return;
+            }
+
+            const result = await bridgeNFT({
+                contractAddress: CONTRACT_ADDRESS[chainToSend.network as NetworkName],
+                chainToSend
+            }, nft.tokenId, refuelEnabled);
+
+            await ApiService.bridgeNFT({
+                transactionHash: result.transactionHash,
+                previousChainNetwork: nft?.chainNetwork!,
+                nextChainNetwork: chainToSend?.network!,
+                nftId: nft.id
+            });
+
+            onSubmit({
+                nftId: nft.id,
+                previousChain: ChainStore.getChainById(nft.chainId)!,
+                nextChain: ChainStore.getChainById(chainToSend?.id!)!
+            });
+        } catch (e) {
+            notification.error({ message: 'Something went wrong :(' });
+        } finally {
+            setIsPending(false);
+        }
     };
 
     return (
@@ -32,12 +89,13 @@ function NftModal({ onSubmit }: Props) {
             width={742}
             footer={
                 nft && (
-                    <Flex gap={12} className={styles.footer}>
-                        <RefuelSwitch className={styles.switch} />
+                    <Flex gap={12} className={clsx(styles.footer, isPending && styles.footerPending)}>
+                        <RefuelSwitch checked={refuelEnabled} onChange={setRefuelEnable} className={styles.switch} />
                         <Flex gap={8} flex={1} className={styles.actions}>
-                            <ChainSelect value={nft.chainId} className={styles.dropdown} />
+                            <ChainSelect chains={_chains} value={selectedChain} onChange={setSelectedChain} className={styles.dropdown} />
                             <Button className={styles.sendBtn} onClick={handleSubmit}>Send</Button>
                         </Flex>
+                        {isPending && <Spin className={styles.pending} />}
                     </Flex>
                 )
             }

@@ -9,7 +9,7 @@ export default function Page() {
             margin: 0,
             justifyContent: 'center'
         }}>
-            Leaderboard <SoonLabel />
+            Meme <SoonLabel />
         </h1>
     )
 }

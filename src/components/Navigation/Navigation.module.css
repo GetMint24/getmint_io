@@ -6,6 +6,9 @@
     border-radius: 12px;
     background: #161D27;
     box-shadow: 0 4px 32px 0 rgba(100, 123, 205, 0.32);
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
 }
 
 .link {
