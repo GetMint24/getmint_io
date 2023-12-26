@@ -4,6 +4,7 @@ import { AccountDto } from "../common/dto/AccountDto";
 import { NFTDto } from "../common/dto/NFTDto";
 import { BridgeDto } from "../common/dto/BridgeDto";
 import { ChainDto } from "../common/dto/ChainDto";
+import { CreateTweetDto } from "../common/dto/CreateTweetDto";
 
 class ApiService {
     async getAccount(): Promise<AccountDto> {
@@ -35,6 +36,16 @@ class ApiService {
 
     async getChains() {
         const response = await apiClient.get<ChainDto[]>('chains');
+        return response.data;
+    }
+
+    async disconnectTwitter() {
+        const response = await apiClient.post<{ status: 'ok' | 'failed' }>('twitter/disconnect');
+        return response.data;
+    }
+
+    async createTweet(data: CreateTweetDto) {
+        const response = await apiClient.post<{ status: 'ok' | 'failed' }>('twitter/create-tweet', data);
         return response.data;
     }
 }

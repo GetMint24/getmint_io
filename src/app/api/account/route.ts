@@ -4,6 +4,8 @@ import { BadRequest } from "../utils/responses";
 import { AccountDto } from "../../../common/dto/AccountDto";
 import { BalanceLogType } from "../../../common/enums/BalanceLogType";
 import { BalanceOperation } from "../../../common/enums/BalanceOperation";
+import { TwitterUser } from "../../../common/types";
+import { OAuth2UserOptions } from "twitter-api-sdk/dist/OAuth2User";
 
 interface CreateAccountDto {
     metamaskAddress: string;
@@ -15,6 +17,8 @@ const schema = Joi.object({
 
 export async function GET(request: Request) {
     const metamaskWalletAddress = request.headers.get('X-Metamask-Address');
+    let twitterUser: TwitterUser | undefined;
+    let token: OAuth2UserOptions['token'];
 
     if (!metamaskWalletAddress) {
         return new BadRequest('Metamask account not provided');
@@ -30,6 +34,17 @@ export async function GET(request: Request) {
                 metamaskWalletAddress
             }
         });
+    }
+
+    if (user.twitterEnabled && user.twitterLogin) {
+        twitterUser = {
+            username: user.twitterLogin,
+            avatar: user.avatar || undefined,
+        };
+    }
+
+    if (user.twitterToken) {
+        token = JSON.parse(user.twitterToken.toString());
     }
 
     const total = await prisma.balanceLog.aggregate({
@@ -54,17 +69,24 @@ export async function GET(request: Request) {
     const refferals = await aggregateByType(BalanceLogType.Refferal);
     const twitterActivityDaily = await aggregateByType(BalanceLogType.TwitterActivityDaily);
     const twitterGetmintSubscription = await aggregateByType(BalanceLogType.TwitterGetmintSubscription);
+    const tweets = await aggregateByType(BalanceLogType.CreateTweet);
 
     const accountDto: AccountDto = {
+        id: user.id,
         balance: {
             total: total._sum.amount || 0,
             mints: mints._sum.amount || 0,
             mintsCount: mints._count.amount,
             bridges: bridges._sum.amount || 0,
             bridgesCount: bridges._count.amount,
-            twitterActivity: (twitterActivityDaily._sum.amount || 0) + (twitterGetmintSubscription._sum.amount || 0),
+            twitterActivity: (twitterActivityDaily._sum.amount || 0) + (twitterGetmintSubscription._sum.amount || 0) + (tweets._sum.amount || 0),
             refferals: refferals._sum.amount || 0,
             refferalsCount: refferals._count.amount
+        },
+        twitter: {
+            connected: user.twitterEnabled,
+            token,
+            user: twitterUser,
         }
     };
 

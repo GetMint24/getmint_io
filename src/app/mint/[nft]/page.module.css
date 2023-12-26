@@ -56,6 +56,19 @@ button.tweetBtn {
     gap: 8px;
 }
 
+.resultBtn {
+    background: transparent;
+    font-family: inherit;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 16px;
+    border: 1px solid #303044;
+    padding: 11px;
+    cursor: pointer;
+    flex-grow: 1;
+}
+
 .chainInfo {
     margin-bottom: 16px;
 }

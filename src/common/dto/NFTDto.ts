@@ -9,4 +9,5 @@ export interface NFTDto {
     chainId: string;
     chainNetwork: string;
     chainName: string;
+    tweeted: boolean;
 }
