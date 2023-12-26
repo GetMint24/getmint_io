@@ -13,6 +13,13 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'GetMint',
+  metadataBase: new URL(process.env.APP_URL),
+  twitter: {
+    card: 'summary',
+    title: 'title',
+    description: 'description',
+    images: `${process.env.APP_URL}/example-nft.png`,
+  },
 }
 
 export default function RootLayout({

@@ -17,6 +17,7 @@ model User {
   followedGetmintTwitter Boolean      @default(false) @map("followed_getmint_twitter")
   twitterEnabled         Boolean      @default(false) @map("twitter_enabled")
   twitterLogin           String?      @map("twitter_login")
+  twitterToken           Json?        @map("twitter_token")
   avatar                 String?
   nfts                   Nft[]
   balanceLogs            BalanceLog[]
@@ -36,6 +37,7 @@ model Nft {
   user            User        @relation(fields: [userId], references: [id])
   mintLog         MintLog[]
   bridgeLog       BridgeLog[]
+  tweetLog        TweetLog?
   chainId         String      @map("chain_id")
   chain           Chain       @relation(fields: [chainId], references: [id])
 
@@ -53,6 +55,7 @@ model BalanceLog {
   description String?
   mintLog     MintLog?
   bridgeLog   BridgeLog?
+  tweetLog    TweetLog?
 
   @@map(name: "balance_logs")
 }
@@ -81,6 +84,17 @@ model BridgeLog {
   @@map(name: "bridge_logs")
 }
 
+model TweetLog {
+  id           String     @id @default(uuid())
+  nft          Nft        @relation(fields: [nftId], references: [id])
+  nftId        String     @unique @map("nft_id")
+  balanceLog   BalanceLog @relation(fields: [balanceLogId], references: [id])
+  balanceLogId String     @unique @map("balance_log_id")
+  tweetId      String     @unique @map("tweet_id")
+
+  @@map(name: "tweet_logs")
+}
+
 model Chain {
   id      String @id @default(uuid())
   name    String
@@ -101,6 +115,7 @@ enum BalanceLogType {
   refferal
   twitter_activity_daily
   twitter_getmint_subscription
+  create_tweet
   mint
   bridge
 }

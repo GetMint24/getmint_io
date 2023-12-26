@@ -27,6 +27,7 @@ export async function GET(request: Request) {
             description: true,
             createdAt: true,
             tokenId: true,
+            tweetLog: true,
             chain: true
         }
     }).then(list => list.map(item => {
@@ -40,7 +41,8 @@ export async function GET(request: Request) {
             chainNativeId: item.chain.chainId,
             chainId: item.chain.id,
             chainNetwork: item.chain.network,
-            chainName: item.chain.name
+            chainName: item.chain.name,
+            tweeted: !!item.tweetLog,
         })
     }));
 

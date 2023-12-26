@@ -12,7 +12,7 @@ interface DrawerProps {
 
 export default function UiDrawer({ isOpen, children, onClose, placement }: DrawerProps) {
     return (
-        <Drawer closeIcon={false} className={styles.drawer} open={isOpen} placement={placement ?? 'right'} onClose={onClose}>
+        <Drawer closeIcon={false} className={styles.drawer} open={isOpen} placement={placement ?? 'right'} onClose={onClose} contentWrapperStyle={{ width: 424 }}>
             {children}
         </Drawer>
     )

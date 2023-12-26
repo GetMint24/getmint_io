@@ -1,39 +1,52 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
-import { notFound } from "next/navigation";
-import { Flex } from "antd";
+import { notFound, useRouter } from "next/navigation";
+import { Flex, Spin } from "antd";
+import { observer } from "mobx-react-lite";
 
 import styles from "./page.module.css";
-import prisma from "../../../utils/prismaClient";
 import Card from "../../../components/ui/Card/Card";
 import PinataImage from "../../../components/PinataImage";
 import CostLabel from "../../../components/CostLabel/CostLabel";
 import Button from "../../../components/ui/Button/Button";
 import ChainLabel from "../../../components/ChainLabel/ChainLabel";
 import BridgeForm from "./components/BridgeForm/BridgeForm";
+import NftStore from "../../../store/NftStore";
+import AppStore from "../../../store/AppStore";
+import { twitterApi } from "../../../utils/twitterApi";
 
 interface NftPageProps {
     params: { nft: string };
     searchParams: { successful?: boolean };
 }
 
-export default async function NftPage({ params, searchParams }: NftPageProps) {
-    // TODO: Move to server side
-    const nft = await prisma.nft.findFirst({
-        where: { pinataImageHash: params.nft },
-        select: {
-            id: true,
-            pinataImageHash: true,
-            name: true,
-            description: true,
-            createdAt: true,
-            tokenId: true,
-            chain: true
+function NftPage({ params, searchParams }: NftPageProps) {
+    const nft = NftStore.selectNftByHash(params.nft);
+    const { account, createTweet, loading } = AppStore;
+    const router = useRouter();
+
+    const createTweetHandler = () => {
+        if (account && nft) {
+            if (account.twitter.connected) {
+                createTweet({
+                    userId: account.id,
+                    nftId: nft.id,
+                });
+            } else {
+                const authUrl = twitterApi.getAuthUrl(`${account.id}:${nft.id}`);
+                window.location.assign(authUrl);
+            }
         }
-    });
+    };
+
+    const goToMint = () => {
+        router.push('/');
+    };
 
     if (!nft) {
-        return notFound()
+        return notFound();
     }
 
     return (
@@ -56,28 +69,47 @@ export default async function NftPage({ params, searchParams }: NftPageProps) {
             <Flex gap={8} align="center" className={styles.chainInfo}>
                 <strong>Your NFT is now live on the</strong>
                 <ChainLabel
-                    network={nft?.chain?.network ?? ''}
-                    label={nft?.chain?.name ?? ''}
+                    network={nft?.chainNetwork || ''}
+                    label={nft?.chainName || ''}
                     labelClassName={styles.chainLabel} />
             </Flex>
 
             <BridgeForm className={styles.bridge} />
 
-            <div className={styles.tweet}>
-                <div className={styles.tweetText}>Tell your friends about it <CostLabel cost={10} /></div>
-                <Button className={styles.tweetBtn} block>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="22" viewBox="0 0 25 22" fill="none">
-                        <g clipPath="url(#clip0_577_1460)">
-                            <path d="M1.04053 0.453369L9.93285 12.0876L0.984375 21.5467H2.99832L10.8327 13.2651L17.1627 21.5467H24.0162L14.6235 9.25808L22.9527 0.453369H20.9388L13.7237 8.08056L7.89405 0.453369H1.04053ZM4.00218 1.90495H7.15071L21.0541 20.0949H17.9055L4.00218 1.90495Z" fill="white"/>
-                        </g>
-                        <defs>
-                            <clipPath id="clip0_577_1460">
-                                <rect width="24" height="22" fill="white" transform="translate(0.5)"/>
-                            </clipPath>
-                        </defs>
-                    </svg> Tweet
-                </Button>
-            </div>
+            {loading ? (
+                <Flex gap={12} align="center" justify="center">
+                    <Spin size="large" />
+                    <span>Creating tweet...</span>
+                </Flex>
+            ) : nft.tweeted ? (
+                <div className={styles.tweet}>
+                    <div className={styles.tweetText}>
+                        <Image src="/svg/ui/successful.svg" width={24} height={24} alt="" />Thank you for your twit <CostLabel cost={10} success />
+                    </div>
+                    <Flex align="center" gap={8}>
+                        <button className={styles.resultBtn} onClick={goToMint}>Mint again <CostLabel cost={20} /></button>
+                        <button className={styles.resultBtn}>Invite friends <CostLabel cost={20} /></button>
+                    </Flex>
+                </div>
+            ) : (
+                <div className={styles.tweet}>
+                    <div className={styles.tweetText}>Tell your friends about it <CostLabel cost={10} /></div>
+                    <Button className={styles.tweetBtn} block onClick={createTweetHandler}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="22" viewBox="0 0 25 22" fill="none">
+                            <g clipPath="url(#clip0_577_1460)">
+                                <path d="M1.04053 0.453369L9.93285 12.0876L0.984375 21.5467H2.99832L10.8327 13.2651L17.1627 21.5467H24.0162L14.6235 9.25808L22.9527 0.453369H20.9388L13.7237 8.08056L7.89405 0.453369H1.04053ZM4.00218 1.90495H7.15071L21.0541 20.0949H17.9055L4.00218 1.90495Z" fill="white"/>
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_577_1460">
+                                    <rect width="24" height="22" fill="white" transform="translate(0.5)"/>
+                                </clipPath>
+                            </defs>
+                        </svg> Tweet
+                    </Button>
+                </div>
+            )}
         </Card>
     )
 }
+
+export default observer(NftPage);

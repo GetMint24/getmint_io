@@ -139,7 +139,7 @@ async function createNFT(data: CreateNFTDto) {
                description: 'Начисление за Mint',
                type: BalanceLogType.Mint,
                amount: BalanceOperationCost.Mint,
-           }
+            }
         });
 
         await context.mintLog.create({

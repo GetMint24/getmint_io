@@ -52,6 +52,26 @@
     font-family: inherit;
 }
 
+.disconnectButton {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 12px;
+    padding: 9px 8px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.twitterAccount {
+    max-width: 252px;
+}
+
+.twitterUsername {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .rewardsList {
     display: flex;
     flex-direction: column;

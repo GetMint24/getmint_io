@@ -13,6 +13,7 @@ import AccountAddress from "../../AccountAddress/AccountAddress";
 import AppStore from "../../../store/AppStore";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
+import { twitterApi } from "../../../utils/twitterApi";
 
 interface RewardItemProps {
     name: string;
@@ -36,7 +37,7 @@ function RewardItem({ name, amount, count, isTotal }: RewardItemProps) {
 }
 
 function Account() {
-    const { closeAccountDrawer, account, fetchAccount } = AppStore;
+    const { closeAccountDrawer, account, fetchAccount, disconnectTwitter, loading } = AppStore;
     const [messageApi, contextHolder] = message.useMessage();
 
     const { address, connector } = useAccount();
@@ -49,6 +50,25 @@ function Account() {
     const handleCopy = async () => {
         await navigator.clipboard.writeText(refferalLink);
         await messageApi.info('Your refferal link has copied!');
+    };
+
+    const startTwitterAuth = () => {
+        if (account) {
+            const authUrl = twitterApi.getAuthUrl(account.id);
+            window.location.assign(authUrl);
+        }
+    };
+
+    const disconnectHandler = () => {
+        void disconnectTwitter();
+    };
+
+    const goToFollow = () => {
+        const url = new URL('https://twitter.com/intent/follow');
+        url.searchParams.append('original_referer', process.env.APP_URL);
+        url.searchParams.append('region', 'follow_link');
+        url.searchParams.append('screen_name', 'GetMint_io');
+        window.open(url, '_blank');
     };
 
     useEffect(() => {
@@ -82,20 +102,31 @@ function Account() {
 
                     <div className={styles.divider}></div>
 
-                    <Flex justify="space-between" align="center">
+                    <Flex justify="space-between" align="center" gap={12}>
                         <Flex align="center" gap={8}>
                             <Image src="/svg/socials/twitter.svg" width={28} height={26} alt="Add Twitters" />
                             <strong>Twitter</strong>
                         </Flex>
 
-                        <button className={styles.connectButton}>Connect</button>
+                        {account.twitter.user ? (
+                            <Flex gap={8} align="center" className={styles.twitterAccount}>
+                                <strong className={styles.twitterUsername}>@{account.twitter.user.username}</strong>
+                                {loading ? (
+                                    <Spin size="large" />
+                                ) : (
+                                    <button className={styles.disconnectButton} onClick={disconnectHandler}>Disconnect</button>
+                                )}
+                            </Flex>
+                        ) : (
+                            <button className={styles.connectButton} onClick={startTwitterAuth}>Connect</button>
+                        )}
                     </Flex>
 
                     <div className={styles.divider}></div>
 
                     <Flex vertical gap={16} className={styles.subscribeInfo}>
-                        <div>Subscribe to our social network <CostLabel cost={50} /> and <CostLabel cost={1} /> every day for not unsubscribing with us</div>
-                        <Button block>Follow <strong>@GetMint_io</strong></Button>
+                        <div>Subscribe to our social network <CostLabel cost={50} /></div>
+                        <Button block onClick={goToFollow}>Follow <strong>@GetMint_io</strong></Button>
                     </Flex>
                 </div>
 

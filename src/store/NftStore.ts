@@ -35,6 +35,10 @@ class NftStore {
     selectNftById(id: string) {
         return this.nfts.find((nft) => nft.id === id);
     }
+    
+    selectNftByHash(hash: string) {
+        return this.nfts.find((nft) => nft.pinataImageHash === hash);
+    }
 }
 
 export default new NftStore();
