@@ -9,7 +9,7 @@ import ListCard from "../../../../components/ListCard/ListCard";
 import styles from "./NftList.module.css";
 
 function NftList() {
-    const nfts = NftStore.nfts;
+    const nfts = [...NftStore.nfts].sort((a, b) => a.chainName.localeCompare(b.chainName));
 
     const handleCardClick = (nft: NFTDto) => {
         NftStore.setNft(nft.id);

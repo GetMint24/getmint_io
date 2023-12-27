@@ -1,15 +1,15 @@
-import SoonLabel from "../../components/SoonLabel/SoonLabel";
+"use client";
+
+import { useMedia } from "use-media";
+
+import styles from "./page.module.css";
 
 export default function Page() {
-    return (
-        <h1 style={{
-            display: 'flex',
-            alignItems: "center",
-            gap: 12,
-            margin: 0,
-            justifyContent: 'center'
-        }}>
-            Leaderboard <SoonLabel />
-        </h1>
+    const isMobile = useMedia({ maxWidth: '768px' });
+
+    return isMobile ? (
+        <img src="/leaderbord-placeholder-small.png" className={styles.img} />
+    ) : (
+        <img src="/leaderbord-placeholder.png" className={styles.img} />
     )
 }

@@ -56,11 +56,14 @@ class AppStore {
     }
 
     async createTweet(data: CreateTweetDto) {
+        this.loading = true;
         const { status } = await ApiService.createTweet(data);
 
         if (status === 'ok') {
             await NftStore.getNfts();
         }
+        
+        this.loading = false;
     }
 }
 
