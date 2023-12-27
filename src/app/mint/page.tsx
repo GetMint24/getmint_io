@@ -17,6 +17,7 @@ import { CONTRACT_ADDRESS } from "../../common/constants";
 import { NetworkName } from "../../common/enums/NetworkName";
 import { mintNFT } from "../../core/contractController";
 import ChainStore from "../../store/ChainStore";
+import NftStore from "../../store/NftStore";
 
 function Page() {
     const [messageApi, contextHolder] = message.useMessage();
@@ -55,6 +56,7 @@ function Page() {
                     });
 
                     await messageApi.success('NFT Successfully minted');
+                    await NftStore.getNfts();
                     router.push(`/mint/${nft.pinataImageHash}?successful=true`);
 
                     await fetchAccount();
