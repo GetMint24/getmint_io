@@ -18,6 +18,7 @@ import { NetworkName } from "../../common/enums/NetworkName";
 import { mintNFT } from "../../core/contractController";
 import ChainStore from "../../store/ChainStore";
 import NftStore from "../../store/NftStore";
+import Button from "../../components/ui/Button/Button";
 
 function Page() {
     const [messageApi, contextHolder] = message.useMessage();
@@ -78,6 +79,13 @@ function Page() {
         }
     };
 
+    const tweetHandler = () => {
+        AppStore.createTweet({
+            userId: AppStore.account!.id,
+            nftId: 'test'
+        });
+    };
+
     useEffect(() => {
         ChainStore.getChains();
     }, []);
@@ -93,6 +101,7 @@ function Page() {
                 </div>
             )}>
                 <MintForm onSubmit={_mintNFT} />
+                <Button onClick={tweetHandler}>Tweet</Button>
             </Card>
         </>
     )
