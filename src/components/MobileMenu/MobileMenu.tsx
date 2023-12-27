@@ -32,7 +32,7 @@ function NavLink({ href, title, cost, onClick }: NavLinkProps) {
     )
 }
 
-function MobileMenu() {
+export default function MobileMenu() {
     const [isOpen, setIsOpen] = useState(false);
     const { openAccountDrawer } = AppStore;
     const { isConnected, isConnecting } = useAccount();
@@ -43,6 +43,11 @@ function MobileMenu() {
 
     const handleCloseMenu = () => {
         setIsOpen(false);
+    };
+
+    const connectWallet = () => {
+        handleCloseMenu();
+        openAccountDrawer();
     };
 
     return (
@@ -73,7 +78,7 @@ function MobileMenu() {
                         <NetworkChainSelect />
                     </Flex>
                 ) : (
-                    <Button onClick={openAccountDrawer}>
+                    <Button onClick={connectWallet}>
                         {isConnecting ? 'Connecting...' : 'Connect Metamsk'}
                     </Button>
                 )}
@@ -81,5 +86,3 @@ function MobileMenu() {
         </>
     )
 }
-
-export default observer(MobileMenu);

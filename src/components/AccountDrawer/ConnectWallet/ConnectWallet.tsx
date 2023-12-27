@@ -23,27 +23,30 @@ export default function ConnectWallet() {
         });
 
     return (
-        <div className={styles.wrapper}>
-            <div>
-                <h2 className={styles.title}>Connect a Wallet</h2>
+        <>
+            <Image src="/svg/ui/close.svg" width={32} height={32} alt="" className={styles.closeIcon} onClick={closeAccountDrawer} />
+            <div className={styles.wrapper}>
+                <div>
+                    <h2 className={styles.title}>Connect a Wallet</h2>
 
-                {connectors.map((connector) => (
-                    <Button
-                        disabled={!connector.ready}
-                        key={connector.id}
-                        className={styles.connectorBtn}
-                        onClick={() => connect({ connector })}
-                        block
-                    >
-                        {ConnectorIcon[connector.name]}
-                        {connector.name}
-                        {!connector.ready && ' (unsupported)'}
-                        {isLoading &&
-                            connector.id === pendingConnector?.id &&
-                            ' (connecting)'}
-                    </Button>
-                ))}
+                    {connectors.map((connector) => (
+                        <Button
+                            disabled={!connector.ready}
+                            key={connector.id}
+                            className={styles.connectorBtn}
+                            onClick={() => connect({ connector })}
+                            block
+                        >
+                            {ConnectorIcon[connector.name]}
+                            {connector.name}
+                            {!connector.ready && ' (unsupported)'}
+                            {isLoading &&
+                                connector.id === pendingConnector?.id &&
+                                ' (connecting)'}
+                        </Button>
+                    ))}
+                </div>
             </div>
-        </div>
+        </>
     )
 }
