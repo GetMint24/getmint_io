@@ -11,3 +11,16 @@
     right: 12px;
     top: 12px;
 }
+
+
+@media screen {
+    .withExtra input {
+        padding-right: 85px;
+    }
+
+    .generateButton {
+        width: 68px;
+        top: 6px;
+        right: 10px;
+    }
+}

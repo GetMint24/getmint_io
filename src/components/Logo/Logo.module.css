@@ -3,4 +3,13 @@
     margin: 0;
     font-weight: 600;
     cursor: pointer;
+    line-height: 0;
+}
+
+
+@media screen and (max-width: 768px) {
+    .logo img {
+        width: 70px !important;
+        height: 33px !important;
+    }
 }

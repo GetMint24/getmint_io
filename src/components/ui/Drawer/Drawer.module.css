@@ -1,11 +1,22 @@
 .drawer:global(.ant-drawer-content) {
     border-radius: 12px 0 0 12px;
     border-left: 1px solid rgba(255, 255, 255, 0.12);
-    background: #161D27;
+    background: #161D27 !important;
     padding: 24px;
     color: #fff;
 }
 
 .drawer :global(.ant-drawer-body) {
-    padding: 0;
+    padding: 0 !important;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
+@media screen and (max-width: 1024px) {
+    .drawer:global(.ant-drawer-content) {
+        border-radius: 0;
+        padding: 16px;
+    }
 }

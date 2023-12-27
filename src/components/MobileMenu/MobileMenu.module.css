@@ -1,0 +1,46 @@
+.avatar {
+    cursor: pointer;
+}
+
+.burger {
+    padding: 8px;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    appearance: none;
+}
+
+.burger img {
+    display: block;
+}
+
+.closeIcon {
+    display: block;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.nav {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex-grow: 1;
+    margin-top: 20px;
+}
+
+.link {
+    font-size: 24px;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.link:hover {
+    color: rgba(255, 255, 255, 0.64);
+}
+
+.selectLabel {
+    text-align: center;
+}

@@ -79,6 +79,36 @@
 
 @media screen and (max-width: 768px) {
     .main {
-        padding: 16px;
+        padding: 16px 0;
+    }
+
+    .main:before {
+        width: 320px;
+        height: 320px;
+        left: -124px;
+        filter: blur(39px);
+        -webkit-filter: blur(39px);
+    }
+
+    .bg:before {
+        width: 377px;
+        height: 341px;
+        right: -207px;
+        top: -8px;
+        filter: blur(46px);
+        -webkit-filter: blur(46px);
+    }
+
+    .bg:after {
+        width: 436px;
+        height: 436px;
+        top: 120px;
+        right: -218px;
+        filter: blur(39px);
+        -webkit-filter: blur(39px);
+    }
+
+    .bgHero {
+        display: none;
     }
 }

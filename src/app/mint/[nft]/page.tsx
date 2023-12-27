@@ -45,9 +45,9 @@ function NftPage({ params, searchParams }: NftPageProps) {
         router.push('/');
     };
 
-    if (!nft) {
-        return notFound();
-    }
+    // if (!nft) {
+    //     return notFound();
+    // }
 
     return (
         <Card className={styles.page} title={searchParams.successful && (
@@ -76,22 +76,22 @@ function NftPage({ params, searchParams }: NftPageProps) {
 
             <BridgeForm className={styles.bridge} />
 
-            {loading ? (
+            {/* {loading ? (
                 <Flex gap={12} align="center" justify="center">
                     <Spin size="large" />
                     <span>Creating tweet...</span>
                 </Flex>
-            ) : nft.tweeted ? (
+            ) : nft.tweeted ? ( */}
                 <div className={styles.tweet}>
                     <div className={styles.tweetText}>
                         <Image src="/svg/ui/successful.svg" width={24} height={24} alt="" />Thank you for your twit <CostLabel cost={10} success />
                     </div>
-                    <Flex align="center" gap={8}>
+                    <Flex align="center" gap={8} className={styles.tweetButtons}>
                         <button className={styles.resultBtn} onClick={goToMint}>Mint again <CostLabel cost={20} /></button>
                         <button className={styles.resultBtn}>Invite friends <CostLabel cost={20} /></button>
                     </Flex>
                 </div>
-            ) : (
+            {/* ) : (
                 <div className={styles.tweet}>
                     <div className={styles.tweetText}>Tell your friends about it <CostLabel cost={10} /></div>
                     <Button className={styles.tweetBtn} block onClick={createTweetHandler}>
@@ -107,7 +107,7 @@ function NftPage({ params, searchParams }: NftPageProps) {
                         </svg> Tweet
                     </Button>
                 </div>
-            )}
+            )} */}
         </Card>
     )
 }

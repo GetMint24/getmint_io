@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useAccount, useNetwork } from "wagmi";
 import { observer } from "mobx-react-lite";
 import { AxiosError } from "axios";
