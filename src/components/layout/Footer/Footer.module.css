@@ -30,3 +30,21 @@
 .poweredBy {
     font-weight: 400;
 }
+
+@media screen and (max-width: 1024px) {
+    .link span {
+        display: none;
+    }
+
+    .link span.poweredBy {
+        display: inline;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .footer {
+        flex-direction: column;
+        padding: 0 16px 16px 16px;
+        gap: 16px;
+    }
+}

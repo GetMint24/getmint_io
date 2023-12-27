@@ -91,6 +91,8 @@ function Account() {
             {contextHolder}
 
             <main className={styles.accountMain}>
+                <Image src="/svg/ui/close.svg" width={32} height={32} alt="" className={styles.closeIcon} onClick={closeAccountDrawer} />
+
                 <div className={styles.card}>
                     <Flex gap={10}>
                         <Avatar size={48} style={{ background: 'linear-gradient(135deg, #2CD9FF 0.52%, #FFC701 100.52%)' }} />

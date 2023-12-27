@@ -57,6 +57,7 @@ button.tweetBtn {
 }
 
 .resultBtn {
+    display: block;
     background: transparent;
     font-family: inherit;
     color: #fff;
@@ -111,5 +112,12 @@ button.tweetBtn {
 
     .chainLabel {
         font-size: 14px !important;
+    }
+}
+
+@media screen and (max-width: 440px) {
+    .tweetButtons {
+        flex-direction: column !important;
+        align-items: stretch !important;
     }
 }

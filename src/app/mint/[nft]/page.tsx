@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { notFound, useRouter } from "next/navigation";
 import { Flex, Spin } from "antd";
@@ -86,7 +86,7 @@ function NftPage({ params, searchParams }: NftPageProps) {
                     <div className={styles.tweetText}>
                         <Image src="/svg/ui/successful.svg" width={24} height={24} alt="" />Thank you for your twit <CostLabel cost={10} success />
                     </div>
-                    <Flex align="center" gap={8}>
+                    <Flex align="center" gap={8} className={styles.tweetButtons}>
                         <button className={styles.resultBtn} onClick={goToMint}>Mint again <CostLabel cost={20} /></button>
                         <button className={styles.resultBtn}>Invite friends <CostLabel cost={20} /></button>
                     </Flex>
