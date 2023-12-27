@@ -134,7 +134,7 @@ function Account() {
 
                 <div className={styles.card}>
                     <div className={styles.cardTitle}>Rewards</div>
-                    <div className={styles.divider}></div>
+                    {/* <div className={styles.divider}></div>
                     <div>
                         <FormControl title="Your refferal link">
                             <Input value={refferalLink} onChange={() => {}} readOnly action={(
@@ -143,7 +143,7 @@ function Account() {
                                 </IconBtn>
                             )} />
                         </FormControl>
-                    </div>
+                    </div> */}
                     <div className={styles.divider}></div>
                     {account ? (
                         <>
