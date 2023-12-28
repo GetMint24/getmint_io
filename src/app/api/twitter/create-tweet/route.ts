@@ -36,6 +36,8 @@ export async function POST(request: Request) {
             
             return Response.json({ status: 'ok' });
         }
+
+        return Response.json({ status: 'failed', errors: response.errors });
     }
 
     return Response.json({ status: 'failed' });
