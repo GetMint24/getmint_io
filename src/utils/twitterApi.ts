@@ -2,6 +2,7 @@ import Client, { auth } from "twitter-api-sdk";
 import { OAuth2UserOptions } from "twitter-api-sdk/dist/OAuth2User";
 import { AuthState } from "../common/types";
 import { TWEET_CONTENT } from "../common/constants";
+import prisma from "./prismaClient";
 
 const DEFAULT_AUTH_OPTIONS: OAuth2UserOptions = {
     client_id: process.env.TWITTER_CLIENT_ID,
@@ -33,13 +34,11 @@ class TwitterApi {
     }
 
     async findMyUser() {
-        await this.checkAndRefreshToken();
         return this.client.users.findMyUser();
     }
 
     async createTweet(id: string) {
-        await this.checkAndRefreshToken();
-        return this.client.tweets.createTweet({ text: TWEET_CONTENT + `\n${process.env.APP_URL}/api/image/${id}` });
+        return this.client.tweets.createTweet({ text: TWEET_CONTENT + `\n${process.env.APP_URL}/api/image/${id}\n${process.env.APP_URL}` });
     }
 
     async requestToken(code: string) {
@@ -48,6 +47,12 @@ class TwitterApi {
 
     async revokeToken() {
         return this.authClient.revokeAccessToken();
+    }
+
+    async checkAndRefreshToken() {
+        if (this.authClient.isAccessTokenExpired()) {
+            return await this.authClient.refreshAccessToken();
+        }
     }
 
     getAuthUrl(state: AuthState) {
@@ -60,12 +65,6 @@ class TwitterApi {
 
     setToken(token: OAuth2UserOptions['token']) {
         this.authClient.setToken(token);
-    }
-
-    private async checkAndRefreshToken() {
-        if (this.authClient.isAccessTokenExpired()) {
-            await this.authClient.refreshAccessToken();
-        }
     }
 }
 

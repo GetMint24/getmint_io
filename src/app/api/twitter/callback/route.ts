@@ -29,9 +29,10 @@ export async function GET(request: Request) {
 
         if (nftId) {
             const response = await twitterApi.createTweet(nftId);
-            const nft = await prisma.nft.findFirst({ where: { id: nftId } });
+            // TODO: return when can use nfts in minted page
+            // const nft = await prisma.nft.findFirst({ where: { id: nftId } });
 
-            if (response.data && nft) {
+            if (response.data) {
                 await prisma.$transaction(async (context) => {
                     const balanceLog = await context.balanceLog.create({
                         data: {
@@ -52,7 +53,7 @@ export async function GET(request: Request) {
                     });
                 });
 
-                return Response.redirect(`${process.env.APP_URL}/mint/${nft.pinataImageHash}successful=true`);
+                return Response.redirect(`${process.env.APP_URL}/?tweeted=true`);
             }
         }
     } catch (e) {

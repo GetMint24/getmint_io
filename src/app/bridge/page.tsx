@@ -9,10 +9,10 @@ import NftStore from "../../store/NftStore";
 import ChainStore from "../../store/ChainStore";
 import NftModal from "./components/NftModal/NftModal";
 import SuccessfulBridgeModal from "./components/SuccessfulBridgeModal/SuccessfulBridgeModal";
-
-import styles from "./page.module.css";
 import { SuccessfulBridgeData } from "./types";
 import AppStore from "../../store/AppStore";
+
+import styles from "./page.module.css";
 
 function Page() {
     const { fetchAccount } = AppStore;

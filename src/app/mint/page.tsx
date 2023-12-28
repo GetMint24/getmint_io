@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAccount, useNetwork } from "wagmi";
 import { observer } from "mobx-react-lite";
 import { AxiosError } from "axios";
@@ -18,13 +18,13 @@ import { NetworkName } from "../../common/enums/NetworkName";
 import { mintNFT } from "../../core/contractController";
 import ChainStore from "../../store/ChainStore";
 import NftStore from "../../store/NftStore";
-import Button from "../../components/ui/Button/Button";
 
 function Page() {
     const [messageApi, contextHolder] = message.useMessage();
     const [isNFTPending, setIsNFTPending] = useState<boolean>(false);
     const { walletConnected, openAccountDrawer, fetchAccount } = AppStore;
     const router = useRouter();
+    const searchParams = useSearchParams();
 
     const { chain } = useNetwork();
     const { address } = useAccount();
@@ -79,16 +79,16 @@ function Page() {
         }
     };
 
-    const tweetHandler = () => {
-        AppStore.createTweet({
-            userId: AppStore.account!.id,
-            nftId: Math.floor(Math.random() * 1000).toString(),
-        });
-    };
-
     useEffect(() => {
         ChainStore.getChains();
     }, []);
+
+    useEffect(() => {
+        const tweeted = searchParams.get('tweeted');
+        if (tweeted) {
+            messageApi.info('Tweet was created');
+        }
+    }, [searchParams]);
 
     return (
         <>
@@ -101,7 +101,6 @@ function Page() {
                 </div>
             )}>
                 <MintForm onSubmit={_mintNFT} />
-                <Button onClick={tweetHandler}>Tweet</Button>
             </Card>
         </>
     )
