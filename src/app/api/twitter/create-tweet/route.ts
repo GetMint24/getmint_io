@@ -9,7 +9,8 @@ export async function POST(request: Request) {
     const data = await request.json();
 
     if (token && data.userId & data.nftId) {
-        twitterApi.setToken(JSON.parse(token));
+        return Response.json({ data });
+        // twitterApi.setToken(JSON.parse(token));
 
         const response = await twitterApi.createTweet();
 
