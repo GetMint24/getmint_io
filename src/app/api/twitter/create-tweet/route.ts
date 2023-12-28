@@ -9,8 +9,7 @@ export async function POST(request: Request) {
     const data = await request.json();
 
     if (token && data.userId && data.nftId) {
-        return Response.json({ data });
-        // twitterApi.setToken(JSON.parse(token));
+        twitterApi.setToken(JSON.parse(token));
 
         const response = await twitterApi.createTweet();
 
@@ -37,9 +36,7 @@ export async function POST(request: Request) {
             
             return Response.json({ status: 'ok' });
         }
-
-        return Response.json({ status: 'failed', data: response.data, errors: response.errors });
     }
 
-    return Response.json({ status: 'failed', token, data });
+    return Response.json({ status: 'failed' });
 }
