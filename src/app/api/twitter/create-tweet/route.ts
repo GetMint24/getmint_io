@@ -8,7 +8,7 @@ export async function POST(request: Request) {
     const token = request.headers.get('X-Twitter-Token');
     const data = await request.json();
 
-    if (token && data.userId & data.nftId) {
+    if (token && data.userId && data.nftId) {
         return Response.json({ data });
         // twitterApi.setToken(JSON.parse(token));
 
