@@ -54,3 +54,45 @@
     color: #fff;
     background: rgba(255, 255, 255, .04);
 }
+
+.link:global(.meme):before {
+    visibility: visible;
+    opacity: 1;
+}
+
+.link:global(.meme):after {
+    content: '';
+    width: calc(100% - 2px);
+    height: calc(100% - 2px);
+    position: absolute;
+    left: 1px;
+    top: 1px;
+    border-radius: 8px;
+    background: #161D27;
+}
+
+.link:global(.meme) > div {
+    padding: 4px 24px;
+    background: linear-gradient(122deg, #2EA5FB, #4340E1);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: .3s ease-out;
+}
+.link:global(.meme):hover > div {
+    padding: 4px 12px 4px 36px;
+}
+
+.link:global(.meme) > div:before {
+    content: '';
+    width: 42px;
+    height: 42px;
+    position: absolute;
+    left: -50px;
+    top: 0;
+    background-image: url('/pepe.png');
+    background-size: contain;
+    transition: .3s ease-out;
+}
+.link:global(.meme):hover > div:before {
+    left: 0;
+}

@@ -13,14 +13,15 @@ interface NavLinkProps {
     href: string;
     title: string | ReactNode;
     cost?: number;
+    className?: string;
 }
 
-function NavLink({ href, title, cost }: NavLinkProps) {
+function NavLink({ href, title, cost, className }: NavLinkProps) {
     const pathname = usePathname ();
     const isActive = pathname === href;
 
     return (
-        <Link href={href} className={clsx(styles.link, isActive && styles.linkActive)}>
+        <Link href={href} className={clsx(styles.link, className, isActive && styles.linkActive)}>
             <div>
                 <span>{title}</span>
                 {Boolean(cost) && <CostLabel cost={cost as number} />}
@@ -35,7 +36,7 @@ export default function Navigation() {
             <NavLink href="/" title="Mint" cost={20} />
             <NavLink href="/bridge" title="Bridge NFT" cost={10} />
             <NavLink href="/leaderboard" title={<>Leaderboard <SoonLabel /></>} />
-            <NavLink href="/meme" title={<>Meme <SoonLabel /></>} />
+            <NavLink href="/meme" title={<>Meme <SoonLabel /></>} className="meme" />
         </nav>
     )
 }
