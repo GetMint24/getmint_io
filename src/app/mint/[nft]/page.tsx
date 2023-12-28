@@ -45,6 +45,10 @@ function NftPage({ params, searchParams }: NftPageProps) {
         router.push('/');
     };
 
+    useEffect(() => {
+        NftStore.getNfts();
+    }, []);
+
     if (!nft) {
         return notFound();
     }

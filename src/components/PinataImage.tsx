@@ -1,3 +1,5 @@
+import getPinataImageUrl from "../utils/getPinataImageUrl";
+
 interface PinataImageProps {
     hash: string;
     name?: string;
@@ -5,7 +7,7 @@ interface PinataImageProps {
 
 export default function PinataImage({ hash, name }: PinataImageProps) {
     return <img
-        src={`${process.env.PINATA_GATEWAY}/ipfs/${hash}?pinataGatewayToken=${process.env.PINATA_GATEWAY_TOKEN}`}
+        src={getPinataImageUrl(hash)}
         alt={name || ''}
     />
 }

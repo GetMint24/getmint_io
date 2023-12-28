@@ -37,9 +37,9 @@ class TwitterApi {
         return this.client.users.findMyUser();
     }
 
-    async createTweet() {
+    async createTweet(id: string) {
         await this.checkAndRefreshToken();
-        return this.client.tweets.createTweet({ text: TWEET_CONTENT });
+        return this.client.tweets.createTweet({ text: `${TWEET_CONTENT}\n${process.env.APP_URL}/api/image/${id}` });
     }
 
     async requestToken(code: string) {

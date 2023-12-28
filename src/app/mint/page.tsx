@@ -82,7 +82,7 @@ function Page() {
     const tweetHandler = () => {
         AppStore.createTweet({
             userId: AppStore.account!.id,
-            nftId: 'test'
+            nftId: Math.floor(Math.random() * 1000).toString(),
         });
     };
 

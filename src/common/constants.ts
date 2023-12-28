@@ -19,4 +19,4 @@ export const CONTRACT_ADDRESS: Record<NetworkName, CryptoAddress> = {
 
 export const NFT_COST = BigInt(0);
 
-export const TWEET_CONTENT = `Just minted my own NFT on @GetMint_io 🌟 Joining to the creative wave of NFT makers on the blockchain!\nCheck it out and mint yours - the fun's just starting! ${process.env.APP_URL}`;
+export const TWEET_CONTENT = "Just minted my own NFT on @GetMint_io 🌟 Joining to the creative wave of NFT makers on the blockchain!\nCheck it out and mint yours - the fun's just starting!";

@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     if (token && data.userId && data.nftId) {
         twitterApi.setToken(JSON.parse(token));
 
-        const response = await twitterApi.createTweet();
+        const response = await twitterApi.createTweet(data.nftId);
 
         if (response.data)  {
             await prisma.$transaction(async (context) => {
