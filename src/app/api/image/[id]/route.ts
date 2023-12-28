@@ -12,5 +12,5 @@ export async function GET(request: Request, route: { params: { id: string } }) {
         }
     }
 
-    return Response;
+    return Response.json(null);
 }
