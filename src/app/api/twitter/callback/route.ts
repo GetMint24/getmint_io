@@ -52,7 +52,7 @@ export async function GET(request: Request) {
                     });
                 });
 
-                return Response.redirect(`${process.env.APP_URL}/mint/${nft.pinataImageHash}`);
+                return Response.redirect(`${process.env.APP_URL}/mint/${nft.pinataImageHash}successful=true`);
             }
         }
     } catch (e) {
