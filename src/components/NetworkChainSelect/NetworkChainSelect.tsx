@@ -22,7 +22,8 @@ export default function NetworkChainSelect() {
             .sort((a, b) => a.name.localeCompare(b.name))
             .map(c => ({
                 key: c.id,
-                label: c.name
+                label: c.name,
+                icon: <Image width={24} height={24} src={getChainLogo(c.network)} alt="" />,
             }));
 
         return items;
@@ -58,8 +59,9 @@ export default function NetworkChainSelect() {
                     defaultSelectedKeys: [String(chain.id)],
                     onClick: ({ key }) => handleSwitchNetwork(parseInt(key))
                 }}
+                rootClassName={styles.dropdown}
             >
-                <Flex align="center" gap={8} className={styles.dropdown}>
+                <Flex align="center" gap={8} className={styles.dropdownBtn}>
                     {chainLogo && <Image src={chainLogo} width={24} height={24} alt="" />}
 
                     <div className={styles.value}>{chain.name}</div>
