@@ -55,9 +55,13 @@ function NftModal({ onSubmit }: Props) {
             setIsPending(true);
 
             const chainToSend = ChainStore.getChainById(selectedChain!);
+            let _currentNetwork: string = currentChain?.network!;
 
             if (currentChain?.network !== nft.chainNetwork) {
-                await switchNetworkAsync?.(nft.chainNativeId);
+                const res = await switchNetworkAsync?.(nft.chainNativeId);
+                if (res) {
+                    _currentNetwork = res.network;
+                }
             }
 
             if (!chainToSend) {
@@ -66,7 +70,7 @@ function NftModal({ onSubmit }: Props) {
             }
 
             const result = await bridgeNFT({
-                contractAddress: CONTRACT_ADDRESS[currentChain?.network as NetworkName],
+                contractAddress: CONTRACT_ADDRESS[_currentNetwork as NetworkName],
                 chainToSend
             }, nft.tokenId, refuelEnabled);
 

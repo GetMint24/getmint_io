@@ -4,6 +4,7 @@ import abi from "./abi.json";
 import { ChainDto } from "../common/dto/ChainDto";
 import { NetworkName } from "../common/enums/NetworkName";
 import axios, { AxiosResponse } from "axios";
+import { wait } from "../utils/wait";
 
 interface ControllerFunctionProps {
     contractAddress: string;
@@ -20,8 +21,6 @@ interface ControllerFunctionResult {
 
 const TRANSACTION_WAIT: number = 60000;
 const LZ_VERSION = 1;
-
-const wait = () => new Promise(r => setTimeout(r, 100));
 
 /**
  * Mint NFT Functionality

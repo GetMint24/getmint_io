@@ -1,0 +1,1 @@
+export const wait = (timeout = 100) => new Promise(r => setTimeout(r, timeout));
