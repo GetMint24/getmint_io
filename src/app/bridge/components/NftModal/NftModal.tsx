@@ -66,7 +66,7 @@ function NftModal({ onSubmit }: Props) {
             }
 
             const result = await bridgeNFT({
-                contractAddress: CONTRACT_ADDRESS[chainToSend.network as NetworkName],
+                contractAddress: CONTRACT_ADDRESS[currentChain?.network as NetworkName],
                 chainToSend
             }, nft.tokenId, refuelEnabled);
 
