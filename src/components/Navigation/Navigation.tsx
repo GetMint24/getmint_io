@@ -36,7 +36,7 @@ export default function Navigation() {
             <NavLink href="/" title="Mint" cost={20} />
             <NavLink href="/bridge" title="Bridge NFT" cost={10} />
             <NavLink href="/leaderboard" title={<>Leaderboard <SoonLabel /></>} />
-            <NavLink href="/meme" title={<>Meme <SoonLabel /></>} className="meme" />
+            <NavLink href="#" title={<>Meme <SoonLabel /></>} className="meme" />
         </nav>
     )
 }

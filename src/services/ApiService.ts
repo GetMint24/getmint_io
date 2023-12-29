@@ -12,6 +12,16 @@ class ApiService {
         return response.data;
     }
 
+    async checkExistedNFT(image: File, data: { name: string; description: string }) {
+        const formData = new FormData();
+        formData.append('image', image);
+        formData.append('name', data.name);
+        formData.append('description', data.description ?? '');
+
+        const response = await apiClient.post('nft', formData);
+        return response.data;
+    }
+
     async createMint(image: File, data: CreateMintDto): Promise<MintDto> {
         const formData = new FormData();
         formData.append('image', image);
