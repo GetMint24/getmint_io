@@ -19,7 +19,6 @@ function Page() {
     const [successfulData, setSuccessfulData] = useState<SuccessfulBridgeData | null>();
 
     const handleSubmit = async(data: SuccessfulBridgeData) => {
-        console.log(data);
         NftStore.setNft(null);
         setSuccessfulData(data);
         NftStore.getNfts();

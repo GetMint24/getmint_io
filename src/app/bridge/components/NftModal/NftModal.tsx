@@ -70,19 +70,30 @@ function NftModal({ onSubmit }: Props) {
                 chainToSend
             }, nft.tokenId, refuelEnabled);
 
-            await ApiService.bridgeNFT({
-                transactionHash: result.transactionHash,
-                previousChainNetwork: nft?.chainNetwork!,
-                nextChainNetwork: chainToSend?.network!,
-                nftId: nft.id
-            });
+            if (result.result) {
+                notification.success({
+                    message: result.message
+                });
 
-            onSubmit({
-                nftId: nft.id,
-                previousChain: ChainStore.getChainById(nft.chainId)!,
-                nextChain: ChainStore.getChainById(chainToSend?.id!)!
-            });
+                await ApiService.bridgeNFT({
+                    transactionHash: result.transactionHash,
+                    previousChainNetwork: nft?.chainNetwork!,
+                    nextChainNetwork: chainToSend?.network!,
+                    nftId: nft.id
+                });
+
+                onSubmit({
+                    nftId: nft.id,
+                    previousChain: ChainStore.getChainById(nft.chainId)!,
+                    nextChain: ChainStore.getChainById(chainToSend?.id!)!
+                });
+            } else {
+                notification.warning({
+                    message: result.message
+                });
+            }
         } catch (e) {
+            console.error(e);
             notification.error({ message: 'Something went wrong :(' });
         } finally {
             setIsPending(false);
