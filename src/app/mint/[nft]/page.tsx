@@ -92,7 +92,7 @@ function NftPage({ params, searchParams }: NftPageProps) {
                     </div>
                     <Flex align="center" gap={8} className={styles.tweetButtons}>
                         <button className={styles.resultBtn} onClick={goToMint}>Mint again <CostLabel cost={20} /></button>
-                        <button className={styles.resultBtn}>Invite friends <CostLabel cost={20} /></button>
+                        {/* <button className={styles.resultBtn}>Invite friends <CostLabel cost={20} /></button> */}
                     </Flex>
                 </div>
             ) : (

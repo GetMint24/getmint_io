@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useEffect, useMemo } from "react";
 import { useNetwork, useSwitchNetwork } from "wagmi";
 import { getChainLogo } from "../../utils/getChainLogo";
+import { NetworkName } from "../../common/enums/NetworkName";
 
 import styles from "./NetworkChainSelect.module.css";
 
@@ -16,6 +17,14 @@ export default function NetworkChainSelect() {
             },
         }
     );
+
+    const chainName = useMemo(() => {
+        const chainNetworks = Object.values(NetworkName);
+        if (chain && chainNetworks.some((network) => network === chain.network)) {
+            return chain.name;
+        }
+        return 'Switch Network';
+    }, [chain]);
 
     const chainsMenu = useMemo(() => {
         const items: MenuProps['items'] = [...chains]
@@ -64,7 +73,7 @@ export default function NetworkChainSelect() {
                 <Flex align="center" gap={8} className={styles.dropdownBtn}>
                     {chainLogo && <Image src={chainLogo} width={24} height={24} alt="" />}
 
-                    <div className={styles.value}>{chain.name}</div>
+                    <div className={styles.value}>{chainName}</div>
 
                     <Image src="/svg/ui/dropdown-arrow.svg" width={24} height={24} alt="" />
                 </Flex>

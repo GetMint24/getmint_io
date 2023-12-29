@@ -16,9 +16,9 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.APP_URL),
   twitter: {
     card: 'summary',
-    title: 'title',
-    description: 'description',
-    images: `${process.env.APP_URL}/example-nft.png`,
+    title: 'Mint Your Omnichain NFT on GetMint.io',
+    description: 'Join GetMint.io, the first platform to mint, and bridge your NFTs, including unique memes, with LayerZero. Dive into the new era of omnichain digital art.',
+    images: `${process.env.APP_URL}/twitter-image.jpg`,
   },
 }
 
