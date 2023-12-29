@@ -1,8 +1,9 @@
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import styles from "./layout.module.css";
+import Script from "next/script";
 
 import Header from "../components/layout/Header/Header";
 import Footer from "../components/layout/Footer/Footer";
@@ -28,38 +29,55 @@ export default function RootLayout({
   children: ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <WalletProvider>
-          <StyledComponentsRegistry>
-            <div className={styles.bg}>
-              <div className="container">
-                <div className={styles.bgHero} />
-              </div>
-            </div>
+        <html lang="en">
+          <body className={inter.className}>
+            <Script id="metrika-counter" strategy="afterInteractive">
+              {`(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+                m[i].l=1*new Date();
+                for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+                k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+                (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+   
+                ym(96012912, "init", {
+                      defer: true,
+                      clickmap:true,
+                      trackLinks:true,
+                      accurateTrackBounce:true,
+                      webvisor:true
+                });`
+              }
+            </Script>
 
-            <div className={styles.wrapper}>
-              <header className={styles.wrapperHeader}>
-                <div className="container">
-                  <Header />
+            <WalletProvider>
+              <StyledComponentsRegistry>
+                <div className={styles.bg}>
+                  <div className="container">
+                    <div className={styles.bgHero} />
+                  </div>
                 </div>
-              </header>
 
-              <main className={styles.main}>
-                <div className="container">
-                  {children}
-                </div>
-              </main>
+                <div className={styles.wrapper}>
+                  <header className={styles.wrapperHeader}>
+                    <div className="container">
+                      <Header />
+                    </div>
+                  </header>
 
-              <footer className={styles.wrapperFooter}>
-                <div className="container">
-                  <Footer />
+                  <main className={styles.main}>
+                    <div className="container">
+                      {children}
+                    </div>
+                  </main>
+
+                  <footer className={styles.wrapperFooter}>
+                    <div className="container">
+                      <Footer />
+                    </div>
+                  </footer>
                 </div>
-              </footer>
-            </div>
-          </StyledComponentsRegistry>
-        </WalletProvider>
-      </body>
-    </html>
+              </StyledComponentsRegistry>
+            </WalletProvider>
+          </body>
+        </html>
   )
 }
