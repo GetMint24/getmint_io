@@ -1,5 +1,7 @@
 import axios from "axios";
 import { User } from "@prisma/client";
+import { format } from "date-fns";
+import * as piexif from "piexifjs";
 
 import prisma from "../../../utils/prismaClient";
 import { BadRequest } from "../utils/responses";
@@ -69,6 +71,14 @@ export async function POST(request: Request) {
 
 async function sendNFTImage(image: File, name: string, description: string = '') {
     const pinataFormData = new FormData();
+
+    const imageBuffer = await image.arrayBuffer();
+    const binary = Buffer.from(imageBuffer).toString('binary');
+    const exifString = piexif.dump({ 'Exif': { '36867': format(new Date(), 'yyyy:MM:dd HH:mm:ss') } });
+    const inserted = piexif.insert(exifString, binary);
+    console.log(inserted);
+    const file = Buffer.from(inserted, 'binary');
+    // console.log(file.toString('base64'));
 
     pinataFormData.append('file', image);
     pinataFormData.append('pinataMetadata', JSON.stringify({
