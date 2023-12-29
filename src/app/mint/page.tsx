@@ -40,11 +40,15 @@ function Page() {
             setIsNFTPending(true);
 
             try {
+                messageApi.loading('Uploading NFT image to Pinata');
+                await ApiService.checkExistedNFT(data.image!, {
+                    name: data.name,
+                    description: data.description,
+                });
+
                 const result = await mintNFT({
                     contractAddress: CONTRACT_ADDRESS[chain.network as NetworkName]
                 });
-
-                console.log({result})
 
                 if (result.result) {
                     const nft = await ApiService.createMint(data.image!, {
