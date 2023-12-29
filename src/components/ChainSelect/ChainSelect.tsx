@@ -27,7 +27,11 @@ function ChainSelect({ value, className, onChange, chains }: Props) {
     const items: MenuProps['items'] = useMemo(() => {
         return [...chains]
             .sort((a, b) => a.name.localeCompare(b.name))
-            .map((chain) => ({ key: chain.id, label: chain.name }));
+            .map((chain) => ({
+                key: chain.id,
+                label: chain.name,
+                icon: <Image width={24} height={24} alt="" src={getChainLogo(chain.network)} />,
+            }));
     }, [chains]);
 
     const chainLogo = useMemo(() => getChainLogo(chain?.network || ''), [chain]);
@@ -46,6 +50,7 @@ function ChainSelect({ value, className, onChange, chains }: Props) {
                 defaultSelectedKeys: [selectedValue],
                 onClick: ({ key }) => handleSelect(key),    
             }}
+            rootClassName={styles.dropdown}
         >
             <Flex align="center" gap={8} className={clsx(styles.select, className)}>
                 {chainLogo && (<Image src={chainLogo} width={24} height={24} alt="" />)}
