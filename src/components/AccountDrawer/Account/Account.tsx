@@ -12,7 +12,7 @@ import Input from "../../ui/Input/Input";
 import AccountAddress from "../../AccountAddress/AccountAddress";
 import AppStore from "../../../store/AppStore";
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { twitterApi } from "../../../utils/twitterApi";
 
 interface RewardItemProps {
@@ -37,6 +37,7 @@ function RewardItem({ name, amount, count, isTotal }: RewardItemProps) {
 }
 
 function Account() {
+    const [showFollowText, setShowFollowText] = useState(false);
     const { closeAccountDrawer, account, fetchAccount, disconnectTwitter, loading } = AppStore;
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -64,6 +65,7 @@ function Account() {
     };
 
     const goToFollow = () => {
+        setShowFollowText(true);
         const url = new URL('https://twitter.com/intent/follow');
         url.searchParams.append('original_referer', process.env.APP_URL);
         url.searchParams.append('region', 'follow_link');
@@ -128,7 +130,11 @@ function Account() {
 
                     <Flex vertical gap={16} className={styles.subscribeInfo}>
                         <div>Subscribe to our social network <CostLabel cost={50} /></div>
-                        <Button block onClick={goToFollow}>Follow <strong>@GetMint_io</strong></Button>
+                        {showFollowText ? (
+                            <div>XP will be accrued after verification</div>
+                        ) : (
+                            <Button block onClick={goToFollow}>Follow <strong>@GetMint_io</strong></Button>
+                        )}
                     </Flex>
                 </div>
 
