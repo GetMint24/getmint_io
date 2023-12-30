@@ -40,7 +40,6 @@ function Page() {
             setIsNFTPending(true);
 
             try {
-                messageApi.loading('Uploading NFT image to Pinata');
                 await ApiService.checkExistedNFT(data.image!, {
                     name: data.name,
                     description: data.description,
