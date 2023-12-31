@@ -50,7 +50,7 @@ export default function BridgeForm({ className }: Props) {
                 <CostLabel cost={10} />
             </Flex>
 
-            <RefuelSwitch className={styles.switch} />
+            {/*<RefuelSwitch className={styles.switch} />*/}
 
             <Flex gap={8} className={styles.formActions}>
                 <ChainSelect chains={ChainStore.chains} className={styles.dropdown} />
