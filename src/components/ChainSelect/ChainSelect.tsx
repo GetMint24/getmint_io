@@ -57,10 +57,10 @@ function ChainSelect({ value, className, onChange, chains }: Props) {
 
                 <span className={styles.label}>{chain?.name || ''}</span>
 
-                <Flex align="center" gap={4} className={styles.price}>
+                {/*<Flex align="center" gap={4} className={styles.price}>
                     <Image src="/svg/ui/fuel.svg" width={16} height={16} alt="" />
                     <span>$2.29</span>
-                </Flex>
+                </Flex>*/}
 
                 <Image src="/svg/ui/dropdown-arrow.svg" width={24} height={24} alt="" />
             </Flex>
