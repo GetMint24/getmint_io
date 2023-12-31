@@ -56,7 +56,9 @@ export const mintNFT = async ({ contractAddress, chainToSend }: ControllerFuncti
     console.log("Minting..", { id: chainToSend?.id, name: chainToSend?.name, hash: txResponse?.hash });
 
     const receipt = await txResponse.wait(null, TRANSACTION_WAIT);
-    const blockId = parseInt(`${hexToNumber(receipt.logs[0].topics[3])}`);
+
+    const log = (receipt.logs as any[]).find(x => x.topics.length === 4);
+    const blockId = parseInt(`${hexToNumber(log.topics[3])}`);
 
     return {
         result: receipt?.status === 1,
