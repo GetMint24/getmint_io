@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { notFound, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Flex, Spin } from "antd";
 import { observer } from "mobx-react-lite";
 
@@ -16,6 +16,7 @@ import BridgeForm from "./components/BridgeForm/BridgeForm";
 import NftStore from "../../../store/NftStore";
 import AppStore from "../../../store/AppStore";
 import { twitterApi } from "../../../utils/twitterApi";
+import ChainStore from "../../../store/ChainStore";
 
 interface NftPageProps {
     params: { nft: string };
@@ -23,7 +24,7 @@ interface NftPageProps {
 }
 
 function NftPage({ params, searchParams }: NftPageProps) {
-    const nft = NftStore.selectNftByHash(params.nft);
+    const [nft, setNft] = useState(NftStore.selectNftByHash(params.nft));
     const { account, createTweet, loading } = AppStore;
     const router = useRouter();
 
@@ -45,12 +46,17 @@ function NftPage({ params, searchParams }: NftPageProps) {
         router.push('/');
     };
 
+    const refetch = () => {
+        NftStore.getNfts().then(() => setNft(NftStore.selectNftByHash(params.nft)));
+    }
+
     useEffect(() => {
-        NftStore.getNfts();
+        refetch();
+        ChainStore.getChains();
     }, []);
 
     if (!nft) {
-        return notFound();
+        return <Spin size={"large"} />
     }
 
     return (
@@ -78,7 +84,7 @@ function NftPage({ params, searchParams }: NftPageProps) {
                     labelClassName={styles.chainLabel} />
             </Flex>
 
-            <BridgeForm className={styles.bridge} />
+            <BridgeForm nft={nft} className={styles.bridge} onBridge={refetch} />
 
             {loading ? (
                 <Flex gap={12} align="center" justify="center">
