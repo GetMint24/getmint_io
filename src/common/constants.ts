@@ -61,4 +61,4 @@ export const UnailableNetworks: Record<NetworkName, NetworkName[]> = {
 
 export const NFT_COST = BigInt(0);
 
-export const TWEET_CONTENT = "Just created a unique omnichain NFT at @GetMint_io 🌐🎨 Mint NFT, and make bridges using Layer Zero and earn future project tokens.\nCheck out my NFT: ";
+export const TWEET_CONTENT = "Just created a unique omnichain NFT at @GetMint_io. Mint NFT, and make bridges using Layer Zero and earn future project tokens.\nCheck out my NFT: ";
