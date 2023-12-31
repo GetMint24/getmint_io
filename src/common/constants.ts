@@ -17,6 +17,48 @@ export const CONTRACT_ADDRESS: Record<NetworkName, CryptoAddress> = {
     [NetworkName.BSC]: '0x991fC265f163fc33328FBD2b7C8aa9B77840Ed42'
 };
 
+export const UnailableNetworks: Record<NetworkName, NetworkName[]> = {
+    [NetworkName.ArbitrumNova]: [
+        NetworkName.Mantle,
+        NetworkName.PolygonzkEVM,
+        NetworkName.Scroll,
+        NetworkName.Zora
+    ],
+    [NetworkName.Arbitrum]: [],
+    [NetworkName.Avalanche]: [
+        NetworkName.Zora
+    ],
+    [NetworkName.Base]: [],
+    [NetworkName.BSC]: [
+        NetworkName.Zora
+    ],
+    [NetworkName.LineaMainnet]: [],
+    [NetworkName.Mantle]: [
+        NetworkName.ArbitrumNova,
+        NetworkName.Zora
+    ],
+    [NetworkName.Optimism]: [],
+    [NetworkName.Polygon]: [],
+    [NetworkName.PolygonzkEVM]: [
+        NetworkName.ArbitrumNova,
+        NetworkName.Zora
+    ],
+    [NetworkName.Scroll]: [
+        NetworkName.ArbitrumNova,
+        NetworkName.Zora
+    ],
+    [NetworkName.ZkSync]: [
+        NetworkName.Zora
+    ],
+    [NetworkName.Zora]: [
+        NetworkName.ArbitrumNova,
+        NetworkName.Avalanche,
+        NetworkName.BSC,
+        NetworkName.Mantle,
+        NetworkName.Scroll,
+    ],
+}
+
 export const NFT_COST = BigInt(0);
 
 export const TWEET_CONTENT = "Just created a unique omnichain NFT at @GetMint_io 🌐🎨 Mint NFT, and make bridges using Layer Zero and earn future project tokens.\nCheck out my NFT: ";

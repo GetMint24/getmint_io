@@ -16,7 +16,7 @@ import ChainStore from "../../../../store/ChainStore";
 import { ChainDto } from "../../../../common/dto/ChainDto";
 import { SuccessfulBridgeData } from "../../types";
 import { bridgeNFT } from "../../../../core/contractController";
-import { CONTRACT_ADDRESS } from "../../../../common/constants";
+import { CONTRACT_ADDRESS, UnailableNetworks } from "../../../../common/constants";
 import { NetworkName } from "../../../../common/enums/NetworkName";
 import { useNetwork, useSwitchNetwork } from "wagmi";
 
@@ -36,7 +36,9 @@ function NftModal({ onSubmit }: Props) {
 
     useEffect(() => {
         if (ChainStore.chains.length && nft) {
-            const _chains = ChainStore.chains.filter(x => x.id !== nft?.chainId);
+            const _chains = ChainStore.chains
+                .filter(x => x.id !== nft?.chainId)
+                .filter(x => !UnailableNetworks[x.network as NetworkName].includes(nft.chainNetwork as NetworkName));
             setChains(_chains);
             setSelectedChain(_chains?.[0]?.id);
         }

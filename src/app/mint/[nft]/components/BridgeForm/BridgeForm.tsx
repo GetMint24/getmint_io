@@ -13,7 +13,7 @@ import ChainStore from "../../../../../store/ChainStore";
 import { NFTDto } from "../../../../../common/dto/NFTDto";
 import { ChainDto } from "../../../../../common/dto/ChainDto";
 import { bridgeNFT } from "../../../../../core/contractController";
-import { CONTRACT_ADDRESS } from "../../../../../common/constants";
+import { CONTRACT_ADDRESS, UnailableNetworks } from "../../../../../common/constants";
 import { NetworkName } from "../../../../../common/enums/NetworkName";
 import ApiService from "../../../../../services/ApiService";
 import { useNetwork, useSwitchNetwork } from "wagmi";
@@ -41,7 +41,10 @@ export default function BridgeForm({ className, nft, onBridge }: Props) {
 
     useEffect(() => {
         if (ChainStore.chains.length && nft) {
-            const _chains = ChainStore.chains.filter(x => x.id !== nft?.chainId);
+            const _chains = ChainStore.chains
+                .filter(x => x.id !== nft?.chainId)
+                .filter(x => !UnailableNetworks[x.network as NetworkName].includes(nft.chainNetwork as NetworkName));
+
             setChains(_chains);
             setSelectedChain(_chains?.[0]?.id);
         }
