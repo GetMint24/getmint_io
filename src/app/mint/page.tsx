@@ -46,7 +46,7 @@ function Page() {
                 });
 
                 const result = await mintNFT({
-                    contractAddress: CONTRACT_ADDRESS[chain.network as NetworkName]
+                    contractAddress: CONTRACT_ADDRESS[chain.network as NetworkName],
                 });
 
                 if (result.result) {
@@ -68,6 +68,7 @@ function Page() {
                     messageApi.warning(result.message);
                 }
             } catch (e) {
+                console.error(e);
                 setIsNFTPending(false);
 
                 if (e instanceof AxiosError) {
