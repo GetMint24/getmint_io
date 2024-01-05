@@ -20,7 +20,7 @@ export default function AccountAddress({ address = '', withCopy, className }: Ac
 
     const handleCopy = async () => {
         await navigator.clipboard.writeText(address);
-        await messageApi.info('Wallet address has copied!');
+        await messageApi.info('Wallet address has copied!', 10000);
     };
 
     return (

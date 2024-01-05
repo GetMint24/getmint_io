@@ -32,7 +32,7 @@ function Page() {
     const _mintNFT = async (data: MintSubmitEvent) => {
         if (!walletConnected) {
             openAccountDrawer();
-            messageApi.info('Connect a wallet before Mint!');
+            messageApi.info('Connect a wallet before Mint!', 10000);
             return;
         }
 
@@ -59,20 +59,20 @@ function Page() {
                         transactionHash: result?.transactionHash!
                     });
 
-                    await messageApi.success('NFT Successfully minted');
+                    await messageApi.success('NFT Successfully minted', 10000);
                     await NftStore.getNfts();
                     router.push(`/mint/${nft.pinataImageHash}?successful=true`);
 
                     await fetchAccount();
                 } else {
-                    messageApi.warning(result.message);
+                    messageApi.warning(result.message, 10000);
                 }
             } catch (e) {
                 console.error(e);
                 setIsNFTPending(false);
 
                 if (e instanceof AxiosError) {
-                    await messageApi.error(e?.response?.data?.message);
+                    await messageApi.error(e?.response?.data?.message, 10000);
                     return;
                 }
 
@@ -90,7 +90,7 @@ function Page() {
     useEffect(() => {
         const tweeted = searchParams.get('tweeted');
         if (tweeted) {
-            messageApi.info('Tweet was created');
+            messageApi.info('Tweet was created', 10000);
         }
     }, [searchParams]);
 

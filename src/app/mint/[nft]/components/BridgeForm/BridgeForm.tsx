@@ -65,7 +65,7 @@ export default function BridgeForm({ className, nft, onBridge }: Props) {
             }
 
             if (!chainToSend) {
-                notification.error({ message: 'Something went wrong :(' });
+                notification.error({ message: 'Something went wrong :(', duration: 10000 });
                 return;
             }
 
@@ -76,7 +76,8 @@ export default function BridgeForm({ className, nft, onBridge }: Props) {
 
             if (result.result) {
                 notification.success({
-                    message: result.message
+                    message: result.message,
+                    duration: 10000
                 });
 
                 await ApiService.bridgeNFT({
@@ -94,12 +95,13 @@ export default function BridgeForm({ className, nft, onBridge }: Props) {
                 onBridge();
             } else {
                 notification.warning({
-                    message: result.message
+                    message: result.message,
+                    duration: 10000
                 });
             }
         } catch (e) {
             console.error(e);
-            notification.error({ message: 'Something went wrong :(' });
+            notification.error({ message: 'Something went wrong :(', duration: 10000 });
         } finally {
             setIsPending(false);
         }
