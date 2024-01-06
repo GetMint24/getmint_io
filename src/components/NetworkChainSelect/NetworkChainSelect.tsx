@@ -48,7 +48,7 @@ export default function NetworkChainSelect() {
 
     useEffect(() => {
         if (error) {
-            void messageApi.warning('User rejected the request', 10000);
+            void messageApi.warning('User rejected the request');
         }
     }, [error, messageApi]);
 

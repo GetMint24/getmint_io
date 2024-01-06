@@ -28,18 +28,13 @@ function NftPage({ params, searchParams }: NftPageProps) {
     const { account, createTweet, loading, fetchAccount } = AppStore;
     const router = useRouter();
 
-    const refetch = () => {
-        NftStore.getNfts().then(() => setNft(NftStore.selectNftByHash(params.nft)));
-    }
-
-    const createTweetHandler = async () => {
+    const createTweetHandler = () => {
         if (account && nft) {
             if (account.twitter.connected) {
-                await createTweet({
+                createTweet({
                     userId: account.id,
                     nftId: nft.id,
                 });
-                await refetch();
             } else {
                 const authUrl = twitterApi.getAuthUrl(`${account.id}:${nft.id}`);
                 window.location.assign(authUrl);
@@ -51,6 +46,9 @@ function NftPage({ params, searchParams }: NftPageProps) {
         router.push('/');
     };
 
+    const refetch = () => {
+        NftStore.getNfts().then(() => setNft(NftStore.selectNftByHash(params.nft)));
+    }
 
     useEffect(() => {
         refetch();
