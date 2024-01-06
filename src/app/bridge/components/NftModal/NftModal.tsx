@@ -67,7 +67,7 @@ function NftModal({ onSubmit }: Props) {
             }
 
             if (!chainToSend) {
-                notification.error({ message: 'Something went wrong :(', duration: 10000 });
+                notification.error({ message: 'Something went wrong :(' });
                 return;
             }
 
@@ -78,8 +78,7 @@ function NftModal({ onSubmit }: Props) {
 
             if (result.result) {
                 notification.success({
-                    message: result.message,
-                    duration: 10000
+                    message: result.message
                 });
 
                 await ApiService.bridgeNFT({
@@ -96,13 +95,12 @@ function NftModal({ onSubmit }: Props) {
                 });
             } else {
                 notification.warning({
-                    message: result.message,
-                    duration: 10000
+                    message: result.message
                 });
             }
         } catch (e) {
             console.error(e);
-            notification.error({ message: 'Something went wrong :(', duration: 10000 });
+            notification.error({ message: 'Something went wrong :(' });
         } finally {
             setIsPending(false);
         }
