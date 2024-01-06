@@ -25,7 +25,7 @@ interface NftPageProps {
 
 function NftPage({ params, searchParams }: NftPageProps) {
     const [nft, setNft] = useState(NftStore.selectNftByHash(params.nft));
-    const { account, createTweet, loading } = AppStore;
+    const { account, createTweet, loading, fetchAccount } = AppStore;
     const router = useRouter();
 
     const refetch = () => {
@@ -54,6 +54,7 @@ function NftPage({ params, searchParams }: NftPageProps) {
     useEffect(() => {
         refetch();
         ChainStore.getChains();
+        fetchAccount();
     }, []);
 
     if (!nft) {
