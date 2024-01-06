@@ -4,6 +4,7 @@ import { AccountDto } from "../common/dto/AccountDto";
 import ApiService from "../services/ApiService";
 import { CreateTweetDto } from "../common/dto/CreateTweetDto";
 import NftStore from "./NftStore";
+import { notification } from "antd";
 
 enableStaticRendering(typeof window === 'undefined');
 
@@ -57,13 +58,22 @@ class AppStore {
 
     async createTweet(data: CreateTweetDto) {
         this.loading = true;
-        const { status } = await ApiService.createTweet(data);
 
-        if (status === 'ok') {
-            await NftStore.getNfts();
+        try {
+            const { status } = await ApiService.createTweet(data);
+
+            if (status === 'ok') {
+                await NftStore.getNfts();
+            }
+        } catch (e) {
+            console.error(e);
+            notification.warning({
+                message: 'The tweet may have already been created',
+                duration: 10000
+            })
+        } finally {
+            this.loading = false;
         }
-        
-        this.loading = false;
     }
 }
 
