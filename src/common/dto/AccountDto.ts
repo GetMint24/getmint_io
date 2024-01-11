@@ -14,6 +14,7 @@ export interface AccountDto {
         total: number;
     },
     twitter: {
+        followed: boolean;
         connected: boolean;
         token: OAuth2UserOptions['token'];
         user?: TwitterUser;

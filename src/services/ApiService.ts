@@ -63,6 +63,11 @@ class ApiService {
         const response = await apiClient.post<{ status: 'ok' | 'failed' }>('twitter/clear', { userId });
         return response.data;
     }
+
+    async followTwitter(userId: string) {
+        const response = await apiClient.post<{ status: 'ok' | 'failed' }>('twitter/follow', { userId });
+        return response.data;
+    }
 }
 
 export default new ApiService();
