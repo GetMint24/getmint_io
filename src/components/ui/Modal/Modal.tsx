@@ -8,10 +8,12 @@ interface Props {
     title?: ReactNode;
     footer?: ReactNode;
     width?: string | number;
+    hideCloseIcon?: boolean;
+    maskClosable?: boolean;
     onClose?(): void;
 }
 
-export default function UiModal({ open, children, title, footer, width, onClose }: Props) {
+export default function UiModal({ open, children, title, footer, width, hideCloseIcon, maskClosable, onClose }: Props) {
     return (
         <Modal
             open={open}
@@ -26,13 +28,14 @@ export default function UiModal({ open, children, title, footer, width, onClose 
                 mask: styles.modalMask,
             }}
             onCancel={onClose}
+            maskClosable={maskClosable}
         >
             <div className={styles.body}>
                 <Flex gap={8} align="center" justify="flex-end" className={styles.header}>
                     <div className={styles.title}>
                         {title}
                     </div>
-                    <img src="/svg/ui/close.svg" className={styles.close} onClick={onClose} />
+                    {!hideCloseIcon && <img src="/svg/ui/close.svg" className={styles.close} onClick={onClose} />}
                 </Flex>
                 <div className={styles.content}>
                     {children}

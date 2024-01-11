@@ -75,6 +75,20 @@ class AppStore {
             this.loading = false;
         }
     }
+
+    async clearTwitter(userId: string) {
+        this.loading = true;
+
+        try {
+            const { status } = await ApiService.clearTwitter(userId);
+            return status;
+        } catch (e) {
+            console.error(e);
+        } finally {
+            await this.fetchAccount();
+            this.loading = false;
+        }
+    }
 }
 
 export default new AppStore();

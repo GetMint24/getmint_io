@@ -58,6 +58,11 @@ class ApiService {
         const response = await apiClient.post<{ status: 'ok' | 'failed' }>('twitter/create-tweet', data);
         return response.data;
     }
+
+    async clearTwitter(userId: string) {
+        const response = await apiClient.post<{ status: 'ok' | 'failed' }>('twitter/clear', { userId });
+        return response.data;
+    }
 }
 
 export default new ApiService();
