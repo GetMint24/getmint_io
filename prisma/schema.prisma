@@ -88,7 +88,7 @@ model TweetLog {
   id           String     @id @default(uuid())
   nft          Nft        @relation(fields: [nftId], references: [id])
   nftId        String     @unique @map("nft_id")
-  balanceLog   BalanceLog @relation(fields: [balanceLogId], references: [id])
+  balanceLog   BalanceLog @relation(fields: [balanceLogId], references: [id], onDelete: Cascade)
   balanceLogId String     @unique @map("balance_log_id")
   tweetId      String     @unique @map("tweet_id")
 
