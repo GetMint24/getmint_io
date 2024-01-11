@@ -75,6 +75,14 @@ class AppStore {
             this.loading = false;
         }
     }
+
+    async followTwitter(userId: string) {
+        try {
+            await ApiService.followTwitter(userId);
+        } catch (e) {
+            console.error(e);
+        }
+    }
 }
 
 export default new AppStore();
