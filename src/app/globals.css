@@ -43,6 +43,11 @@ strong {
   font-weight: 600;
 }
 
+[class^="ant-flex"],
+[class*=" ant-flex"] {
+  font-family: inherit !important;
+}
+
 
 @media screen and (max-width: 768px) {
   .container {

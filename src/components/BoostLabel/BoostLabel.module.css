@@ -1,0 +1,32 @@
+.container {
+    display: inline-flex;
+    padding: 1px;
+    background: linear-gradient(122deg, #2EA5FB, #4340E1);
+    border-radius: 4px;
+}
+
+.label {
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    padding: 3px 5px;
+    border-radius: 4px;
+    background: #161D27;
+    gap: 4px;
+}
+
+.label.small {
+    padding: 2px 3px;
+}
+
+.label span {
+    background: linear-gradient(122deg, #2EA5FB, #4340E1);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.label.small span {
+    font-size: 12px;
+}

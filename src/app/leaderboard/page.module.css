@@ -1,6 +1,4 @@
-.img {
-    display: block;
-    max-width: 100%;
-    max-height: 720px;
+.card {
+    max-width: 828px;
     margin: 0 auto;
 }
