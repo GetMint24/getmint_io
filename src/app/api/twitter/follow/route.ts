@@ -17,6 +17,13 @@ export async function POST(request: Request) {
                     amount: BalanceOperationCost.TwitterGetmintSubscription,
                 }
             });
+
+            await context.user.update({
+                where: { id: userId },
+                data: {
+                    followedGetmintTwitter: true,
+                },
+            });
         });
 
         return Response.json({ status: 'ok' });

@@ -16,6 +16,7 @@ export async function POST(request: Request) {
                     twitterEnabled: false,
                     twitterLogin: null,
                     twitterToken: undefined,
+                    followedGetmintTwitter: false,
                 },
                 where: { id: userId }
             });

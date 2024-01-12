@@ -148,7 +148,7 @@ function Account() {
                                     <span>Subscribe to our social network</span>
                                     <CostLabel cost={30} success={account.twitter.followed} />
                                 </Flex>
-                                <Button block onClick={goToFollow} disabled={account.twitter.followed}>Follow <strong>@GetMint_io</strong></Button>
+                                <Button block onClick={goToFollow} disabled={account.twitter.followed || !account.twitter.connected}>Follow <strong>@GetMint_io</strong></Button>
                             </>
                         )}
                     </Flex>
