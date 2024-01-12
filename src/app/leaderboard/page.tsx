@@ -41,7 +41,7 @@ function Page() {
                 <>
                     {currentUserStat && (
                         <div className={styles.current}>
-                            <div className={styles.subtitle}>{`Your stat's on GetMint.io`}</div>
+                            <div className={styles.subtitle}>{`Your stats on GetMint.io`}</div>
                             {isMobile ? (
                                 <LeadersList leaders={[currentUserStat]} />
                             ) : (
