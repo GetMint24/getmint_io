@@ -49,8 +49,10 @@ export default function Home() {
             <Page />
             <ConfirmDialog
                 open={showConfirm}
-                title="Confirm title"
-                description="Are you sure about that?"
+                title="Twitter account"
+                description="Twitter account has already connected to wallet on GetMint.io.
+                If you connect account to this wallet, all your rewards 'Twitter activity' will be reset. 
+                Are you sure?"
                 onCancel={handleCancel}
                 onConfirm={handleConfirm}
             />
