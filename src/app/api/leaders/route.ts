@@ -24,7 +24,7 @@ export async function GET(request: Request) {
 
         return {
             id: leaderLog.userId,
-            login: leader!.twitterLogin || `${leader!.metamaskWalletAddress.slice(0, 6)}...${leader!.metamaskWalletAddress.slice(-5)}`,
+            login: leader!.twitterLogin || `${leader!.metamaskWalletAddress.slice(0, 1)}х${leader!.metamaskWalletAddress.slice(2, 4)}...${leader!.metamaskWalletAddress.slice(-5)}`,
             avatar: leader!.avatar || undefined,
             mintCount,
             bridgeCount,

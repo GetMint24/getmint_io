@@ -14,6 +14,7 @@ import AppStore from "../../../store/AppStore";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
 import { twitterApi } from "../../../utils/twitterApi";
+import { generateGradient } from "../../../utils/generators";
 
 interface RewardItemProps {
     name: string;
@@ -104,7 +105,7 @@ function Account() {
 
                 <div className={styles.card}>
                     <Flex gap={10}>
-                        <Avatar size={48} style={{ background: 'linear-gradient(135deg, #2CD9FF 0.52%, #FFC701 100.52%)' }} />
+                        <Avatar size={48} style={{ background: generateGradient(135) }} />
                         <div>
                             <AccountAddress className={styles.userName} address={address} />
                             <AccountAddress className={styles.userAddress} address={address} withCopy />

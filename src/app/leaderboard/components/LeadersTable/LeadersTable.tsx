@@ -2,6 +2,7 @@ import { Avatar, Flex, Spin } from "antd";
 import { observer } from "mobx-react-lite";
 import BoostLabel from "../../../../components/BoostLabel/BoostLabel";
 import LeadersStore from "../../../../store/LeadersStore";
+import { generateGradient } from "../../../../utils/generators";
 
 import styles from "./LeadersTable.module.css";
 
@@ -29,7 +30,7 @@ function LeadersTable() {
                             <div>{index + 1}</div>
                             <div>
                                 <Flex align="center" gap={8}>
-                                    <Avatar size={32} src={leader.avatar} style={{ background: 'linear-gradient(135deg, #2CD9FF 0.52%, #FFC701 100.52%)' }} />
+                                    <Avatar size={32} src={leader.avatar} style={{ background: generateGradient(135) }} />
                                     <span>{leader.login}</span>
                                     {/* <BoostLabel value={1.5} /> */}
                                 </Flex>
