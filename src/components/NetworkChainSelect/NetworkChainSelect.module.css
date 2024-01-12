@@ -58,6 +58,7 @@
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.05);
     transition: .3s ease-out;
+    width: 180px;
 }
 
 .dropdownBtn:hover {
@@ -66,4 +67,14 @@
 
 .value {
     flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+@media screen and (max-width: 1024px) {
+    .dropdownBtn {
+        width: auto;
+    }
 }

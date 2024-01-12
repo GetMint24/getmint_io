@@ -14,8 +14,7 @@
     text-align: center;
 }
 
-.button:hover,
-.button:focus {
+.button:hover {
     box-shadow: 0 2px 12px 0 rgba(53, 102, 196, 0.80);
 }
 
@@ -42,7 +41,6 @@
     border: 1px solid #4340E1;
 }
 
-.rounded:focus,
 .rounded:hover {
     box-shadow: none;
     background: linear-gradient(122deg, #2EA5FB, #4340E1);

@@ -74,6 +74,11 @@ class ApiService {
         const response = await apiClient.get<LeaderDto[]>('leaders');
         return response.data;
     }
+
+    async getCurrentUserStat() {
+        const response = await apiClient.get<LeaderDto>('leaders/current');
+        return response.data;
+    }
 }
 
 export default new ApiService();

@@ -8,16 +8,24 @@ import Card from "../../components/ui/Card/Card";
 import LeadersList from "./components/LeadersList/LeadersList";
 import LeadersTable from "./components/LeadersTable/LeadersTable";
 import LeadersStore from "../../store/LeadersStore";
+import AppStore from "../../store/AppStore";
 
 import styles from "./page.module.css";
 
 function Page() {
-    const { loading, getLeaders } = LeadersStore;
+    const { metamaskWalletAddress } = AppStore;
+    const { currentUserStat, leaders, loading, getLeaders, getCurrentUserStat } = LeadersStore;
     const isMobile = useMedia({ maxWidth: 768 });
 
     useEffect(() => {
         void getLeaders();
     }, []);
+
+    useEffect(() => {
+        if (metamaskWalletAddress) {
+            void getCurrentUserStat();
+        }
+    }, [metamaskWalletAddress]);
 
     return (
         <Card
@@ -29,10 +37,24 @@ function Page() {
                     <Spin size="large" />
                 </Flex>
             )}
-            {!loading && isMobile ? (
-                <LeadersList />
-            ) : (
-                <LeadersTable />
+            {!loading && (
+                <>
+                    {currentUserStat && (
+                        <div className={styles.current}>
+                            <div className={styles.subtitle}>Your stat's on GetMint.io</div>
+                            {isMobile ? (
+                                <LeadersList leaders={[currentUserStat]} />
+                            ) : (
+                                <LeadersTable leaders={[currentUserStat]} />
+                            )}
+                        </div>
+                    )}
+                    {isMobile ? (
+                        <LeadersList leaders={leaders} />
+                    ) : (
+                        <LeadersTable leaders={leaders} />
+                    )}
+                </>
             )}
         </Card>
     )

@@ -8,6 +8,7 @@ enableStaticRendering(typeof window === 'undefined');
 class LeadersStore {
     loading = false;
     leaders: LeaderDto[] = [];
+    currentUserStat: LeaderDto | null = null;
 
     constructor() {
         makeAutoObservable(this, undefined, { autoBind: true });
@@ -23,6 +24,10 @@ class LeadersStore {
         } finally {
             this.loading = false;
         }
+    }
+
+    async getCurrentUserStat() {
+        this.currentUserStat = await ApiService.getCurrentUserStat();
     }
 }
 

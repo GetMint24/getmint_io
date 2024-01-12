@@ -72,19 +72,23 @@
     margin-left: -28px;
 }
 
-.row:first-child .wrapper > div:first-child {
+.wrapper > div.first {
     background: #FFC700;
     color: #161D27;
 }
 
-.row:nth-child(2) .wrapper > div:first-child {
+.wrapper > div.second {
     background: #BC40F6;
     color: #161D27;
 }
 
-.row:nth-child(3) .wrapper > div:first-child {
+.wrapper > div.third {
     background: #50ABFF;
     color: #161D27;
+}
+
+.wrapper > div.small {
+    font-size: 12px;
 }
 
 .wrapper > div:nth-child(2) {

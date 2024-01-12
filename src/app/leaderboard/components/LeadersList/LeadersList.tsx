@@ -1,22 +1,31 @@
-import { observer } from "mobx-react-lite";
-import BoostLabel from "../../../../components/BoostLabel/BoostLabel";
-import LeadersStore from "../../../../store/LeadersStore";
-import { Spin } from "antd";
+import clsx from "clsx";
+import { LeaderDto } from "../../../../common/dto/LeaderDto";
 
 import styles from "./LeadersList.module.css";
 
-function LeadersList() {
-    const { leaders } = LeadersStore;
+interface Props {
+    leaders: LeaderDto[];
+}
 
+export default function LeadersList({ leaders }: Props) {
     if (!leaders.length) {
         return null;
     }
 
     return (
         <div className={styles.list}>
-            {leaders.map((leader, index) => (
+            {leaders.map((leader) => (
                 <div className={styles.card} key={leader.id}>
-                    <div className={styles.position}>{index + 1}</div>
+                    <div
+                        className={clsx(styles.position, {
+                            [styles.first]: leader.position === 1,
+                            [styles.second]: leader.position === 2,
+                            [styles.third]: leader.position === 3,
+                            [styles.small]: leader.position > 99,
+                        })}
+                    >
+                        {leader.position}
+                    </div>
                     <div className={styles.info}>
                         <div className={styles.name}>
                             <div className={styles.label}>Name</div>
@@ -46,5 +55,3 @@ function LeadersList() {
         </div>
     )
 }
-
-export default observer(LeadersList);
