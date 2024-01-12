@@ -1,9 +1,17 @@
-import { Avatar, Flex } from "antd";
+import { Avatar, Flex, Spin } from "antd";
+import { observer } from "mobx-react-lite";
+import BoostLabel from "../../../../components/BoostLabel/BoostLabel";
+import LeadersStore from "../../../../store/LeadersStore";
 
 import styles from "./LeadersTable.module.css";
-import BoostLabel from "../../../../components/BoostLabel/BoostLabel";
 
-export default function LeadersTable() {
+function LeadersTable() {
+    const { leaders } = LeadersStore;
+
+    if (!leaders.length) {
+        return null;
+    }
+
     return (
         <div>
             <div className={styles.head}>
@@ -15,22 +23,26 @@ export default function LeadersTable() {
             </div>
 
             <div className={styles.body}>
-                <div className={styles.row}>
-                    <div className={styles.wrapper}>
-                        <div>1</div>
-                        <div>
-                            <Flex align="center" gap={8}>
-                                <Avatar size={32} />
-                                <span>Name</span>
-                                <BoostLabel value={1.5} />
-                            </Flex>
+                {leaders.map((leader, index) => (
+                    <div className={styles.row} key={leader.id}>
+                        <div className={styles.wrapper}>
+                            <div>{index + 1}</div>
+                            <div>
+                                <Flex align="center" gap={8}>
+                                    <Avatar size={32} src={leader.avatar} style={{ background: 'linear-gradient(135deg, #2CD9FF 0.52%, #FFC701 100.52%)' }} />
+                                    <span>{leader.login}</span>
+                                    {/* <BoostLabel value={1.5} /> */}
+                                </Flex>
+                            </div>
+                            <div>{leader.mintCount}</div>
+                            <div>{leader.bridgeCount}</div>
+                            <div>{leader.total}</div>
                         </div>
-                        <div>1</div>
-                        <div>1</div>
-                        <div>30</div>
                     </div>
-                </div>
+                ))}
             </div>
         </div>
     )
 }
+
+export default observer(LeadersTable);

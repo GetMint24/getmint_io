@@ -27,6 +27,21 @@
     color: #fff;
 }
 
+.card:first-child .position {
+    background: #FFC700;
+    color: #161D27;
+}
+
+.card:nth-child(2) .position {
+    background: #BC40F6;
+    color: #161D27;
+}
+
+.card:nth-child(3) .position {
+    background: #50ABFF;
+    color: #161D27;
+}
+
 .info {
     border-left: 1px solid rgba(255, 255, 255, 0.08);
     padding-left: 12px;
