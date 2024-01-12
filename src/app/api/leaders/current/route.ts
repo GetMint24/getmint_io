@@ -50,7 +50,7 @@ export async function GET(request: Request) {
         id: user.id,
         login: user.twitterLogin || `${metamaskWalletAddress.slice(0, 1)}х${metamaskWalletAddress.slice(2, 4)}...${metamaskWalletAddress.slice(-5)}`,
         avatar: user.avatar || undefined,
-        position: 9999,
+        position: position,
         mintCount: mints._count.amount,
         bridgeCount: bridges._count.amount,
         total: total._sum.amount || 0,
