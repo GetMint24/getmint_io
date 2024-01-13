@@ -23,7 +23,11 @@ export async function GET(request: Request) {
         orderBy: { _sum: { amount: 'desc' } },
         _sum: { amount: true },
     });
-    const position = leaders.findIndex((log) => log.userId === user.id) + 1;
+    var position = leaders.findIndex((log) => log.userId === user.id) + 1;
+
+    if (position == 0){
+        position = leaders.length+1;
+    }
 
     const total = await prisma.balanceLog.aggregate({
         where: { userId: user.id, operation: BalanceOperation.Debit },
