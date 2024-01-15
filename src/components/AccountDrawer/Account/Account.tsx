@@ -105,9 +105,13 @@ function Account() {
 
                 <div className={styles.card}>
                     <Flex gap={10}>
-                        <Avatar size={48} style={{ background: generateGradient(135) }} />
+                        <Avatar size={48} src={account.twitter.user?.avatar} style={{ background: generateGradient(135) }} />
                         <div>
-                            <AccountAddress className={styles.userName} address={address} />
+                            {account.twitter.user?.username ? (
+                                <span className={styles.userName}>{account.twitter.user.username}</span>
+                            ) : (
+                                <AccountAddress className={styles.userName} address={address} />
+                            )}
                             <AccountAddress className={styles.userAddress} address={address} withCopy />
                         </div>
                     </Flex>

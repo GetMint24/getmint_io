@@ -19,21 +19,36 @@ export async function GET(request: Request) {
     });
     const leaders = await prisma.user.findMany({ where: { id: { in: leadersIds } } });
 
-    const result: LeaderDto[] = leadersLogs.map((leaderLog, index) => {
-        const mintCount = leadersLogsByType.find((log) => log.userId === leaderLog.userId && log.type === BalanceLogType.Mint)?._count.amount || 0;
-        const bridgeCount = leadersLogsByType.find((log) => log.userId === leaderLog.userId && log.type === BalanceLogType.Bridge)?._count.amount || 0;
-        const leader = leaders.find((user) => user.id === leaderLog.userId);
+    const result: LeaderDto[] = leadersLogs.map((log, index) => {
+        const leader = leaders.find((leader) => log.userId === leader.id);
+        const mintCount = leadersLogsByType.find((log) => log.userId === leader!.id && log.type === BalanceLogType.Mint)?._count.amount || 0;
+        const bridgeCount = leadersLogsByType.find((log) => log.userId === leader!.id && log.type === BalanceLogType.Bridge)?._count.amount || 0;
 
         return {
-            id: leaderLog.userId,
-            login: leader!.twitterLogin || `${leader!.metamaskWalletAddress.slice(0, 1)}х${leader!.metamaskWalletAddress.slice(2, 4)}...${leader!.metamaskWalletAddress.slice(-5)}`,
-            avatar: leader!.avatar || undefined,
+            id: leader!.id,
+            login: leader?.twitterLogin || `${leader!.metamaskWalletAddress.slice(0, 1)}х${leader!.metamaskWalletAddress.slice(2, 6)}...${leader!.metamaskWalletAddress.slice(-5)}`,
+            avatar: leader?.avatar || undefined,
             position: index + 1,
             mintCount,
             bridgeCount,
-            total: leaderLog._sum.amount || 0,
+            total: log._sum.amount || 0,
         };
     });
+
+    if (leaders.length < 100) {
+        const usersWithoutXp = await prisma.user.findMany({ where: { id: { notIn: leadersIds } }, take: 100 - leaders.length });
+        usersWithoutXp.forEach((user) => {
+            result.push({
+                id: user.id,
+                login: user.twitterLogin || `${user.metamaskWalletAddress.slice(0, 1)}х${user.metamaskWalletAddress.slice(2, 6)}...${user.metamaskWalletAddress.slice(-5)}`,
+                avatar: user.avatar || undefined,
+                position: result.length + 1,
+                mintCount: 0,
+                bridgeCount: 0,
+                total: 0,
+            });
+        });
+    }
 
     return Response.json(result);
 }

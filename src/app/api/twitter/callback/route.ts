@@ -29,7 +29,7 @@ export async function GET(request: Request) {
                 twitterEnabled: true,
                 twitterLogin: twitterUser?.username,
                 twitterToken: JSON.stringify(token),
-                avatar: twitterUser?.profile_image_url
+                avatar: twitterUser?.profile_image_url,
             },
             where: { id: userId }
         });

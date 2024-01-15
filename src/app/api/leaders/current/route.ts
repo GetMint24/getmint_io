@@ -23,10 +23,10 @@ export async function GET(request: Request) {
         orderBy: { _sum: { amount: 'desc' } },
         _sum: { amount: true },
     });
-    var position = leaders.findIndex((log) => log.userId === user.id) + 1;
+    let position = leaders.findIndex((log) => log.userId === user.id) + 1;
 
-    if (position == 0){
-        position = leaders.length+1;
+    if (position === 0){
+        position = leaders.length + 1;
     }
 
     const total = await prisma.balanceLog.aggregate({
@@ -52,7 +52,7 @@ export async function GET(request: Request) {
 
     const result: LeaderDto = {
         id: user.id,
-        login: user.twitterLogin || `${metamaskWalletAddress.slice(0, 1)}х${metamaskWalletAddress.slice(2, 4)}...${metamaskWalletAddress.slice(-5)}`,
+        login: user.twitterLogin || `${metamaskWalletAddress.slice(0, 1)}х${metamaskWalletAddress.slice(2, 6)}...${metamaskWalletAddress.slice(-5)}`,
         avatar: user.avatar || undefined,
         position: position,
         mintCount: mints._count.amount,

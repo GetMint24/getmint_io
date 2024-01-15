@@ -14,7 +14,7 @@
 }
 
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1320px) {
     .drawer:global(.ant-drawer-content) {
         border-radius: 0;
         padding: 16px;

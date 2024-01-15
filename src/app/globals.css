@@ -39,6 +39,10 @@ a {
   font-family: inherit;
 }
 
+.ant-avatar {
+  border: none;
+}
+
 strong {
   font-weight: 600;
 }
