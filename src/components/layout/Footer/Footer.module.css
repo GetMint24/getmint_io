@@ -31,7 +31,7 @@
     font-weight: 400;
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1320px) {
     .link span {
         display: none;
     }

@@ -25,7 +25,7 @@ export default function CostLabel({ cost, size, success, children, className }: 
             success && styles.success,
             className
         )}>
-            <span>{children ? children : `+${cost}XP`}</span>
+            <span>{children ? children : `+${cost} XP`}</span>
         </div>
     )
 }

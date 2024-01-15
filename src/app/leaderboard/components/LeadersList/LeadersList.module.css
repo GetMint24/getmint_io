@@ -1,0 +1,86 @@
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: #161D27;
+    border-radius: 12px;
+}
+
+.position {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: #303745;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.position.first {
+    background: #FFC700;
+    color: #161D27;
+}
+
+.position.second {
+    background: #BC40F6;
+    color: #161D27;
+}
+
+.position.third {
+    background: #50ABFF;
+    color: #161D27;
+}
+
+.position.small {
+    font-size: 10px;
+}
+
+.info {
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    padding-left: 12px;
+    flex-grow: 1;
+}
+
+.label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.64);
+}
+
+.value {
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.name .value {
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.activity {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.activity > div {
+    flex-grow: 1;
+}
+
+.activity > div:last-child {
+    text-align: right;
+}

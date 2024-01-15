@@ -85,6 +85,7 @@ export async function GET(request: Request) {
         },
         twitter: {
             connected: user.twitterEnabled,
+            followed: !!twitterGetmintSubscription._count.amount && user.followedGetmintTwitter,
             token,
             user: twitterUser,
         }

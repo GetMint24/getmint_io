@@ -39,7 +39,7 @@ function NftPage({ params, searchParams }: NftPageProps) {
                     userId: account.id,
                     nftId: nft.id,
                 });
-                await refetch();
+                refetch();
             } else {
                 const authUrl = twitterApi.getAuthUrl(`${account.id}:${nft.id}`);
                 window.location.assign(authUrl);

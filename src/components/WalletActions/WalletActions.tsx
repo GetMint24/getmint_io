@@ -3,6 +3,7 @@
 import { Flex } from "antd";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
+import { observer } from "mobx-react-lite";
 
 import Button from "../ui/Button/Button";
 import AccountAddress from "../AccountAddress/AccountAddress";
@@ -11,8 +12,8 @@ import NetworkChainSelect from "../NetworkChainSelect/NetworkChainSelect";
 
 import styles from './WalletActions.module.css';
 
-export default function WalletActions() {
-    const { openAccountDrawer, setWalletConnected, setWalletAddress } = AppStore;
+function WalletActions() {
+    const { account, openAccountDrawer, setWalletConnected, setWalletAddress } = AppStore;
 
     const { address, isConnected, isConnecting } = useAccount();
 
@@ -46,7 +47,9 @@ export default function WalletActions() {
 
                     {address && (
                         <Button className={styles.btn} onClick={openAccountDrawer}>
-                            <AccountAddress address={address} />
+                            {account?.twitter.user?.username ? account.twitter.user.username : (
+                                <AccountAddress address={address} />
+                            )}
                         </Button>
                     )}
                 </Flex>
@@ -54,3 +57,5 @@ export default function WalletActions() {
         </div>
     )
 }
+
+export default observer(WalletActions);

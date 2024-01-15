@@ -39,8 +39,17 @@ a {
   font-family: inherit;
 }
 
+.ant-avatar {
+  border: none;
+}
+
 strong {
   font-weight: 600;
+}
+
+[class^="ant-flex"],
+[class*=" ant-flex"] {
+  font-family: inherit !important;
 }
 
 

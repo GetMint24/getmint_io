@@ -9,6 +9,7 @@ export async function GET(request: Request) {
     const state = params.get('state');
     const code = params.get('code');
     const error = params.get('error');
+    const redirectUrl = new URL(process.env.APP_URL);
 
     if (error || !code || !state) return Response.error();
 
@@ -16,13 +17,19 @@ export async function GET(request: Request) {
         const { token } = await twitterApi.requestToken(code as string);
         const [userId, nftId] = state.split(':');
         const { data: twitterUser } = await twitterApi.findMyUser();
+        const userWithLogin = await prisma.user.findFirst({ where: { twitterLogin: twitterUser?.username } });
+
+        if (userWithLogin && userId !== userWithLogin.id) {
+            redirectUrl.searchParams.set('oldUserId', userWithLogin.id);
+            redirectUrl.searchParams.set('newUserId', userId);
+        }
 
         await prisma.user.update({
             data: {
                 twitterEnabled: true,
                 twitterLogin: twitterUser?.username,
                 twitterToken: JSON.stringify(token),
-                avatar: twitterUser?.profile_image_url
+                avatar: twitterUser?.profile_image_url,
             },
             where: { id: userId }
         });
@@ -53,12 +60,12 @@ export async function GET(request: Request) {
                     });
                 });
 
-                return Response.redirect(`${process.env.APP_URL}/?tweeted=true`);
+                redirectUrl.searchParams.set('tweeted', 'true');
             }
         }
     } catch (e) {
         console.log(e);
     }
 
-    return Response.redirect(process.env.APP_URL);
+    return Response.redirect(redirectUrl);
 }

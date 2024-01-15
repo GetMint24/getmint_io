@@ -1,0 +1,7 @@
+.description {
+    margin-bottom: 20px;
+}
+
+.actions > button {
+    flex-grow: 1;
+}

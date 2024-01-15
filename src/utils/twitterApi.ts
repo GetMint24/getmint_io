@@ -34,7 +34,7 @@ class TwitterApi {
     }
 
     async findMyUser() {
-        return this.client.users.findMyUser();
+        return this.client.users.findMyUser({ 'user.fields': ['id', 'username', 'profile_image_url'] });
     }
 
     async createTweet(id: string) {

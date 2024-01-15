@@ -10,7 +10,7 @@ import CostLabel from "../CostLabel/CostLabel";
 import SoonLabel from "../SoonLabel/SoonLabel";
 import AppStore from "../../store/AppStore";
 import Drawer from "../ui/Drawer/Drawer";
-import { observer } from "mobx-react-lite";
+import { generateGradient } from "../../utils/generators";
 
 import styles from "./MobileMenu.module.css";
 
@@ -53,7 +53,7 @@ export default function MobileMenu() {
     return (
         <>
             <Flex gap={16} align="center">
-                <Avatar size={40} style={{ background: 'linear-gradient(135deg, #2CD9FF 0.52%, #FFC701 100.52%)' }} onClick={openAccountDrawer} className={styles.avatar} />
+                <Avatar size={40} style={{ background: generateGradient(135) }} onClick={openAccountDrawer} className={styles.avatar} />
                 <button className={styles.burger} onClick={handleOpenMenu}>
                     <Image src="/svg/ui/burger.svg" width={24} height={24} alt="" />
                 </button>

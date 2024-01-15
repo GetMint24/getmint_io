@@ -1,7 +1,6 @@
 import { Flex, Switch, SwitchProps } from "antd";
 
 import styles from "./RefuelSwitch.module.css";
-import "./antd-switch.css";
 
 export default function RefuelSwitch({ className, ...props }: SwitchProps) {
     return (

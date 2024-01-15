@@ -5,6 +5,7 @@ import { NFTDto } from "../common/dto/NFTDto";
 import { BridgeDto } from "../common/dto/BridgeDto";
 import { ChainDto } from "../common/dto/ChainDto";
 import { CreateTweetDto } from "../common/dto/CreateTweetDto";
+import { LeaderDto } from "../common/dto/LeaderDto";
 
 class ApiService {
     async getAccount(): Promise<AccountDto> {
@@ -56,6 +57,26 @@ class ApiService {
 
     async createTweet(data: CreateTweetDto) {
         const response = await apiClient.post<{ status: 'ok' | 'failed' }>('twitter/create-tweet', data);
+        return response.data;
+    }
+
+    async clearTwitter(userId: string) {
+        const response = await apiClient.post<{ status: 'ok' | 'failed' }>('twitter/clear', { userId });
+        return response.data;
+    }
+
+    async followTwitter(userId: string) {
+        const response = await apiClient.post<{ status: 'ok' | 'failed' }>('twitter/follow', { userId });
+        return response.data;
+    }
+
+    async getLeaders() {
+        const response = await apiClient.get<LeaderDto[]>('leaders');
+        return response.data;
+    }
+
+    async getCurrentUserStat() {
+        const response = await apiClient.get<LeaderDto>('leaders/current');
         return response.data;
     }
 }

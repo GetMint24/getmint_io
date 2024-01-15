@@ -35,7 +35,7 @@ export default function Navigation() {
         <nav className={styles.nav}>
             <NavLink href="/" title="Mint" cost={20} />
             <NavLink href="/bridge" title="Bridge NFT" cost={10} />
-            <NavLink href="/leaderboard" title={<>Leaderboard <SoonLabel /></>} />
+            <NavLink href="/leaderboard" title="Leaderboard" />
             <NavLink href="#" title={<>Meme <SoonLabel /></>} className="meme" />
         </nav>
     )

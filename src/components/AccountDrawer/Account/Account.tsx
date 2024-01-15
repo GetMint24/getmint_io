@@ -14,6 +14,7 @@ import AppStore from "../../../store/AppStore";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
 import { twitterApi } from "../../../utils/twitterApi";
+import { generateGradient } from "../../../utils/generators";
 
 interface RewardItemProps {
     name: string;
@@ -37,8 +38,8 @@ function RewardItem({ name, amount, count, isTotal }: RewardItemProps) {
 }
 
 function Account() {
-    const [showFollowText, setShowFollowText] = useState(false);
-    const { closeAccountDrawer, account, fetchAccount, disconnectTwitter, loading } = AppStore;
+    const [showVerifyText, setShowVerifyText] = useState(false);
+    const { closeAccountDrawer, account, fetchAccount, disconnectTwitter, followTwitter, loading } = AppStore;
     const [messageApi, contextHolder] = message.useMessage();
 
     const { address, connector } = useAccount();
@@ -65,12 +66,19 @@ function Account() {
     };
 
     const goToFollow = () => {
-        setShowFollowText(true);
-        const url = new URL('https://twitter.com/intent/follow');
-        url.searchParams.append('original_referer', process.env.APP_URL);
-        url.searchParams.append('region', 'follow_link');
-        url.searchParams.append('screen_name', 'GetMint_io');
-        window.open(url, '_blank');
+        if (account) {
+            followTwitter(account.id);
+            setShowVerifyText(true);
+            const url = new URL('https://twitter.com/intent/follow');
+            url.searchParams.append('original_referer', process.env.APP_URL);
+            url.searchParams.append('region', 'follow_link');
+            url.searchParams.append('screen_name', 'GetMint_io');
+            window.open(url, '_blank');
+            setTimeout(() => {
+                fetchAccount();
+                setShowVerifyText(false);
+            }, 30000);
+        }
     };
 
     useEffect(() => {
@@ -97,9 +105,13 @@ function Account() {
 
                 <div className={styles.card}>
                     <Flex gap={10}>
-                        <Avatar size={48} style={{ background: 'linear-gradient(135deg, #2CD9FF 0.52%, #FFC701 100.52%)' }} />
+                        <Avatar size={48} src={account.twitter.user?.avatar} style={{ background: generateGradient(135) }} />
                         <div>
-                            <AccountAddress className={styles.userName} address={address} />
+                            {account.twitter.user?.username ? (
+                                <span className={styles.userName}>{account.twitter.user.username}</span>
+                            ) : (
+                                <AccountAddress className={styles.userName} address={address} />
+                            )}
                             <AccountAddress className={styles.userAddress} address={address} withCopy />
                         </div>
                     </Flex>
@@ -129,11 +141,20 @@ function Account() {
                     <div className={styles.divider}></div>
 
                     <Flex vertical gap={16} className={styles.subscribeInfo}>
-                        <div>Subscribe to our social network <CostLabel cost={50} /></div>
-                        {showFollowText ? (
-                            <div>XP will be accrued after verification</div>
+                        {showVerifyText ? (
+                            <Flex align="center" gap={8}>
+                                <Spin />
+                                <span>XP will be accrued after verification</span>
+                            </Flex>
                         ) : (
-                            <Button block onClick={goToFollow}>Follow <strong>@GetMint_io</strong></Button>
+                            <>
+                                <Flex align="center" gap={8}>
+                                    {account.twitter.followed && (<Image src="/svg/ui/successful.svg" width={24} height={24} alt="" />)}
+                                    <span>Subscribe to our social network</span>
+                                    <CostLabel cost={30} success={account.twitter.followed} />
+                                </Flex>
+                                <Button block onClick={goToFollow} disabled={account.twitter.followed || !account.twitter.connected}>Follow <strong>@GetMint_io</strong></Button>
+                            </>
                         )}
                     </Flex>
                 </div>
