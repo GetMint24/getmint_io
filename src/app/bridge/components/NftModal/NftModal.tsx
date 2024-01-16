@@ -29,7 +29,7 @@ function NftModal({ onSubmit }: Props) {
     const [_chains, setChains] = useState<ChainDto[]>([]);
     const [selectedChain, setSelectedChain] = useState<string>();
     const [isPending , setIsPending] = useState<boolean>(false);
-    const [refuelEnabled, setRefuelEnable] = useState<boolean>(false);
+    const [refuelEnabled, setRefuelEnable] = useState<boolean>(true);
 
     const { chain: currentChain } = useNetwork();
     const { switchNetworkAsync } = useSwitchNetwork();
@@ -115,7 +115,7 @@ function NftModal({ onSubmit }: Props) {
             footer={
                 nft && (
                     <Flex gap={12} className={clsx(styles.footer, isPending && styles.footerPending)}>
-                        {/* <RefuelSwitch checked={refuelEnabled} onChange={setRefuelEnable} className={styles.switch} /> */}
+                        <RefuelSwitch checked={refuelEnabled} onChange={setRefuelEnable} className={styles.switch} />
                         <Flex gap={8} flex={1} className={styles.actions}>
                             <ChainSelect chains={_chains} value={selectedChain} onChange={setSelectedChain} className={styles.dropdown} />
                             <Button className={styles.sendBtn} onClick={handleSubmit}>Send</Button>
