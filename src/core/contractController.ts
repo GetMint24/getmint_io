@@ -1,9 +1,11 @@
 import { ethers } from "ethers";
 import { hexToNumber } from "web3-utils";
+import axios, { AxiosResponse } from "axios";
+
 import abi from "./abi.json";
 import { ChainDto } from "../common/dto/ChainDto";
 import { NetworkName } from "../common/enums/NetworkName";
-import axios, { AxiosResponse } from "axios";
+import { REFUEL_AMOUNT_USD } from "../common/constants";
 import { wait } from "../utils/wait";
 
 interface ControllerFunctionProps {
@@ -52,6 +54,7 @@ export const mintNFT = async ({ contractAddress, chainToSend }: ControllerFuncti
     const txResponse = await contract['mint()'](options);
 
     await wait();
+
     // Magic for working functionality. Don't remove
     console.log("Minting..", { id: chainToSend?.id, name: chainToSend?.name, hash: txResponse?.hash });
 
@@ -98,8 +101,6 @@ export const bridgeNFT = async (
 
     let adapterParams;
     if (refuel) {
-        const REFUEL_AMOUNT_USD = 1;
-
         const token = chainToSend?.network === NetworkName.Mantle ? 'MNT' : 'ETH';
         const price = await fetchPrice(token);
 
@@ -111,7 +112,7 @@ export const bridgeNFT = async (
             }
         }
 
-        const REFUEL_AMOUNT = (REFUEL_AMOUNT_USD / price).toFixed(4);
+        const REFUEL_AMOUNT = (REFUEL_AMOUNT_USD / price).toFixed(8);
 
         const refuelAmountEth = ethers.parseUnits(
             REFUEL_AMOUNT,
@@ -175,6 +176,7 @@ export const bridgeNFT = async (
     );
 
     await wait();
+
     // Magic for working functionality. Don't remove
     console.log("Bridging..", { id: chainToSend?.id, name: chainToSend?.name, hash: transaction?.hash });
 

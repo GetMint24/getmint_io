@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Flex, notification, Spin } from "antd";
+import { useNetwork, useSwitchNetwork } from "wagmi";
 import clsx from "clsx";
+import styles from "./BridgeForm.module.css";
+
 import CostLabel from "../../../../../components/CostLabel/CostLabel";
 import Button from "../../../../../components/ui/Button/Button";
 import ChainLabel from "../../../../../components/ChainLabel/ChainLabel";
 import ChainSelect from "../../../../../components/ChainSelect/ChainSelect";
-
-import styles from "./BridgeForm.module.css";
 import ChainStore from "../../../../../store/ChainStore";
 import { NFTDto } from "../../../../../common/dto/NFTDto";
 import { ChainDto } from "../../../../../common/dto/ChainDto";
@@ -16,7 +17,7 @@ import { bridgeNFT } from "../../../../../core/contractController";
 import { CONTRACT_ADDRESS, UnailableNetworks } from "../../../../../common/constants";
 import { NetworkName } from "../../../../../common/enums/NetworkName";
 import ApiService from "../../../../../services/ApiService";
-import { useNetwork, useSwitchNetwork } from "wagmi";
+import RefuelSwitch from "../../../../../components/RefuelSwitch/RefuelSwitch";
 
 
 interface Props {
@@ -35,6 +36,7 @@ export default function BridgeForm({ className, nft, onBridge }: Props) {
     const [_chains, setChains] = useState<ChainDto[]>([]);
     const [selectedChain, setSelectedChain] = useState<string>();
     const [isPending , setIsPending] = useState<boolean>(false);
+    const [refuelEnabled, setRefuelEnable] = useState<boolean>(true);
 
     const { chain: currentChain } = useNetwork();
     const { switchNetworkAsync } = useSwitchNetwork();
@@ -130,7 +132,7 @@ export default function BridgeForm({ className, nft, onBridge }: Props) {
                 <CostLabel cost={10} />
             </Flex>
 
-            {/*<RefuelSwitch className={styles.switch} />*/}
+            <RefuelSwitch checked={refuelEnabled} onChange={setRefuelEnable} className={styles.switch} />
 
             <div className={clsx(styles.footer, isPending && styles.footerPending)}>
                 <Flex gap={8} className={styles.formActions}>
