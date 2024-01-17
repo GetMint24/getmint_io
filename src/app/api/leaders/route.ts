@@ -8,7 +8,7 @@ export async function GET(request: Request) {
         by: ['userId'],
         where: { 
             operation: BalanceOperation.Debit,
-            userId : { not: '7a252786-342b-4362-9cb1-1aadce3fd725' }
+            userId : { not: '0f07777c-7237-45e5-885c-95e69cd0b976' }
         },
         orderBy: { _sum: { amount: 'desc' } },
         _sum: { amount: true },
