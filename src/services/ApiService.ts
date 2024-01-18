@@ -14,6 +14,11 @@ class ApiService {
         return response.data;
     }
 
+    async getNft(nft: string): Promise<NFTDto> {
+        const response = await apiClient.get<NFTDto>('nft', { params: { nft } });
+        return response.data;
+    }
+
     async checkExistedNFT(image: File, data: { name: string; description: string }) {
         const formData = new FormData();
         formData.append('image', image);

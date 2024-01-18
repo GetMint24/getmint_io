@@ -3,11 +3,13 @@ import { BadRequest } from "../utils/responses";
 import { sendNFTImage } from "./sendNFTImage";
 
 export async function GET(_req: Request, { params }: { params: { nft: string } }) {
-    const pinataImageHash = params?.nft;
+    const id = params?.nft;
 
-    if (pinataImageHash) {
+    console.log(params);
+
+    if (id) {
         const nft = await prisma.nft.findFirst({
-            where: { pinataImageHash }
+            where: { id }
         });
 
         return Response.json(nft);
