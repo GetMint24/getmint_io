@@ -9,7 +9,7 @@
 .generateButton {
     position: absolute;
     right: 12px;
-    top: 12px;
+    bottom: 12px;
 }
 
 
@@ -20,7 +20,7 @@
 
     .generateButton {
         width: 68px;
-        top: 6px;
+        bottom: 6px;
         right: 10px;
     }
 }

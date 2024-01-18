@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@alch/alchemy-web3": "^1.4.7",
+    "@aws-sdk/client-s3": "^3.490.0",
     "@pinata/sdk": "^2.1.0",
     "@prisma/client": "^5.6.0",
     "antd": "^5.11.2",
