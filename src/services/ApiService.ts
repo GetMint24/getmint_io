@@ -6,6 +6,7 @@ import { BridgeDto } from "../common/dto/BridgeDto";
 import { ChainDto } from "../common/dto/ChainDto";
 import { CreateTweetDto } from "../common/dto/CreateTweetDto";
 import { LeaderDto } from "../common/dto/LeaderDto";
+import { RandomImageDto } from "../common/dto/RandomImageDto";
 
 class ApiService {
     async getAccount(): Promise<AccountDto> {
@@ -77,6 +78,16 @@ class ApiService {
 
     async getCurrentUserStat() {
         const response = await apiClient.get<LeaderDto>('leaders/current');
+        return response.data;
+    }
+
+    async getRandomImage() {
+        const response = await apiClient.get<RandomImageDto>('cloud/random-image');
+        return response.data;
+    }
+
+    async deleteFileFromCloud(key: string) {
+        const response = await apiClient.post<{ status: 'ok' | 'failed' }>('cloud/delete', { key });
         return response.data;
     }
 }

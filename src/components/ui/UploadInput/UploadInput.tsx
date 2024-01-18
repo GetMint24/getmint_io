@@ -1,14 +1,15 @@
 import Image from "next/image";
-import { ChangeEvent, InputHTMLAttributes, useState } from "react";
+import { ChangeEvent, InputHTMLAttributes, useEffect, useState } from "react";
 
 import styles from './UploadInput.module.css';
 import { Tooltip } from "antd";
 
 interface UploadInputProps extends InputHTMLAttributes<HTMLInputElement> {
+    file?: File | null;
     onUpload?: (file: File) => void;
 }
 
-export default function UploadInput({ onUpload, ...props }: UploadInputProps) {
+export default function UploadInput({ file, onUpload, ...props }: UploadInputProps) {
     const [selected, setSelected] = useState<string>('');
     const [preview, setPreview] = useState<string>();
 
@@ -31,6 +32,12 @@ export default function UploadInput({ onUpload, ...props }: UploadInputProps) {
 
         setSelected(file.name);
     };
+
+    useEffect(() => {
+        if (file) {
+            setPreview(URL.createObjectURL(file));
+        }
+    }, [file]);
 
     return (
         <Tooltip title={preview ? 'Click to upload' : ''}>
