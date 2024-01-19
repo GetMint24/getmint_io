@@ -50,7 +50,6 @@ function ChainSelect({ value, className, onChange, chains }: Props) {
                 defaultSelectedKeys: [selectedValue],
                 onClick: ({ key }) => handleSelect(key),    
             }}
-            rootClassName={styles.dropdown}
         >
             <Flex align="center" gap={8} className={clsx(styles.select, className)}>
                 {chainLogo && (<Image src={chainLogo} width={24} height={24} alt="" />)}

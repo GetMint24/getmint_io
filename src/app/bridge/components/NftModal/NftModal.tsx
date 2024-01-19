@@ -16,7 +16,7 @@ import ChainStore from "../../../../store/ChainStore";
 import { ChainDto } from "../../../../common/dto/ChainDto";
 import { SuccessfulBridgeData } from "../../types";
 import { bridgeNFT } from "../../../../core/contractController";
-import { CONTRACT_ADDRESS, UnailableNetworks } from "../../../../common/constants";
+import { CONTRACT_ADDRESS, DEFAULT_REFUEL_COST_USD, UnailableNetworks } from "../../../../common/constants";
 import { NetworkName } from "../../../../common/enums/NetworkName";
 import { useNetwork, useSwitchNetwork } from "wagmi";
 
@@ -30,6 +30,7 @@ function NftModal({ onSubmit }: Props) {
     const [selectedChain, setSelectedChain] = useState<string>();
     const [isPending , setIsPending] = useState<boolean>(false);
     const [refuelEnabled, setRefuelEnable] = useState<boolean>(true);
+    const [refuelCost, setRefuelCost] = useState(DEFAULT_REFUEL_COST_USD);
 
     const { chain: currentChain } = useNetwork();
     const { switchNetworkAsync } = useSwitchNetwork();
@@ -74,7 +75,7 @@ function NftModal({ onSubmit }: Props) {
             const result = await bridgeNFT({
                 contractAddress: CONTRACT_ADDRESS[_currentNetwork as NetworkName],
                 chainToSend
-            }, nft.tokenId, refuelEnabled);
+            }, nft.tokenId, refuelEnabled, refuelCost);
 
             if (result.result) {
                 notification.success({
@@ -115,7 +116,14 @@ function NftModal({ onSubmit }: Props) {
             footer={
                 nft && (
                     <Flex gap={12} className={clsx(styles.footer, isPending && styles.footerPending)}>
-                        <RefuelSwitch checked={refuelEnabled} onChange={setRefuelEnable} className={styles.switch} />
+                        <RefuelSwitch
+                            refuel={refuelCost}
+                            onChangeRefuelGas={setRefuelCost}
+                            checked={refuelEnabled}
+                            onChange={setRefuelEnable}
+                            className={styles.switch}
+                        />
+
                         <Flex gap={8} flex={1} className={styles.actions}>
                             <ChainSelect chains={_chains} value={selectedChain} onChange={setSelectedChain} className={styles.dropdown} />
                             <Button className={styles.sendBtn} onClick={handleSubmit}>Send</Button>
