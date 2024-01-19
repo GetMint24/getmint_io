@@ -8,5 +8,6 @@ export const apiClient = axios.create({
 apiClient.interceptors.request.use(config => {
     config.headers['X-Metamask-Address'] = AppStore.metamaskWalletAddress;
     config.headers['X-Twitter-Token'] = JSON.stringify(AppStore.account?.twitter.token);
+    // config.headers['Cache-Control'] = 'no-store';
     return config;
 });
