@@ -10,7 +10,7 @@ class ChainStore {
     chains: ChainDto[] = [];
 
     constructor() {
-        makeAutoObservable(this);
+        makeAutoObservable(this, undefined, { autoBind: true });
     }
 
     async getChains() {
@@ -26,6 +26,10 @@ class ChainStore {
 
     getChainById(id: string) {
         return this.chains.find((chain) => chain.id === id);
+    }
+
+    getChainByNetwork(network: string) {
+        return this.chains.find((chain) => chain.network === network);
     }
 }
 

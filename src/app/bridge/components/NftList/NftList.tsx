@@ -5,6 +5,7 @@ import NftStore from "../../../../store/NftStore";
 import ChainLabel from "../../../../components/ChainLabel/ChainLabel";
 import { NFTDto } from "../../../../common/dto/NFTDto";
 import ListCard from "../../../../components/ListCard/ListCard";
+import { BalanceOperationCost } from "../../../../common/enums/BalanceOperationCost";
 
 import styles from "./NftList.module.css";
 
@@ -35,7 +36,7 @@ function NftList() {
                     }
                     image={<PinataImage hash={nft.pinataImageHash} name={nft.name} />}
                     title={nft.name}
-                    xp={20}
+                    xp={BalanceOperationCost.Bridge}
                     onClick={() => handleCardClick(nft)}
                     className={styles.listItem}
                 />

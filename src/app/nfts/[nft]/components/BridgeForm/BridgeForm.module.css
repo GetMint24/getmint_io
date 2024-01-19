@@ -1,0 +1,18 @@
+.container {
+    padding: 12px;
+    border-radius: 12px;
+    background: #161D27;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-top: 12px;
+    margin-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.actions button {
+    flex-grow: 1;
+}

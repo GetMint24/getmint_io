@@ -1,0 +1,45 @@
+.container {
+    padding: 16px;
+    border-radius: 12px;
+    background: #161D27;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    font-size: 14px;
+}
+
+.head {
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.64);
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.row {
+    display: flex;
+    gap: 16px;
+    padding-right: 12px;
+}
+
+.row > * {
+    flex-grow: 1;
+}
+
+.row > *:last-child {
+    text-align: right;
+    max-width: 118px;
+}
+
+.row > *:first-child {
+    max-width: 136px;
+}
+
+.operation {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
