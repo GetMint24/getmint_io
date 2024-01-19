@@ -5,7 +5,7 @@ import axios, { AxiosResponse } from "axios";
 import abi from "./abi.json";
 import { ChainDto } from "../common/dto/ChainDto";
 import { NetworkName } from "../common/enums/NetworkName";
-import { REFUEL_AMOUNT_USD } from "../common/constants";
+import { DEFAULT_REFUEL_COST_USD } from "../common/constants";
 import { wait } from "../utils/wait";
 
 interface ControllerFunctionProps {
@@ -78,12 +78,14 @@ export const mintNFT = async ({ contractAddress, chainToSend }: ControllerFuncti
  * @param chainToSend Current chain to send NFT
  * @param tokenId NFT token id for sending to another chain
  * @param refuel Refuel enabled
+ * @param refuelCost Refuel cost in dollars
  *
  */
 export const bridgeNFT = async (
     { contractAddress, chainToSend }: ControllerFunctionProps,
     tokenId: number,
-    refuel: boolean = false
+    refuel: boolean = false,
+    refuelCost: number = DEFAULT_REFUEL_COST_USD
 ): Promise<ControllerFunctionResult> => {
     const provider = new ethers.BrowserProvider((window as any).ethereum);
 
@@ -112,7 +114,7 @@ export const bridgeNFT = async (
             }
         }
 
-        const REFUEL_AMOUNT = (REFUEL_AMOUNT_USD / price).toFixed(8);
+        const REFUEL_AMOUNT = (refuelCost / price).toFixed(8);
 
         const refuelAmountEth = ethers.parseUnits(
             REFUEL_AMOUNT,

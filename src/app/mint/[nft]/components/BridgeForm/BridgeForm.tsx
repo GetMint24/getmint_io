@@ -14,7 +14,7 @@ import ChainStore from "../../../../../store/ChainStore";
 import { NFTDto } from "../../../../../common/dto/NFTDto";
 import { ChainDto } from "../../../../../common/dto/ChainDto";
 import { bridgeNFT } from "../../../../../core/contractController";
-import { CONTRACT_ADDRESS, UnailableNetworks } from "../../../../../common/constants";
+import { CONTRACT_ADDRESS, DEFAULT_REFUEL_COST_USD, UnailableNetworks } from "../../../../../common/constants";
 import { NetworkName } from "../../../../../common/enums/NetworkName";
 import ApiService from "../../../../../services/ApiService";
 import RefuelSwitch from "../../../../../components/RefuelSwitch/RefuelSwitch";
@@ -37,6 +37,7 @@ export default function BridgeForm({ className, nft, onBridge }: Props) {
     const [selectedChain, setSelectedChain] = useState<string>();
     const [isPending , setIsPending] = useState<boolean>(false);
     const [refuelEnabled, setRefuelEnable] = useState<boolean>(true);
+    const [refuelCost, setRefuelCost] = useState(DEFAULT_REFUEL_COST_USD);
 
     const { chain: currentChain } = useNetwork();
     const { switchNetworkAsync } = useSwitchNetwork();
@@ -74,7 +75,7 @@ export default function BridgeForm({ className, nft, onBridge }: Props) {
             const result = await bridgeNFT({
                 contractAddress: CONTRACT_ADDRESS[_currentNetwork as NetworkName],
                 chainToSend
-            }, nft.tokenId, false);
+            }, nft.tokenId, refuelEnabled, refuelCost);
 
             if (result.result) {
                 notification.success({
@@ -132,7 +133,13 @@ export default function BridgeForm({ className, nft, onBridge }: Props) {
                 <CostLabel cost={10} />
             </Flex>
 
-            <RefuelSwitch checked={refuelEnabled} onChange={setRefuelEnable} className={styles.switch} />
+            <RefuelSwitch
+                refuel={refuelCost}
+                onChangeRefuelGas={setRefuelCost}
+                checked={refuelEnabled}
+                onChange={setRefuelEnable}
+                className={styles.switch}
+            />
 
             <div className={clsx(styles.footer, isPending && styles.footerPending)}>
                 <Flex gap={8} className={styles.formActions}>

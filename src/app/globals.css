@@ -52,6 +52,59 @@ strong {
   font-family: inherit !important;
 }
 
+.ant-dropdown .ant-dropdown-menu {
+  border-radius: 12px;
+  padding: 8px;
+  background: #161d27;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0px 4px 32px 0px rgba(100, 123, 205, 0.32);
+  max-height: 298px;
+  overflow: auto;
+}
+
+.ant-dropdown .ant-dropdown-menu::-webkit-scrollbar {
+  width: 4px;
+  padding-right: 1px;
+}
+
+.ant-dropdown .ant-dropdown-menu::-webkit-scrollbar-track {
+  margin: 12px 0;
+}
+
+.ant-dropdown .ant-dropdown-menu::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background: #2ea5fb;
+}
+
+.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item {
+  padding: 12px 12px 12px 8px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.ant-dropdown .ant-dropdown-menu-item.ant-dropdown-menu-item-selected {
+  background: none;
+}
+
+.ant-dropdown .ant-dropdown-menu-item.ant-dropdown-menu-item-selected:hover {
+  background: none;
+}
+
+.ant-dropdown .ant-dropdown-menu-item.ant-dropdown-menu-item-selected:after {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 24px;
+  background: url('/svg/ui/checked.svg');
+}
+
+.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item-icon {
+  display: block;
+  margin-inline-end: 0;
+}
 
 @media screen and (max-width: 768px) {
   .container {
