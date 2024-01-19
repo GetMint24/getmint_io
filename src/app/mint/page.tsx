@@ -29,7 +29,7 @@ function Page() {
     const { chain } = useNetwork();
     const { address } = useAccount();
 
-    const _mintNFT = async (data: MintSubmitEvent) => {
+    const _mintNFT = async (data: MintSubmitEvent, key?: string) => {
         if (!walletConnected) {
             openAccountDrawer();
             messageApi.info('Connect a wallet before Mint!');
@@ -67,6 +67,11 @@ function Page() {
 
                     await messageApi.success('NFT Successfully minted');
                     await NftStore.getNfts();
+
+                    if (key) {
+                        await ApiService.deleteFileFromCloud(key);
+                    }
+
                     router.push(`/mint/${nft.pinataImageHash}?successful=true`);
 
                     await fetchAccount();

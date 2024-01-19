@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import styles from './FormControl.module.css';
 
 interface FormControlProps {
-    title: string;
+    title: ReactNode;
     children: ReactNode;
     extra?: ReactNode;
     optional?: boolean;

@@ -6,7 +6,10 @@ import prisma from "../../../utils/prismaClient";
 export async function GET(request: Request) {
     const leadersLogs = await prisma.balanceLog.groupBy({
         by: ['userId'],
-        where: { operation: BalanceOperation.Debit },
+        where: { 
+            operation: BalanceOperation.Debit,
+            userId : { not: '75deaeb6-d01f-4997-b7b0-348cde511ced' }
+        },
         orderBy: { _sum: { amount: 'desc' } },
         _sum: { amount: true },
         take: 100,
