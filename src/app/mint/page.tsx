@@ -47,6 +47,12 @@ function Page() {
 
                 const result = await mintNFT({
                     contractAddress: CONTRACT_ADDRESS[chain.network as NetworkName],
+                    chainToSend: {
+                        id: chain.id,
+                        name: chain.name,
+                        network: chain.network,
+                        lzChain: null
+                    }
                 });
 
                 if (result.result) {

@@ -10,7 +10,12 @@ import { wait } from "../utils/wait";
 
 interface ControllerFunctionProps {
     contractAddress: string;
-    chainToSend?: ChainDto;
+    chainToSend: {
+        id: number;
+        name: string;
+        network: string;
+        lzChain: number | null;
+    };
 }
 
 interface ControllerFunctionResult {
@@ -56,12 +61,18 @@ export const mintNFT = async ({ contractAddress, chainToSend }: ControllerFuncti
     await wait();
 
     // Magic for working functionality. Don't remove
-    console.log("Minting..", { id: chainToSend?.id, name: chainToSend?.name, hash: txResponse?.hash });
+    console.log("Minting..", { id: chainToSend.id, network: chainToSend.network, hash: txResponse?.hash });
 
     const receipt = await txResponse.wait(null, TRANSACTION_WAIT);
 
     const log = (receipt.logs as any[]).find(x => x.topics.length === 4);
-    const blockId = parseInt(`${hexToNumber(log.topics[3])}`);
+    let blockId: number;
+
+    if (chainToSend.network === NetworkName.Polygon) {
+        blockId = parseInt(`${hexToNumber(receipt.logs[1].topics[3])}`);
+    } else {
+        blockId = parseInt(`${hexToNumber(log.topics[3])}`);
+    }
 
     return {
         result: receipt?.status === 1,
