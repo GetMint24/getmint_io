@@ -55,3 +55,11 @@
     box-shadow: none;
     cursor: not-allowed;
 }
+
+.rounded:disabled {
+    box-shadow: none;
+    background: transparent;
+    border-color: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.64);
+    -webkit-text-fill-color: rgba(255, 255, 255, 0.64);
+}
