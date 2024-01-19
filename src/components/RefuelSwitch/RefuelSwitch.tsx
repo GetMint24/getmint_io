@@ -29,7 +29,7 @@ export default function RefuelSwitch({ className, onChangeRefuelGas, refuel, ...
             <span className={styles.label}>Enable refuel</span>
 
             <Dropdown
-                trigger={['click', 'hover']}
+                trigger={['click']}
                 placement={'topCenter'}
                 menu={{
                     items: REFUEL_AMOUNT_USD.map(cost => ({

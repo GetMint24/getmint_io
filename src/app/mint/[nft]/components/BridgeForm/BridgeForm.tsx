@@ -36,7 +36,7 @@ export default function BridgeForm({ className, nft, onBridge }: Props) {
     const [_chains, setChains] = useState<ChainDto[]>([]);
     const [selectedChain, setSelectedChain] = useState<string>();
     const [isPending , setIsPending] = useState<boolean>(false);
-    const [refuelEnabled, setRefuelEnable] = useState<boolean>(true);
+    const [refuelEnabled, setRefuelEnable] = useState<boolean>(false);
     const [refuelCost, setRefuelCost] = useState(DEFAULT_REFUEL_COST_USD);
 
     const { chain: currentChain } = useNetwork();
