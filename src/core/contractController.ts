@@ -151,7 +151,23 @@ export const estimateBridge = async (
         adapterParams
     );
 
-    const formatted = ethers.formatEther(nativeFee);
+    const bridgeOptions = {
+        value: nativeFee,
+        gasLimit: BigInt(0)
+    }
+
+    const gasLimit = await contract.sendFrom.estimateGas(
+        sender,
+        _dstChainId,
+        _toAddress,
+        tokenId,
+        sender,
+        ethers.ZeroAddress,
+        adapterParams,
+        bridgeOptions
+    );
+
+    const formatted = ethers.formatEther(gasLimit);
     return (price! * parseFloat(formatted)).toFixed(2);
 };
 
