@@ -9,6 +9,7 @@ import Header from "../components/layout/Header/Header";
 import Footer from "../components/layout/Footer/Footer";
 import WalletProvider from "./wallet-provider";
 import StyledComponentsRegistry from "../components/AntdRegistry";
+import AccountDrawer from "../components/AccountDrawer/AccountDrawer";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -79,6 +80,8 @@ export default function RootLayout({
                     </div>
                   </footer>
                 </div>
+
+                <AccountDrawer />
               </StyledComponentsRegistry>
             </WalletProvider>
             

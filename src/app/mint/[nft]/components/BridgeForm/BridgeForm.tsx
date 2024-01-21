@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Flex, notification, Spin } from "antd";
-import { useNetwork, useSwitchNetwork } from "wagmi";
+import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
 import clsx from "clsx";
 import styles from "./BridgeForm.module.css";
 
@@ -18,6 +18,7 @@ import { CONTRACT_ADDRESS, DEFAULT_REFUEL_COST_USD, UnailableNetworks } from "..
 import { NetworkName } from "../../../../../common/enums/NetworkName";
 import ApiService from "../../../../../services/ApiService";
 import RefuelSwitch from "../../../../../components/RefuelSwitch/RefuelSwitch";
+import AppStore from "../../../../../store/AppStore";
 
 
 interface Props {
@@ -32,6 +33,7 @@ interface SubmittedData {
 }
 
 export default function BridgeForm({ className, nft, onBridge }: Props) {
+    const { account } = AppStore;
     const [submittedData, setSubmittedData] = useState<SubmittedData | null>(null);
     const [_chains, setChains] = useState<ChainDto[]>([]);
     const [selectedChain, setSelectedChain] = useState<string>();
@@ -41,6 +43,7 @@ export default function BridgeForm({ className, nft, onBridge }: Props) {
 
     const { chain: currentChain } = useNetwork();
     const { switchNetworkAsync } = useSwitchNetwork();
+    const { address } = useAccount();
 
     useEffect(() => {
         if (ChainStore.chains.length && nft) {
@@ -79,7 +82,9 @@ export default function BridgeForm({ className, nft, onBridge }: Props) {
                     name: chainToSend.name,
                     network: chainToSend.network,
                     lzChain: chainToSend.lzChain
-                }
+                },
+                account,
+                accountAddress: address!
             }, nft.tokenId, refuelEnabled, refuelCost);
 
             if (result.result) {

@@ -139,6 +139,9 @@
     cursor: pointer;
 }
 
+.refferalLinkControl {
+    margin-bottom: 0 !important;
+}
 
 @media screen and (max-width: 1320px) {
     .closeIcon {
