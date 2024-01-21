@@ -81,7 +81,7 @@ export default function BridgeForm({ className, nft, onBridge }: Props) {
                     },
                     account,
                     accountAddress: address!
-                }, 0, refuelEnabled, refuelCost);
+                }, nft?.tokenId, refuelEnabled, refuelCost);
 
                 setBridgeCost(bridgeFee);
             }
