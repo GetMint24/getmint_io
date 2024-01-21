@@ -1,11 +1,13 @@
-import prisma from "../../../utils/prismaClient";
 import Joi from "joi";
+import { OAuth2UserOptions } from "twitter-api-sdk/dist/OAuth2User";
+import prisma from "../../../utils/prismaClient";
+
 import { BadRequest } from "../utils/responses";
 import { AccountDto } from "../../../common/dto/AccountDto";
 import { BalanceLogType } from "../../../common/enums/BalanceLogType";
 import { BalanceOperation } from "../../../common/enums/BalanceOperation";
 import { TwitterUser } from "../../../common/types";
-import { OAuth2UserOptions } from "twitter-api-sdk/dist/OAuth2User";
+import { BalanceOperationCost } from "../../../common/enums/BalanceOperationCost";
 
 interface CreateAccountDto {
     metamaskAddress: string;
@@ -29,11 +31,45 @@ export async function GET(request: Request) {
     });
 
     if (!user) {
+        const reffererAddress = request.headers.get('X-Refferer-Address') ?? '';
+
+        let reffererId;
+        let reffererMetamaskAddress;
+        let bindedRefferer = false;
+
+        const isSameAddress = metamaskWalletAddress.toLowerCase() === reffererAddress.toLowerCase();
+
+        if (reffererAddress && !isSameAddress) {
+            const reffererUser = await prisma.user.findFirst({
+                where: {
+                    metamaskWalletAddress: {
+                        contains: reffererAddress,
+                        mode: 'insensitive'
+                    }
+                }
+            });
+
+            if (reffererUser) {
+                reffererId = reffererUser.id;
+                reffererMetamaskAddress = reffererUser.metamaskWalletAddress;
+                bindedRefferer = true;
+            }
+        }
+
         user = await prisma.user.create({
             data: {
-                metamaskWalletAddress
-            }
+                metamaskWalletAddress,
+                reffererId,
+                reffererAddress: reffererMetamaskAddress
+            },
         });
+
+        if (bindedRefferer) {
+            await createRefferalLog({
+                reffererId: reffererId!,
+                refferalId: user.id
+            })
+        }
     }
 
     if (user.twitterEnabled && user.twitterLogin) {
@@ -52,10 +88,10 @@ export async function GET(request: Request) {
         _sum: { amount: true }
     });
 
-    const aggregateByType = (type: BalanceLogType) => {
+    const aggregateByType = (type: BalanceLogType, userId: string) => {
         return prisma.balanceLog.aggregate({
             where: {
-                userId: user!.id,
+                userId: userId,
                 type,
                 operation: BalanceOperation.Debit
             },
@@ -64,15 +100,31 @@ export async function GET(request: Request) {
         });
     };
 
-    const mints = await aggregateByType(BalanceLogType.Mint);
-    const bridges = await aggregateByType(BalanceLogType.Bridge);
-    const refferals = await aggregateByType(BalanceLogType.Refferal);
-    const twitterActivityDaily = await aggregateByType(BalanceLogType.TwitterActivityDaily);
-    const twitterGetmintSubscription = await aggregateByType(BalanceLogType.TwitterGetmintSubscription);
-    const tweets = await aggregateByType(BalanceLogType.CreateTweet);
+    const mints = await aggregateByType(BalanceLogType.Mint, user.id!);
+    const bridges = await aggregateByType(BalanceLogType.Bridge, user.id!);
+    const refferals = await aggregateByType(BalanceLogType.Refferal, user.id!);
+    const twitterActivityDaily = await aggregateByType(BalanceLogType.TwitterActivityDaily, user.id!);
+    const twitterGetmintSubscription = await aggregateByType(BalanceLogType.TwitterGetmintSubscription, user.id!);
+    const tweets = await aggregateByType(BalanceLogType.CreateTweet, user.id!);
+
+    const refferalMints = await prisma.balanceLog.aggregate({
+        where: {
+            userId: {
+                in: await prisma.user.findMany({
+                    where: { reffererId: user.id },
+                    select: { id: true }
+                }).then(response => response.map(r => r.id))
+            },
+            type: BalanceLogType.Mint,
+            operation: BalanceOperation.Debit
+        },
+        _sum: { amount: true },
+        _count: { amount: true }
+    });
 
     const accountDto: AccountDto = {
         id: user.id,
+        refferer: user.reffererAddress,
         balance: {
             total: total._sum.amount || 0,
             mints: mints._sum.amount || 0,
@@ -81,13 +133,17 @@ export async function GET(request: Request) {
             bridgesCount: bridges._count.amount,
             twitterActivity: (twitterActivityDaily._sum.amount || 0) + (twitterGetmintSubscription._sum.amount || 0) + (tweets._sum.amount || 0),
             refferals: refferals._sum.amount || 0,
-            refferalsCount: refferals._count.amount
         },
         twitter: {
             connected: user.twitterEnabled,
             followed: !!twitterGetmintSubscription._count.amount && user.followedGetmintTwitter,
             token,
             user: twitterUser,
+        },
+        refferals: {
+            count: refferals._count.amount,
+            mintsCount: refferalMints._count.amount,
+            claimAmount: 0
         }
     };
 
@@ -122,4 +178,31 @@ export async function POST(request: Request) {
     }
 
     return Response.json(user);
+}
+
+interface RefferalLogDto {
+    reffererId: string;
+    refferalId: string;
+}
+
+async function createRefferalLog(data: RefferalLogDto) {
+    return prisma.$transaction(async (context) => {
+        const balanceLog = await context.balanceLog.create({
+            data: {
+                userId: data.reffererId,
+                operation: BalanceOperation.Debit,
+                description: 'Начисление за приглашенного пользователя',
+                type: BalanceLogType.Refferal,
+                amount: BalanceOperationCost.Refferal,
+            }
+        });
+
+        await context.refferalLog.create({
+            data: {
+                balanceLogId: balanceLog.id,
+                reffererId: data.reffererId,
+                refferalId: data.refferalId
+            }
+        });
+    });
 }

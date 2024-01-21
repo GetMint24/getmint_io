@@ -1,7 +1,9 @@
 import Image from "next/image";
-import { useAccount, useDisconnect } from "wagmi";
+import { useAccount, useDisconnect, useNetwork } from "wagmi";
 import clsx from "clsx";
 import { Avatar, Flex, message, Spin } from 'antd';
+import { observer } from "mobx-react-lite";
+import { useEffect, useMemo, useState } from "react";
 
 import styles from './Account.module.css';
 import Button from "../../ui/Button/Button";
@@ -11,43 +13,71 @@ import FormControl from "../../ui/FormControl/FormControl";
 import Input from "../../ui/Input/Input";
 import AccountAddress from "../../AccountAddress/AccountAddress";
 import AppStore from "../../../store/AppStore";
-import { observer } from "mobx-react-lite";
-import { useEffect, useState } from "react";
 import { twitterApi } from "../../../utils/twitterApi";
 import { generateGradient } from "../../../utils/generators";
+import { convertAddress, getReffererEarnedInNetwork } from "../../../core/contractController";
+import { CONTRACT_ADDRESS } from "../../../common/constants";
+import { NetworkName } from "../../../common/enums/NetworkName";
+import { usePrice } from "../../../common/usePrice";
 
 interface RewardItemProps {
     name: string;
-    amount: number;
+    amount?: string;
     count?: number;
+    showAmount?: boolean;
     isTotal?: boolean;
 }
 
-function RewardItem({ name, amount, count, isTotal }: RewardItemProps) {
-    const costLabel = `${amount} XP`;
-
+function RewardItem({ name, amount = `0 XP`, count = 0, isTotal = false, showAmount = true }: RewardItemProps) {
     return (
         <Flex justify="space-between" align="center" className={clsx(isTotal && styles.rewardItemTotal)}>
             <div className={styles.rewardItemName}>{name}</div>
             <div className={styles.rewardItemCount}>
                 {isTotal && <Image src="/svg/xp.svg" width={24} height={24} alt="XP" />}
-                {count ? <span>{count} ({costLabel})</span> : <span>{costLabel}</span>}
+                {showAmount ? (
+                    <>
+                        {count ? <span>{count} ({amount})</span> : <span>{amount}</span>}
+                    </>
+                ) : (
+                    <>
+                        {count || 0}
+                    </>
+                )}
             </div>
         </Flex>
     )
 }
 
 function Account() {
-    const [showVerifyText, setShowVerifyText] = useState(false);
-    const { closeAccountDrawer, account, fetchAccount, disconnectTwitter, followTwitter, loading } = AppStore;
     const [messageApi, contextHolder] = message.useMessage();
+    const [showVerifyText, setShowVerifyText] = useState(false);
+    const {
+        closeAccountDrawer,
+        account,
+        fetchAccount,
+        disconnectTwitter,
+        followTwitter,
+        loading,
+        clearAccount,
+        setWalletConnected
+    } = AppStore;
 
+    const [earnedClaims, setEarnedClaims] = useState<number>(0);
+    const price = usePrice('ETH');
+
+    const { chain } = useNetwork();
     const { address, connector } = useAccount();
     const { disconnect } = useDisconnect({
         onSuccess: closeAccountDrawer
     });
 
-    const refferalLink = 'https://getmint.io/ref=031231480das';
+    const refferalLink = useMemo(() => {
+        if (address) {
+            return `${document.location.origin}/?ref=${convertAddress(address)}`;
+        }
+
+        return '';
+    }, [address]);
 
     const handleCopy = async () => {
         await navigator.clipboard.writeText(refferalLink);
@@ -85,6 +115,32 @@ function Account() {
         void fetchAccount();
     }, [fetchAccount]);
 
+    const claim = async () => {
+        console.log('claim');
+    };
+
+    const calculateEarnedClaims = async () => {
+        if (price) {
+            const earned = await getReffererEarnedInNetwork(
+                CONTRACT_ADDRESS[chain?.network as NetworkName],
+                address!
+            );
+
+            const earnedInDollars = parseFloat(earned) * price!;
+            setEarnedClaims(earnedInDollars)
+        }
+    };
+
+    useEffect(() => {
+        calculateEarnedClaims();
+    }, [chain, address, price]);
+
+    const logout = () => {
+        disconnect();
+        clearAccount();
+        setWalletConnected(false);
+    };
+
     if (!account) {
         return (
             <div className={styles.accountLoading}>
@@ -93,7 +149,7 @@ function Account() {
                     <span>Loading account...</span>
                 </Flex>
             </div>
-        )
+        );
     }
 
     return (
@@ -160,43 +216,78 @@ function Account() {
                 </div>
 
                 <div className={styles.card}>
-                    <div className={styles.cardTitle}>Rewards</div>
-                    {/* <div className={styles.divider}></div>
+                    <div className={styles.cardTitle}>Refferal</div>
+                    <div className={styles.divider}></div>
                     <div>
-                        <FormControl title="Your refferal link">
+                        <FormControl className={styles.refferalLinkControl} title="Your refferal link">
                             <Input value={refferalLink} onChange={() => {}} readOnly action={(
                                 <IconBtn tooltip="Copy" onClick={handleCopy}>
                                     <Image src="/svg/ui/copy.svg" width={24} height={24} alt="Copy" />
                                 </IconBtn>
                             )} />
                         </FormControl>
-                    </div> */}
+                    </div>
                     <div className={styles.divider}></div>
                     {account ? (
                         <>
                             <div className={styles.rewardsList}>
                                 <RewardItem
                                     name="Refferals"
-                                    count={account.balance.refferalsCount}
-                                    amount={account.balance.refferals}
+                                    count={account.refferals.count}
+                                    showAmount={false}
+                                />
+
+                                <RewardItem
+                                    name="Referral mints"
+                                    count={account.refferals.mintsCount}
+                                    showAmount={false}
+                                />
+
+                                <RewardItem
+                                    name="Claimable amount"
+                                    amount={`$${earnedClaims}`}
+                                />
+                            </div>
+                        </>
+                    ) : <Spin />}
+                    <div className={styles.divider}></div>
+                    <Button
+                        block
+                        disabled={!earnedClaims}
+                        onClick={claim}
+                    >
+                        Claim ${account.refferals.claimAmount}
+                    </Button>
+                </div>
+
+                <div className={styles.card}>
+                    <div className={styles.cardTitle}>Rewards</div>
+                    <div className={styles.divider}></div>
+                    {account ? (
+                        <>
+                            <div className={styles.rewardsList}>
+                                <RewardItem
+                                    name="Refferals"
+                                    count={account.refferals.count}
+                                    amount={`${account.balance.refferals} XP`}
                                 />
                                 <RewardItem
                                     name="Twitter activity"
-                                    amount={account.balance.twitterActivity}
+                                    amount={`${account.balance.twitterActivity} XP`}
                                 />
                                 <RewardItem
                                     name="Mints"
                                     count={account.balance.mintsCount}
-                                    amount={account.balance.mints}
+                                    amount={`${account.balance.mints} XP`}
                                 />
                                 <RewardItem
                                     name="Bridges"
                                     count={account.balance.bridgesCount}
-                                    amount={account.balance.bridges}
+                                    amount={`${account.balance.bridges} XP`}
                                 />
                             </div>
                             <div className={styles.divider}></div>
-                            <div><RewardItem name="Total" amount={account.balance.total} isTotal /></div>
+                            <div><RewardItem name="Total" amount={`${account.balance.total} XP`} isTotal /></div>
                         </>
                     ) : <Spin />}
                 </div>
@@ -212,7 +303,7 @@ function Account() {
                                 <AccountAddress className={styles.connectorAddress} address={address} />
                             </div>
                         </Flex>
-                        <IconBtn tooltip="Logout" onClick={() => disconnect()}>
+                        <IconBtn tooltip="Logout" onClick={logout}>
                             <Image src="/svg/ui/logout.svg" width={24} height={24} alt="Logout" />
                         </IconBtn>
                     </Flex>

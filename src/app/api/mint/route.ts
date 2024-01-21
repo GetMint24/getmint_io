@@ -1,4 +1,3 @@
-import axios from "axios";
 import { User } from "@prisma/client";
 
 import prisma from "../../../utils/prismaClient";
@@ -67,8 +66,6 @@ export async function POST(request: Request) {
 
     return Response.json(createdNFT);
 }
-
-
 
 interface CreateNFTDto {
     name: string;

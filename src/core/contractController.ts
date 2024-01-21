@@ -3,12 +3,14 @@ import { hexToNumber } from "web3-utils";
 import axios, { AxiosResponse } from "axios";
 
 import abi from "./abi.json";
-import { ChainDto } from "../common/dto/ChainDto";
 import { NetworkName } from "../common/enums/NetworkName";
 import { DEFAULT_REFUEL_COST_USD } from "../common/constants";
+import { AccountDto } from "../common/dto/AccountDto";
 import { wait } from "../utils/wait";
 
 interface ControllerFunctionProps {
+    account: AccountDto | null;
+    accountAddress: string;
     contractAddress: string;
     chainToSend: {
         id: number;
@@ -33,8 +35,9 @@ const LZ_VERSION = 1;
  * Mint NFT Functionality
  * @param contractAddress Contract address for selected chain
  * @param chainToSend Current chain to send NFT
+ * @param account User account
  */
-export const mintNFT = async ({ contractAddress, chainToSend }: ControllerFunctionProps): Promise<ControllerFunctionResult> => {
+export const mintNFT = async ({ contractAddress, chainToSend, account }: ControllerFunctionProps): Promise<ControllerFunctionResult> => {
     const provider = new ethers.BrowserProvider((window as any).ethereum);
 
     const signer = await provider.getSigner();
@@ -54,9 +57,19 @@ export const mintNFT = async ({ contractAddress, chainToSend }: ControllerFuncti
     }
 
     let options: any = { value: BigInt(mintFee), gasLimit: BigInt(0) };
-    options.gasLimit = await contract['mint()'].estimateGas(options);
+    let gasLimit, txResponse;
 
-    const txResponse = await contract['mint()'](options);
+    if (account?.refferer) {
+        gasLimit = await contract['mint(address)'].estimateGas(account.refferer, options);
+        options.gasLimit = gasLimit;
+
+        txResponse = await contract['mint(address)'](account.refferer, options);
+    } else {
+        gasLimit = await contract['mint()'].estimateGas(options);
+        options.gasLimit = gasLimit;
+
+        txResponse = await contract['mint()'](options);
+    }
 
     await wait();
 
@@ -87,6 +100,7 @@ export const mintNFT = async ({ contractAddress, chainToSend }: ControllerFuncti
  * Bridge NFT Functionality
  * @param contractAddress Contract address for selected chain
  * @param chainToSend Current chain to send NFT
+ * @param account User account
  * @param tokenId NFT token id for sending to another chain
  * @param refuel Refuel enabled
  * @param refuelCost Refuel cost in dollars
@@ -203,7 +217,17 @@ export const bridgeNFT = async (
     };
 };
 
-async function fetchPrice(symbol: string): Promise<number | null> {
+export async function getReffererEarnedInNetwork(contractAddress: string, accountAddress: string) {
+    const provider = new ethers.BrowserProvider((window as any).ethereum);
+    const signer = await provider.getSigner();
+
+    const contract = new ethers.Contract(contractAddress, abi, signer);
+    const earned = await contract.referrersEarnedAmount(accountAddress);
+
+    return ethers.formatEther(earned);
+}
+
+export async function fetchPrice(symbol: string): Promise<number | null> {
     let fetchSymbol = ""
     if (symbol == "MNT") {
         fetchSymbol = "MANTLE"
@@ -225,5 +249,41 @@ async function fetchPrice(symbol: string): Promise<number | null> {
     } catch (error) {
         await new Promise(resolve => setTimeout(resolve, 1000))
         return fetchPrice(symbol)
+    }
+}
+
+export const convertAddress = (hexString: string): string => {
+    try {
+        if (hexString.startsWith('0x')) hexString = hexString.substring(2)
+
+        const byteArray = new Uint8Array(hexString.match(/.{1,2}/g)!.map(byte => parseInt(byte, 16)))
+
+        let binaryString = ''
+        byteArray.forEach(byte => binaryString += String.fromCharCode(byte))
+
+        binaryString = btoa(binaryString)
+        return binaryString.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+    } catch (error) {
+        return ''
+    }
+}
+
+export const decodeAddress = (encodedString: string): string => {
+    try {
+        encodedString = encodedString.replace(/-/g, '+').replace(/_/g, '/')
+
+        const binaryString = atob(encodedString)
+
+        let hexString = ''
+        for (let i = 0; i < binaryString.length; i++) {
+            let hex = binaryString.charCodeAt(i).toString(16)
+            hexString += (hex.length === 2 ? hex : '0' + hex)
+        }
+
+        hexString = '0x' + hexString
+
+        return hexString
+    } catch (error) {
+        return ''
     }
 }

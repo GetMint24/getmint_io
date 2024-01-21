@@ -18,7 +18,8 @@ import { SuccessfulBridgeData } from "../../types";
 import { bridgeNFT } from "../../../../core/contractController";
 import { CONTRACT_ADDRESS, DEFAULT_REFUEL_COST_USD, UnailableNetworks } from "../../../../common/constants";
 import { NetworkName } from "../../../../common/enums/NetworkName";
-import { useNetwork, useSwitchNetwork } from "wagmi";
+import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
+import AppStore from "../../../../store/AppStore";
 
 interface Props {
     onSubmit(data: SuccessfulBridgeData): void;
@@ -26,6 +27,7 @@ interface Props {
 
 function NftModal({ onSubmit }: Props) {
     const nft = NftStore.selectedNft();
+    const { account } = AppStore;
     const [_chains, setChains] = useState<ChainDto[]>([]);
     const [selectedChain, setSelectedChain] = useState<string>();
     const [isPending , setIsPending] = useState<boolean>(false);
@@ -34,6 +36,7 @@ function NftModal({ onSubmit }: Props) {
 
     const { chain: currentChain } = useNetwork();
     const { switchNetworkAsync } = useSwitchNetwork();
+    const { address } = useAccount();
 
     useEffect(() => {
         if (ChainStore.chains.length && nft) {
@@ -79,7 +82,9 @@ function NftModal({ onSubmit }: Props) {
                     name: chainToSend.name,
                     network: chainToSend.network,
                     lzChain: chainToSend.lzChain
-                }
+                },
+                account,
+                accountAddress: address!
             }, nft.tokenId, refuelEnabled, refuelCost);
 
             if (result.result) {

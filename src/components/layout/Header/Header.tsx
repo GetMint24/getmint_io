@@ -7,7 +7,6 @@ import Logo from "../../Logo/Logo";
 import Navigation from "../../Navigation/Navigation";
 import WalletActions from "../../WalletActions/WalletActions";
 import MobileMenu from "../../MobileMenu/MobileMenu";
-import AccountDrawer from "../../AccountDrawer/AccountDrawer";
 import AppStore from "../../../store/AppStore";
 
 import styles from './Header.module.css';
@@ -32,8 +31,6 @@ function Header() {
                 </>
             )}
             {isTablet && (<MobileMenu />)}
-
-            <AccountDrawer />
         </div>
     );
 }
