@@ -96,6 +96,65 @@ export const mintNFT = async ({ contractAddress, chainToSend, account }: Control
     }
 }
 
+export const estimateBridge = async (
+    { contractAddress, chainToSend }: ControllerFunctionProps,
+    tokenId: number,
+    refuel: boolean = false,
+    refuelCost: number = DEFAULT_REFUEL_COST_USD
+) => {
+    const provider = new ethers.BrowserProvider((window as any).ethereum);
+
+    const signer = await provider.getSigner();
+    const sender = await signer.getAddress();
+
+    const _toAddress = ethers.solidityPacked(
+        ["address"], [sender]
+    );
+
+    const contract = new ethers.Contract(contractAddress, abi, signer);
+    const _dstChainId = chainToSend?.lzChain;
+
+    const MIN_DST_GAS = await contract.minDstGasLookup(_dstChainId, LZ_VERSION);
+
+    let adapterParams;
+    const token = chainToSend?.network === NetworkName.Mantle ? 'MNT' : 'ETH';
+    const price = await fetchPrice(token);
+
+    if (refuel) {
+        if (!price) {
+            return null;
+        }
+
+        const REFUEL_AMOUNT = (refuelCost / price).toFixed(8);
+
+        const refuelAmountEth = ethers.parseUnits(
+            REFUEL_AMOUNT,
+            18
+        );
+
+        adapterParams = ethers.solidityPacked(
+            ["uint16", "uint256", "uint256", "address"],
+            [2, MIN_DST_GAS, refuelAmountEth, sender]
+        );
+    } else {
+        adapterParams = ethers.solidityPacked(
+            ["uint16", "uint256"],
+            [LZ_VERSION, MIN_DST_GAS]
+        );
+    }
+
+    const { nativeFee } = await contract.estimateSendFee(
+        _dstChainId,
+        _toAddress,
+        tokenId,
+        false,
+        adapterParams
+    );
+
+    const formatted = ethers.formatEther(nativeFee);
+    return (price! * parseFloat(formatted)).toFixed(2);
+};
+
 /**
  * Bridge NFT Functionality
  * @param contractAddress Contract address for selected chain

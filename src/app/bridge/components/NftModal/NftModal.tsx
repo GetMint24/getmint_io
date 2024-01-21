@@ -15,7 +15,7 @@ import ApiService from "../../../../services/ApiService";
 import ChainStore from "../../../../store/ChainStore";
 import { ChainDto } from "../../../../common/dto/ChainDto";
 import { SuccessfulBridgeData } from "../../types";
-import { bridgeNFT } from "../../../../core/contractController";
+import { bridgeNFT, estimateBridge } from "../../../../core/contractController";
 import { CONTRACT_ADDRESS, DEFAULT_REFUEL_COST_USD, UnailableNetworks } from "../../../../common/constants";
 import { NetworkName } from "../../../../common/enums/NetworkName";
 import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
@@ -33,6 +33,7 @@ function NftModal({ onSubmit }: Props) {
     const [isPending , setIsPending] = useState<boolean>(false);
     const [refuelEnabled, setRefuelEnable] = useState<boolean>(false);
     const [refuelCost, setRefuelCost] = useState(DEFAULT_REFUEL_COST_USD);
+    const [bridgeCost, setBridgeCost] = useState<string | null>();
 
     const { chain: currentChain } = useNetwork();
     const { switchNetworkAsync } = useSwitchNetwork();
@@ -47,6 +48,43 @@ function NftModal({ onSubmit }: Props) {
             setSelectedChain(_chains?.[0]?.id);
         }
     }, [ChainStore.chains, nft]);
+
+    const estimateBridgeFee = async (selectedChain: string) => {
+        if (nft) {
+            const chain = ChainStore.chains.find(c => c.id === selectedChain);
+
+            if (chain) {
+                let _currentNetwork: string = currentChain?.network!;
+
+                if (currentChain?.network !== nft?.chainNetwork) {
+                    const res = await switchNetworkAsync?.(nft?.chainNativeId);
+                    if (res) {
+                        _currentNetwork = res.network;
+                    }
+                }
+
+                const bridgeFee = await estimateBridge({
+                    contractAddress: CONTRACT_ADDRESS[_currentNetwork as NetworkName],
+                    chainToSend: {
+                        id: chain.chainId,
+                        name: chain.name,
+                        network: chain.network,
+                        lzChain: chain.lzChain
+                    },
+                    account,
+                    accountAddress: address!
+                }, 0, refuelEnabled, refuelCost);
+
+                setBridgeCost(bridgeFee);
+            }
+        }
+    };
+
+    useEffect(() => {
+        if (selectedChain) {
+            estimateBridgeFee(selectedChain);
+        }
+    }, [selectedChain, refuelEnabled, refuelCost]);
 
     if (!nft) {
         return null;
@@ -135,7 +173,13 @@ function NftModal({ onSubmit }: Props) {
                         />
 
                         <Flex gap={8} flex={1} className={styles.actions}>
-                            <ChainSelect chains={_chains} value={selectedChain} onChange={setSelectedChain} className={styles.dropdown} />
+                            <ChainSelect
+                                chains={_chains}
+                                value={selectedChain}
+                                onChange={setSelectedChain}
+                                className={styles.dropdown}
+                                bridgeCost={bridgeCost}
+                            />
                             <Button className={styles.sendBtn} onClick={handleSubmit}>Send</Button>
                         </Flex>
                         {isPending && <Spin className={styles.pending} />}

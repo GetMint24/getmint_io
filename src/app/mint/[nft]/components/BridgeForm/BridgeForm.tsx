@@ -13,7 +13,7 @@ import ChainSelect from "../../../../../components/ChainSelect/ChainSelect";
 import ChainStore from "../../../../../store/ChainStore";
 import { NFTDto } from "../../../../../common/dto/NFTDto";
 import { ChainDto } from "../../../../../common/dto/ChainDto";
-import { bridgeNFT } from "../../../../../core/contractController";
+import { bridgeNFT, estimateBridge } from "../../../../../core/contractController";
 import { CONTRACT_ADDRESS, DEFAULT_REFUEL_COST_USD, UnailableNetworks } from "../../../../../common/constants";
 import { NetworkName } from "../../../../../common/enums/NetworkName";
 import ApiService from "../../../../../services/ApiService";
@@ -40,6 +40,7 @@ export default function BridgeForm({ className, nft, onBridge }: Props) {
     const [isPending , setIsPending] = useState<boolean>(false);
     const [refuelEnabled, setRefuelEnable] = useState<boolean>(false);
     const [refuelCost, setRefuelCost] = useState(DEFAULT_REFUEL_COST_USD);
+    const [bridgeCost, setBridgeCost] = useState<string | null>();
 
     const { chain: currentChain } = useNetwork();
     const { switchNetworkAsync } = useSwitchNetwork();
@@ -55,6 +56,43 @@ export default function BridgeForm({ className, nft, onBridge }: Props) {
             setSelectedChain(_chains?.[0]?.id);
         }
     }, [ChainStore.chains, nft]);
+
+    const estimateBridgeFee = async (selectedChain: string) => {
+        if (nft) {
+            const chain = ChainStore.chains.find(c => c.id === selectedChain);
+
+            if (chain) {
+                let _currentNetwork: string = currentChain?.network!;
+
+                if (currentChain?.network !== nft?.chainNetwork) {
+                    const res = await switchNetworkAsync?.(nft?.chainNativeId);
+                    if (res) {
+                        _currentNetwork = res.network;
+                    }
+                }
+
+                const bridgeFee = await estimateBridge({
+                    contractAddress: CONTRACT_ADDRESS[_currentNetwork as NetworkName],
+                    chainToSend: {
+                        id: chain.chainId,
+                        name: chain.name,
+                        network: chain.network,
+                        lzChain: chain.lzChain
+                    },
+                    account,
+                    accountAddress: address!
+                }, 0, refuelEnabled, refuelCost);
+
+                setBridgeCost(bridgeFee);
+            }
+        }
+    };
+
+    useEffect(() => {
+        if (selectedChain) {
+            estimateBridgeFee(selectedChain);
+        }
+    }, [selectedChain, refuelEnabled, refuelCost]);
 
     const handleSubmit = async () => {
         try {
@@ -153,7 +191,13 @@ export default function BridgeForm({ className, nft, onBridge }: Props) {
 
             <div className={clsx(styles.footer, isPending && styles.footerPending)}>
                 <Flex gap={8} className={styles.formActions}>
-                    <ChainSelect chains={_chains} value={selectedChain} className={styles.dropdown} onChange={setSelectedChain} />
+                    <ChainSelect
+                        chains={_chains}
+                        value={selectedChain}
+                        className={styles.dropdown}
+                        onChange={setSelectedChain}
+                        bridgeCost={bridgeCost}
+                    />
                     <Button className={styles.sendBtn} onClick={handleSubmit}>Send</Button>
                 </Flex>
 

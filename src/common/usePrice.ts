@@ -6,7 +6,7 @@ export function usePrice(symbol: string) {
 
     useEffect(() => {
         fetchPrice(symbol).then(setPrice);
-    }, []);
+    }, [symbol]);
 
     return price;
 }
