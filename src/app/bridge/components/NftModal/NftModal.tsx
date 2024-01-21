@@ -51,6 +51,7 @@ function NftModal({ onSubmit }: Props) {
 
     const estimateBridgeFee = async (selectedChain: string) => {
         if (nft) {
+            const nftChain = ChainStore.chains.find(c => c.chainId === nft.chainNativeId);
             const chain = ChainStore.chains.find(c => c.id === selectedChain);
 
             if (chain) {
@@ -63,7 +64,7 @@ function NftModal({ onSubmit }: Props) {
                     }
                 }
 
-                const priceList = await estimateBridge(_chains, {
+                const priceList = await estimateBridge(_chains, nftChain?.token!, {
                     contractAddress: CONTRACT_ADDRESS[_currentNetwork as NetworkName],
                     chainToSend: {
                         id: chain.chainId,

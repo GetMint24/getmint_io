@@ -109,6 +109,7 @@ export type EstimationBridgeType = (EstimationBridge | null)[]
 
 export const estimateBridge = async (
     chains: ChainDto[],
+    token: string,
     { contractAddress }: ControllerFunctionProps,
     tokenId: number,
     refuel: boolean = false,
@@ -118,6 +119,8 @@ export const estimateBridge = async (
 
     const signer = await provider.getSigner();
     const sender = await signer.getAddress();
+
+    const price = await fetchPrice(token);
 
     async function estimate(chainToSend: ChainToSend) {
         const _toAddress = ethers.solidityPacked(
@@ -130,7 +133,6 @@ export const estimateBridge = async (
         const MIN_DST_GAS = await contract.minDstGasLookup(_dstChainId, LZ_VERSION);
 
         let adapterParams;
-        const price = await fetchPrice(chainToSend?.token);
 
         if (refuel) {
             if (!price) {
