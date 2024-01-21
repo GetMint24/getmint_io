@@ -15,7 +15,7 @@ import ApiService from "../../../../services/ApiService";
 import ChainStore from "../../../../store/ChainStore";
 import { ChainDto } from "../../../../common/dto/ChainDto";
 import { SuccessfulBridgeData } from "../../types";
-import { bridgeNFT, estimateBridge } from "../../../../core/contractController";
+import { bridgeNFT, estimateBridge, EstimationBridgeType } from "../../../../core/contractController";
 import { CONTRACT_ADDRESS, DEFAULT_REFUEL_COST_USD, UnailableNetworks } from "../../../../common/constants";
 import { NetworkName } from "../../../../common/enums/NetworkName";
 import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
@@ -33,7 +33,7 @@ function NftModal({ onSubmit }: Props) {
     const [isPending , setIsPending] = useState<boolean>(false);
     const [refuelEnabled, setRefuelEnable] = useState<boolean>(false);
     const [refuelCost, setRefuelCost] = useState(DEFAULT_REFUEL_COST_USD);
-    const [bridgeCost, setBridgeCost] = useState<string | null>();
+    const [bridgePriceList, setBridgePriceList] = useState<EstimationBridgeType>([]);
 
     const { chain: currentChain } = useNetwork();
     const { switchNetworkAsync } = useSwitchNetwork();
@@ -63,7 +63,7 @@ function NftModal({ onSubmit }: Props) {
                     }
                 }
 
-                const bridgeFee = await estimateBridge({
+                const priceList = await estimateBridge(_chains, {
                     contractAddress: CONTRACT_ADDRESS[_currentNetwork as NetworkName],
                     chainToSend: {
                         id: chain.chainId,
@@ -75,7 +75,7 @@ function NftModal({ onSubmit }: Props) {
                     accountAddress: address!
                 }, nft?.tokenId, refuelEnabled, refuelCost);
 
-                setBridgeCost(bridgeFee);
+                setBridgePriceList(priceList);
             }
         }
     };
@@ -84,7 +84,7 @@ function NftModal({ onSubmit }: Props) {
         if (selectedChain) {
             estimateBridgeFee(selectedChain);
         }
-    }, [selectedChain, refuelEnabled, refuelCost]);
+    }, [selectedChain, refuelEnabled, refuelCost, _chains]);
 
     if (!nft) {
         return null;
@@ -178,7 +178,7 @@ function NftModal({ onSubmit }: Props) {
                                 value={selectedChain}
                                 onChange={setSelectedChain}
                                 className={styles.dropdown}
-                                bridgeCost={bridgeCost}
+                                priceList={bridgePriceList}
                             />
                             <Button className={styles.sendBtn} onClick={handleSubmit}>Send</Button>
                         </Flex>
