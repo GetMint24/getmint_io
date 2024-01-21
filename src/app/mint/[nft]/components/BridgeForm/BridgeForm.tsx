@@ -77,7 +77,8 @@ export default function BridgeForm({ className, nft, onBridge }: Props) {
                         id: chain.chainId,
                         name: chain.name,
                         network: chain.network,
-                        lzChain: chain.lzChain
+                        lzChain: chain.lzChain,
+                        token: chain.token
                     },
                     account,
                     accountAddress: address!
@@ -119,7 +120,8 @@ export default function BridgeForm({ className, nft, onBridge }: Props) {
                     id: chainToSend.chainId,
                     name: chainToSend.name,
                     network: chainToSend.network,
-                    lzChain: chainToSend.lzChain
+                    lzChain: chainToSend.lzChain,
+                    token: chainToSend.token
                 },
                 account,
                 accountAddress: address!

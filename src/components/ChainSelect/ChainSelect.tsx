@@ -37,7 +37,7 @@ function ChainSelect({ value, className, onChange, chains, priceList }: Props) {
                     label: (
                         <Flex justify="space-between" align="center">
                             <div>{chain.name}</div>
-                            {price && <div>${price?.price}</div>}
+                            {price && price.price !== '0.00' && <div>${price?.price}</div>}
                         </Flex>
                     ),
                     icon: <Image width={24} height={24} alt="" src={getChainLogo(chain.network)} />,
@@ -79,7 +79,7 @@ function ChainSelect({ value, className, onChange, chains, priceList }: Props) {
 
                 <span className={styles.label}>{chain?.name || ''}</span>
 
-                {bridgePrice && (
+                {bridgePrice && bridgePrice !== '0.00' && (
                     <Flex align="center" gap={4} className={styles.price}>
                         <Image src="/svg/ui/fuel.svg" width={16} height={16} alt="" />
                         <span>${bridgePrice}</span>

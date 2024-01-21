@@ -113,11 +113,12 @@ model RefferalLog {
 }
 
 model Chain {
-  id      String @id @default(uuid())
+  id      String  @id @default(uuid())
   name    String
   network String
-  chainId Int    @unique @map("chain_id")
-  lzChain Int    @map("lz_chain")
+  chainId Int     @unique @map("chain_id")
+  lzChain Int     @map("lz_chain")
+  token   String?
   Nft     Nft[]
 
   @@map(name: "chains")

@@ -4,4 +4,5 @@ export interface ChainDto {
     network: string;
     chainId: number;
     lzChain: number;
+    token: string;
 }

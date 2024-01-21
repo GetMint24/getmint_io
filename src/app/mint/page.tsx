@@ -51,7 +51,8 @@ function Page() {
                         id: chain.id,
                         name: chain.name,
                         network: chain.network,
-                        lzChain: null
+                        lzChain: null,
+                        token: 'ETH'
                     },
                     account,
                     accountAddress: address!

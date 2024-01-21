@@ -14,6 +14,7 @@ interface ChainToSend {
     name: string;
     network: string;
     lzChain: number | null;
+    token: string;
 }
 
 interface ControllerFunctionProps {
@@ -129,8 +130,7 @@ export const estimateBridge = async (
         const MIN_DST_GAS = await contract.minDstGasLookup(_dstChainId, LZ_VERSION);
 
         let adapterParams;
-        const token = chainToSend?.network === NetworkName.Mantle ? 'MNT' : 'ETH';
-        const price = await fetchPrice(token);
+        const price = await fetchPrice(chainToSend?.token);
 
         if (refuel) {
             if (!price) {
@@ -176,7 +176,8 @@ export const estimateBridge = async (
             id: chain.chainId,
             name: chain.name,
             network: chain.network,
-            lzChain: chain.lzChain
+            lzChain: chain.lzChain,
+            token: chain.token
         })
     }))
 };
@@ -213,8 +214,7 @@ export const bridgeNFT = async (
 
     let adapterParams;
     if (refuel) {
-        const token = chainToSend?.network === NetworkName.Mantle ? 'MNT' : 'ETH';
-        const price = await fetchPrice(token);
+        const price = await fetchPrice(chainToSend?.token);
 
         if (!price) {
             return {

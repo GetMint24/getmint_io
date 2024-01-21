@@ -69,7 +69,8 @@ function NftModal({ onSubmit }: Props) {
                         id: chain.chainId,
                         name: chain.name,
                         network: chain.network,
-                        lzChain: chain.lzChain
+                        lzChain: chain.lzChain,
+                        token: chain.token,
                     },
                     account,
                     accountAddress: address!
@@ -119,7 +120,8 @@ function NftModal({ onSubmit }: Props) {
                     id: chainToSend.chainId,
                     name: chainToSend.name,
                     network: chainToSend.network,
-                    lzChain: chainToSend.lzChain
+                    lzChain: chainToSend.lzChain,
+                    token: chainToSend.token,
                 },
                 account,
                 accountAddress: address!
