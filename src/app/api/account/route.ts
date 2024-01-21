@@ -35,7 +35,6 @@ export async function GET(request: Request) {
 
         let reffererId;
         let reffererMetamaskAddress;
-        let bindedRefferer = false;
 
         const isSameAddress = metamaskWalletAddress.toLowerCase() === reffererAddress.toLowerCase();
 
@@ -52,7 +51,6 @@ export async function GET(request: Request) {
             if (reffererUser) {
                 reffererId = reffererUser.id;
                 reffererMetamaskAddress = reffererUser.metamaskWalletAddress;
-                bindedRefferer = true;
             }
         }
 
@@ -63,13 +61,6 @@ export async function GET(request: Request) {
                 reffererAddress: reffererMetamaskAddress
             },
         });
-
-        if (bindedRefferer) {
-            await createRefferalLog({
-                reffererId: reffererId!,
-                refferalId: user.id
-            })
-        }
     }
 
     if (user.twitterEnabled && user.twitterLogin) {
@@ -102,7 +93,7 @@ export async function GET(request: Request) {
 
     const mints = await aggregateByType(BalanceLogType.Mint, user.id!);
     const bridges = await aggregateByType(BalanceLogType.Bridge, user.id!);
-    const refferals = await aggregateByType(BalanceLogType.Refferal, user.id!);
+    const refferals = await aggregateByType(BalanceLogType.RefferalMint, user.id!);
     const twitterActivityDaily = await aggregateByType(BalanceLogType.TwitterActivityDaily, user.id!);
     const twitterGetmintSubscription = await aggregateByType(BalanceLogType.TwitterGetmintSubscription, user.id!);
     const tweets = await aggregateByType(BalanceLogType.CreateTweet, user.id!);
@@ -178,31 +169,4 @@ export async function POST(request: Request) {
     }
 
     return Response.json(user);
-}
-
-interface RefferalLogDto {
-    reffererId: string;
-    refferalId: string;
-}
-
-async function createRefferalLog(data: RefferalLogDto) {
-    return prisma.$transaction(async (context) => {
-        const balanceLog = await context.balanceLog.create({
-            data: {
-                userId: data.reffererId,
-                operation: BalanceOperation.Debit,
-                description: 'Начисление за приглашенного пользователя',
-                type: BalanceLogType.Refferal,
-                amount: BalanceOperationCost.Refferal,
-            }
-        });
-
-        await context.refferalLog.create({
-            data: {
-                balanceLogId: balanceLog.id,
-                reffererId: data.reffererId,
-                refferalId: data.refferalId
-            }
-        });
-    });
 }

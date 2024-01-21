@@ -267,7 +267,7 @@ function Account() {
                         <>
                             <div className={styles.rewardsList}>
                                 <RewardItem
-                                    name="Refferals"
+                                    name="Refferals mints"
                                     count={account.refferals.count}
                                     amount={`${account.balance.refferals} XP`}
                                 />
