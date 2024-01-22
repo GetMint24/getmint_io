@@ -61,7 +61,9 @@ function Page({ params }: Props) {
                     <div className={styles.info}>
                         <div className={styles.account}>
                             <Avatar size={32} src={account?.twitter.user?.avatar} style={{ background: generateGradient(135) }} />
-                            {nft.userName ? (
+                            {nft.userId === account?.id ? (
+                                <span>You</span>
+                            ) : nft.userName ? (
                                 <span>{nft.userName}</span>
                             ) : (
                                 <AccountAddress address={nft.userWalletAddress} />

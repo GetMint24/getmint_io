@@ -37,6 +37,52 @@ function History({ nftId, chainNetwork, className }: Props) {
         ApiService.getNftHistory(nftId, chainNetwork).then((history) => setHistory(history));
     }, [chainNetwork, nftId]);
 
+    if (isMobile) {
+        return (
+            <div className={clsx(styles.container, className)}>
+                {!history.length && <Spin size="large" />}
+                {history.map((item, index) => {
+                    const chain = ChainStore.getChainByNetwork(item.chainNetwork);
+                    const targetChain = item.targetChainNetwork ? ChainStore.getChainByNetwork(item.targetChainNetwork) : undefined;
+
+                    if (!chain) {
+                        return null;
+                    }
+
+                    return (
+                        <div className={styles.card}>
+                            <div className={styles.info}>
+                                <div>
+                                    <div className={styles.label}>Action</div>
+                                    <div className={styles.operation}>
+                                        <Image src={OPERATION_ICONS[item.type]} width={20} height={20} alt="" />
+                                        <span>{OPERATION_NAME[item.type]}</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className={styles.label}>Time</div>
+                                    <div className={styles.value}>{intlFormatDistance(new Date(item.date), new Date(), { locale: 'en-US' })}</div>
+                                </div>
+                            </div>
+                            <div className={styles.chains}>
+                                <div className={styles.label}>Network</div>
+                                <div className={styles.scheme}>
+                                    <ChainLabel network={chain.network} label={chain.name} iconClassName={styles.icon} labelClassName={styles.chainLabel} />
+                                    {targetChain && (
+                                        <>
+                                            <Image src="/svg/scheme-arrow.svg" width={16} height={16} alt="" className={styles.arrow} />
+                                            <ChainLabel network={targetChain.network} label={targetChain.name} iconClassName={styles.icon} labelClassName={styles.chainLabel} />
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    }
+
     return (
         <div className={clsx(styles.container, className)}>
             <div className={styles.head}>
