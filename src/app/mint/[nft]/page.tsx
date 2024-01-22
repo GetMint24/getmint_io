@@ -86,7 +86,7 @@ function NftPage({ params, searchParams }: NftPageProps) {
                     labelClassName={styles.chainLabel} />
             </Flex>
 
-            <BridgeForm nft={nft} className={styles.bridge} onBridge={refetch} />
+            <BridgeForm nft={nft} className={styles.bridge} onAfterBridge={refetch} />
 
             {loading ? (
                 <Flex gap={12} align="center" justify="center">
