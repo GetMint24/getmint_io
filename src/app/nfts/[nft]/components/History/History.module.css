@@ -21,6 +21,7 @@
 
 .row {
     display: flex;
+    align-items: center;
     gap: 16px;
     padding-right: 12px;
 }
@@ -87,6 +88,10 @@
         flex-grow: 1;
         align-items: center;
         margin-top: 10px;
+    }
+
+    .scheme img {
+        transform: rotate(90deg);
     }
 
     .icon {

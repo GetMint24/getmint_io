@@ -67,11 +67,11 @@ function History({ nftId, chainNetwork, className }: Props) {
                             <div className={styles.chains}>
                                 <div className={styles.label}>Network</div>
                                 <div className={styles.scheme}>
-                                    <ChainLabel network={chain.network} label={chain.name} iconClassName={styles.icon} labelClassName={styles.chainLabel} />
+                                    <ChainLabel network={chain.network} label={chain.name} justify="center" iconClassName={styles.icon} labelClassName={styles.chainLabel} />
                                     {targetChain && (
                                         <>
                                             <Image src="/svg/scheme-arrow.svg" width={16} height={16} alt="" className={styles.arrow} />
-                                            <ChainLabel network={targetChain.network} label={targetChain.name} iconClassName={styles.icon} labelClassName={styles.chainLabel} />
+                                            <ChainLabel network={targetChain.network} label={targetChain.name} justify="center" iconClassName={styles.icon} labelClassName={styles.chainLabel} />
                                         </>
                                     )}
                                 </div>

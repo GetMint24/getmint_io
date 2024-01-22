@@ -18,10 +18,45 @@
     flex-grow: 1;
 }
 
+.spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.scheme {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.successful {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.label {
+    flex-grow: 1;
+}
+
 
 @media screen and (max-width: 768px) {
     .container {
         padding: 16px;
+    }
+
+    .scheme {
+        flex-direction: column;
+        gap: 4px;
+        flex-grow: 1;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .scheme img {
+        transform: rotate(90deg);
     }
 
     .actions {

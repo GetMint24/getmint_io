@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
-import { Avatar, Spin } from "antd";
+import { Avatar, Flex, Spin } from "antd";
 import Image from "next/image";
 import Card from "../../../components/ui/Card/Card";
 import AppStore from "../../../store/AppStore";
@@ -14,10 +14,10 @@ import { generateGradient } from "../../../utils/generators";
 import ChainLabel from "../../../components/ChainLabel/ChainLabel";
 import { BalanceOperationCost } from "../../../common/enums/BalanceOperationCost";
 import ChainStore from "../../../store/ChainStore";
-
-import styles from "./page.module.css";
 import History from "./components/History/History";
 import BridgeForm from "./components/BridgeForm/BridgeForm";
+
+import styles from "./page.module.css";
 
 interface Props {
     params: { nft: string },
@@ -25,24 +25,35 @@ interface Props {
 
 function Page({ params }: Props) {
     const [nft, setNft] = useState<NFTDto>();
+    const [isLoading, setIsLoading] = useState(false);
     const { account } = AppStore;
     const { getChains } = ChainStore;
 
-    useEffect(() => {
+    const refetch = () => {
+        setIsLoading(true);
         if (params.nft) {
             ApiService.getNft(params.nft).then((nft) => {
                 setNft(nft);
             });
         }
+        setIsLoading(false);
+    };
+
+    useEffect(() => {
+        refetch();
     }, [params]);
 
     useEffect(() => {
         getChains();
     }, []);
 
-    if (!nft) {
+    if (isLoading || !nft) {
         return (
-            <Spin size="large" />
+            <Card>
+                <Flex align="center" justify="center">
+                    <Spin size="large" />
+                </Flex>
+            </Card>
         );
     }
 
