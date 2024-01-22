@@ -50,7 +50,7 @@ function History({ nftId, chainNetwork, className }: Props) {
                     }
 
                     return (
-                        <div className={styles.card}>
+                        <div key={index} className={styles.card}>
                             <div className={styles.info}>
                                 <div>
                                     <div className={styles.label}>Action</div>
