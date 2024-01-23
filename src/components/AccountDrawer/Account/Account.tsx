@@ -279,7 +279,7 @@ function Account() {
                         <div className={styles.divider}></div>
                         <Button
                             block
-                            disabled={earnedClaims === '0'}
+                            disabled={earnedClaims === '$0.00'}
                             onClick={() => setShowClaimsModal(true)}
                         >
                             Claim {earnedClaims}
