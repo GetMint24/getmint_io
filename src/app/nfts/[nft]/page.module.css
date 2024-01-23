@@ -1,3 +1,20 @@
+.back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.64;
+    transition: all 0.3s ease-out;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+.back:hover {
+    opacity: 1;
+}
+
 .title {
     font-size: 24px;
 }
@@ -74,6 +91,12 @@
     flex-grow: 1;
 }
 
+@media screen and (max-width: 1360px) {
+    .card {
+        max-width: 447px;
+    }
+}
+
 @media screen and (max-width: 1024px) {
     .container {
         flex-direction: column;
@@ -86,6 +109,15 @@
 }
 
 @media screen and (max-width: 768px) {
+    .back {
+        font-size: 14px;
+    }
+
+    .back img {
+        width: 20px !important;
+        height: 20px !important;
+    }
+
     .title {
         font-size: 20px;
     }
