@@ -5,4 +5,5 @@ export interface ChainDto {
     chainId: number;
     lzChain: number;
     token: string;
+    rpcUrl: string;
 }

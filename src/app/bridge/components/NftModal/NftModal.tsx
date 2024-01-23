@@ -1,6 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { Flex, notification, Spin } from "antd";
-import { useEffect, useState } from "react";
+import { Flex, Spin } from "antd";
 import clsx from "clsx";
 
 import NftStore from "../../../../store/NftStore";

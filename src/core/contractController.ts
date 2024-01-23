@@ -4,7 +4,7 @@ import axios, { AxiosResponse } from "axios";
 
 import abi from "./abi.json";
 import { NetworkName } from "../common/enums/NetworkName";
-import { DEFAULT_REFUEL_COST_USD } from "../common/constants";
+import { CONTRACT_ADDRESS, DEFAULT_REFUEL_COST_USD } from "../common/constants";
 import { AccountDto } from "../common/dto/AccountDto";
 import { wait } from "../utils/wait";
 import { ChainDto } from "../common/dto/ChainDto";
@@ -304,11 +304,10 @@ export const bridgeNFT = async (
     };
 };
 
-export async function getReffererEarnedInNetwork(contractAddress: string, accountAddress: string) {
-    const provider = new ethers.BrowserProvider((window as any).ethereum);
-    const signer = await provider.getSigner();
+export async function getReffererEarnedInNetwork(chain: ChainDto, accountAddress: string) {
+    const provider = new ethers.JsonRpcProvider(chain.rpcUrl);
 
-    const contract = new ethers.Contract(contractAddress, abi, signer);
+    const contract = new ethers.Contract(CONTRACT_ADDRESS[chain.network as NetworkName], abi, provider);
     const earned = await contract.referrersEarnedAmount(accountAddress);
 
     return ethers.formatEther(earned);
