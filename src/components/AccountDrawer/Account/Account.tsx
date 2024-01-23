@@ -62,7 +62,7 @@ function Account() {
         setWalletConnected
     } = AppStore;
 
-    const [earnedClaims, setEarnedClaims] = useState<number>(0);
+    const [earnedClaims, setEarnedClaims] = useState<string>('0');
     const price = usePrice('ETH');
 
     const { chain } = useNetwork();
@@ -113,7 +113,7 @@ function Account() {
 
     useEffect(() => {
         void fetchAccount();
-    }, [fetchAccount]);
+    }, [fetchAccount, address]);
 
     const claim = async () => {
         console.log('claim');
@@ -126,8 +126,8 @@ function Account() {
                 address!
             );
 
-            const earnedInDollars = parseFloat(earned) * price!;
-            setEarnedClaims(earnedInDollars)
+            const earnedInDollars = (parseFloat(earned) * price!).toFixed(2);
+            setEarnedClaims(earnedInDollars === '0.00' ? '0' : earnedInDollars)
         }
     };
 
@@ -253,10 +253,10 @@ function Account() {
                     <div className={styles.divider}></div>
                     <Button
                         block
-                        disabled={!earnedClaims}
+                        disabled={earnedClaims !== '0'}
                         onClick={claim}
                     >
-                        Claim ${account.refferals.claimAmount}
+                        Claim ${earnedClaims}
                     </Button>
                 </div>
 
@@ -268,7 +268,7 @@ function Account() {
                             <div className={styles.rewardsList}>
                                 <RewardItem
                                     name="Refferals mints"
-                                    count={account.refferals.count}
+                                    count={account.balance.refferalsMintCount}
                                     amount={`${account.balance.refferals} XP`}
                                 />
                                 <RewardItem

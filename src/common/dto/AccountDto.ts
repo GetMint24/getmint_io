@@ -6,6 +6,7 @@ export interface AccountDto {
     refferer: string | null;
     balance: {
         refferals: number;
+        refferalsMintCount: number;
         mintsCount: number;
         mints: number;
         bridgesCount: number;

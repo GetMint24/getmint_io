@@ -7,7 +7,6 @@ import { AccountDto } from "../../../common/dto/AccountDto";
 import { BalanceLogType } from "../../../common/enums/BalanceLogType";
 import { BalanceOperation } from "../../../common/enums/BalanceOperation";
 import { TwitterUser } from "../../../common/types";
-import { BalanceOperationCost } from "../../../common/enums/BalanceOperationCost";
 
 interface CreateAccountDto {
     metamaskAddress: string;
@@ -93,7 +92,6 @@ export async function GET(request: Request) {
 
     const mints = await aggregateByType(BalanceLogType.Mint, user.id!);
     const bridges = await aggregateByType(BalanceLogType.Bridge, user.id!);
-    const refferals = await aggregateByType(BalanceLogType.RefferalMint, user.id!);
     const twitterActivityDaily = await aggregateByType(BalanceLogType.TwitterActivityDaily, user.id!);
     const twitterGetmintSubscription = await aggregateByType(BalanceLogType.TwitterGetmintSubscription, user.id!);
     const tweets = await aggregateByType(BalanceLogType.CreateTweet, user.id!);
@@ -113,6 +111,10 @@ export async function GET(request: Request) {
         _count: { amount: true }
     });
 
+    const refferalsCount = await prisma.user.count({
+        where: { reffererId: user.id },
+    });
+
     const accountDto: AccountDto = {
         id: user.id,
         refferer: user.reffererAddress,
@@ -123,7 +125,8 @@ export async function GET(request: Request) {
             bridges: bridges._sum.amount || 0,
             bridgesCount: bridges._count.amount,
             twitterActivity: (twitterActivityDaily._sum.amount || 0) + (twitterGetmintSubscription._sum.amount || 0) + (tweets._sum.amount || 0),
-            refferals: refferals._sum.amount || 0,
+            refferals: refferalMints._sum.amount || 0,
+            refferalsMintCount: refferalMints._count.amount || 0,
         },
         twitter: {
             connected: user.twitterEnabled,
@@ -132,7 +135,7 @@ export async function GET(request: Request) {
             user: twitterUser,
         },
         refferals: {
-            count: refferals._count.amount,
+            count: refferalsCount,
             mintsCount: refferalMints._count.amount,
             claimAmount: 0
         }

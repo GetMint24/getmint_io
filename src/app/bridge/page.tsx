@@ -1,20 +1,27 @@
 "use client";
 
+import { useEffect } from "react";
+import { observer } from "mobx-react-lite";
+import { useAccount } from "wagmi";
+
 import Card from "../../components/ui/Card/Card";
 import CostLabel from "../../components/CostLabel/CostLabel";
 import NftList from "./components/NftList/NftList";
-import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
 import NftStore from "../../store/NftStore";
 import ChainStore from "../../store/ChainStore";
 
 import styles from "./page.module.css";
 
 function Page() {
+    const { address } = useAccount();
+
     useEffect(() => {
-        NftStore.getNfts();
         ChainStore.getChains();
     }, []);
+
+    useEffect(() => {
+        NftStore.getNfts();
+    }, [address]);
 
     return (
         <Card title={(
