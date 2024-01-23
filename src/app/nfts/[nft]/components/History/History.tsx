@@ -24,23 +24,19 @@ const OPERATION_NAME = {
 };
 
 interface Props {
-    nftId: string;
-    chainNetwork: string;
+    history: OperationHistoryDto[];
+    loading?: boolean;
     className?: string;
 }
 
-function History({ nftId, chainNetwork, className }: Props) {
-    const [history, setHistory] = useState<OperationHistoryDto[]>([]);
+function History({ history, loading, className }: Props) {
     const isMobile = useMedia({ maxWidth: 768 });
-
-    useEffect(() => {
-        ApiService.getNftHistory(nftId, chainNetwork).then((history) => setHistory(history));
-    }, [chainNetwork, nftId]);
 
     if (isMobile) {
         return (
             <div className={clsx(styles.container, className)}>
-                {!history.length && <Spin size="large" />}
+                {loading && <Spin size="large" />}
+                {!loading && !history.length && <strong>Operation history is empty</strong>}
                 {history.map((item, index) => {
                     const chain = ChainStore.getChainByNetwork(item.chainNetwork);
                     const targetChain = item.targetChainNetwork ? ChainStore.getChainByNetwork(item.targetChainNetwork) : undefined;
@@ -93,7 +89,8 @@ function History({ nftId, chainNetwork, className }: Props) {
                 </div>
             </div>
             <div className={styles.body}>
-                {!history.length && <Spin size="large" />}
+                {loading && <Spin size="large" />}
+                {!loading && !history.length && <strong>Operation history is empty</strong>}
                 {history.map((item, index) => {
                     const chain = ChainStore.getChainByNetwork(item.chainNetwork);
                     const targetChain = item.targetChainNetwork ? ChainStore.getChainByNetwork(item.targetChainNetwork) : undefined;

@@ -1,5 +1,6 @@
 import { Flex, Spin } from "antd";
 import { observer } from "mobx-react-lite";
+import { useRouter } from "next/navigation";
 import PinataImage from "../../../../components/PinataImage";
 import NftStore from "../../../../store/NftStore";
 import ChainLabel from "../../../../components/ChainLabel/ChainLabel";
@@ -10,10 +11,11 @@ import { BalanceOperationCost } from "../../../../common/enums/BalanceOperationC
 import styles from "./NftList.module.css";
 
 function NftList() {
+    const router = useRouter();
     const nfts = [...NftStore.nfts].sort((a, b) => a.chainName.localeCompare(b.chainName));
 
     const handleCardClick = (nft: NFTDto) => {
-        NftStore.setNft(nft.id);
+        router.push(`/nfts/${nft.id}`);
     };
 
     if (NftStore.loading) {

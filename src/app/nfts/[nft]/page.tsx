@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
-import { Avatar, Flex, Spin } from "antd";
+import { Avatar, Flex, Spin, notification } from "antd";
 import Image from "next/image";
+import { notFound, useRouter } from "next/navigation";
 import Card from "../../../components/ui/Card/Card";
 import AppStore from "../../../store/AppStore";
 import ApiService from "../../../services/ApiService";
@@ -16,6 +17,7 @@ import { BalanceOperationCost } from "../../../common/enums/BalanceOperationCost
 import ChainStore from "../../../store/ChainStore";
 import History from "./components/History/History";
 import BridgeForm from "./components/BridgeForm/BridgeForm";
+import { OperationHistoryDto } from "../../../common/dto/OperationHistoryDto";
 
 import styles from "./page.module.css";
 
@@ -24,30 +26,48 @@ interface Props {
 }
 
 function Page({ params }: Props) {
+    const router = useRouter();
     const [nft, setNft] = useState<NFTDto>();
-    const [isLoading, setIsLoading] = useState(false);
+    const [history, setHistory] = useState<OperationHistoryDto[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isLoadingHistory, setIsLoadingHistory] = useState(false);
     const { account } = AppStore;
     const { getChains } = ChainStore;
 
-    const refetch = () => {
-        setIsLoading(true);
+    const refetch = async () => {
         if (params.nft) {
-            ApiService.getNft(params.nft).then((nft) => {
+            const nft = await ApiService.getNft(params.nft);
+            if (nft) {
                 setNft(nft);
-            });
+                setIsLoadingHistory(true);
+                const history = await ApiService.getNftHistory(nft.id, nft.chainNetwork);
+                setHistory(history);
+                setIsLoadingHistory(false);
+            } else {
+                notification.error({ message: 'NFT is not found' });
+            }
         }
+    };
+
+    const loadPage = async () => {
+        setIsLoading(true);
+        await refetch();
         setIsLoading(false);
     };
 
+    const goToBack = () => {
+        router.back();
+    };
+
     useEffect(() => {
-        refetch();
+        loadPage();
     }, [params]);
 
     useEffect(() => {
         getChains();
     }, []);
 
-    if (isLoading || !nft) {
+    if (isLoading) {
         return (
             <Card>
                 <Flex align="center" justify="center">
@@ -57,16 +77,26 @@ function Page({ params }: Props) {
         );
     }
 
+    if (!nft) {
+        return notFound();
+    }
+
     return (
         <Card
             title={
-                <span className={styles.title}>{nft?.name}</span>
+                <>
+                    <div className={styles.back} onClick={goToBack}>
+                        <Image src="/svg/ui/back-arrow.svg" width={24} height={24} alt="" />
+                        <span>Back</span>
+                    </div>
+                    <div className={styles.title}>{nft.name}</div>
+                </>
             }
         >
             <div className={styles.container}>
                 <div className={styles.card}>
                     <div className={styles.image}>
-                        <PinataImage hash={nft?.pinataImageHash} name={nft?.name} />
+                        <PinataImage hash={nft.pinataImageHash} name={nft.name} />
                     </div>
 
                     <div className={styles.info}>
@@ -95,11 +125,11 @@ function Page({ params }: Props) {
                     <div className={styles.description}>{nft.description}</div>
 
                     {account?.id === nft.userId && (
-                        <BridgeForm nft={nft} className={styles.form} />
+                        <BridgeForm nft={nft} className={styles.form} onAfterBridge={refetch} />
                     )}
                 </div>
                 
-                <History nftId={nft.id} chainNetwork={nft.chainNetwork} className={styles.history} />
+                <History history={history} loading={isLoadingHistory} className={styles.history} />
             </div>
         </Card>
     );
