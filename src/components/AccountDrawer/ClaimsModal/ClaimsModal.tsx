@@ -48,6 +48,8 @@ export default function ClaimsModal(props: ClaimsModalProps) {
                     notification.error({
                         message: response.message
                     });
+
+                    setIsPending(false);
                 }
             } finally {
                 setIsPending(false);
