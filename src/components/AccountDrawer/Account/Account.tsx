@@ -341,6 +341,11 @@ function Account() {
                 <ClaimsModal
                     open={showClaimsModal}
                     onClose={() => setShowClaimsModal(false)}
+                    onClaimed={() => {
+                        setShowClaimsModal(false);
+                        void fetchAccount();
+                        void calculateEarnedClaims();
+                    }}
                     earnedItems={earnedItems} />
             )}
         </>

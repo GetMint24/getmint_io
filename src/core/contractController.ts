@@ -304,12 +304,38 @@ export const bridgeNFT = async (
     };
 };
 
+export async function claimReferralFee(chain: ChainDto) {
+    try {
+        const provider = new ethers.BrowserProvider((window as any).ethereum);
+
+        const signer = await provider.getSigner();
+
+        const contract = new ethers.Contract(CONTRACT_ADDRESS[chain.network as NetworkName], abi, signer);
+
+        const txResponse = await contract.claimReferrerEarnings();
+        const receipt = await txResponse.wait(null, 60000);
+
+        return {
+            result: receipt.status === 1,
+            message: receipt.status === 1
+                ? 'Successful Claim'
+                : (receipt.status == null ? 'Claim not confirmed' : 'Claim Failed'),
+            receipt
+        };
+    } catch (e) {
+        console.error(e);
+
+        return {
+            result: false,
+            message: 'Something went wrong :(',
+        }
+    }
+}
+
 export async function getReffererEarnedInNetwork(chain: ChainDto, accountAddress: string) {
     const provider = new ethers.JsonRpcProvider(chain.rpcUrl);
-
     const contract = new ethers.Contract(CONTRACT_ADDRESS[chain.network as NetworkName], abi, provider);
     const earned = await contract.referrersEarnedAmount(accountAddress);
-
     return ethers.formatEther(earned);
 }
 
