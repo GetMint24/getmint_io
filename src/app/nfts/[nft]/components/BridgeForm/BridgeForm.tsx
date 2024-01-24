@@ -1,8 +1,10 @@
+import React from "react";
 import { observer } from "mobx-react-lite";
 import clsx from "clsx";
 import { useMedia } from "use-media";
 import { Spin } from "antd";
 import Image from "next/image";
+
 import { NFTDto } from "../../../../../common/dto/NFTDto";
 import ChainSelect from "../../../../../components/ChainSelect/ChainSelect";
 import RefuelSwitch from "../../../../../components/RefuelSwitch/RefuelSwitch";
@@ -28,6 +30,8 @@ function BridgeForm({ nft, className, onAfterBridge }: Props) {
         refuelCost,
         refuelEnabled,
         isPending,
+        isNeedChangeChain,
+        switchNetwork,
         onChangeChain,
         onChangeRefuelEnabled,
         onChangeRefuelGas,
@@ -86,7 +90,10 @@ function BridgeForm({ nft, className, onAfterBridge }: Props) {
                 ) : (
                     <ChainSelect chains={chains} value={selectedChain} onChange={onChangeChain} priceList={bridgePriceList} />
                 )}
-                <Button onClick={onBridge}>Send</Button>
+                {isNeedChangeChain
+                    ? <Button className={styles.sendBtn} onClick={switchNetwork}>Switch network</Button>
+                    : <Button className={styles.sendBtn} onClick={onBridge}>Send</Button>
+                }
             </div>
         </div>
     );

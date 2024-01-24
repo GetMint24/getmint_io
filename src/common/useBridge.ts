@@ -30,14 +30,22 @@ export function useBridge(nft: NFTDto, onAfterBridge?: (previousChain?: ChainDto
     const { switchNetworkAsync } = useSwitchNetwork();
     const { address } = useAccount();
 
+    const isNeedChangeChain = nft.chainNativeId !== currentChain?.id;
+
+    const switchNetwork = async () => {
+        await switchNetworkAsync?.(nft?.chainNativeId);
+    };
+
     const estimateBridgeFee = async (selectedChain: string) => {
         if (nft) {
             const nftChain = ChainStore.chains.find(c => c.chainId === nft.chainNativeId);
             const chain = ChainStore.chains.find(c => c.id === selectedChain);
 
             if (chain) {
+                let _currentNetwork: string = currentChain?.network!;
+
                 const priceList = await estimateBridge(_chains, nftChain?.token!, {
-                    contractAddress: CONTRACT_ADDRESS[nft.chainNetwork as NetworkName],
+                    contractAddress: CONTRACT_ADDRESS[_currentNetwork as NetworkName],
                     chainToSend: {
                         id: chain.chainId,
                         name: chain.name,
@@ -132,10 +140,10 @@ export function useBridge(nft: NFTDto, onAfterBridge?: (previousChain?: ChainDto
     }, [chains, nft]);
 
     useEffect(() => {
-        if (selectedChain) {
+        if (selectedChain && nft.chainNativeId === currentChain?.id) {
             estimateBridgeFee(selectedChain);
         }
-    }, [selectedChain, refuelEnabled, refuelCost, _chains]);
+    }, [selectedChain, refuelEnabled, refuelCost, _chains, currentChain, nft]);
 
     return {
         chains: _chains,
@@ -145,6 +153,8 @@ export function useBridge(nft: NFTDto, onAfterBridge?: (previousChain?: ChainDto
         isPending,
         submittedData,
         bridgePriceList,
+        isNeedChangeChain,
+        switchNetwork,
         onChangeChain: setSelectedChain,
         onChangeRefuelEnabled: setRefuelEnable,
         onChangeRefuelGas: setRefuelCost,

@@ -29,6 +29,8 @@ export default function BridgeForm({ className, nft, onAfterBridge }: Props) {
         selectedChain,
         submittedData,
         isPending,
+        isNeedChangeChain,
+        switchNetwork,
         onChangeChain,
         onChangeRefuelEnabled,
         onChangeRefuelGas,
@@ -77,7 +79,10 @@ export default function BridgeForm({ className, nft, onAfterBridge }: Props) {
                         onChange={onChangeChain}
                         priceList={bridgePriceList}
                     />
-                    <Button className={styles.sendBtn} onClick={onBridge}>Send</Button>
+                    {isNeedChangeChain
+                        ? <Button className={styles.sendBtn} onClick={switchNetwork}>Switch network</Button>
+                        : <Button className={styles.sendBtn} onClick={onBridge}>Send</Button>
+                    }
                 </Flex>
 
                 {isPending && <Spin className={styles.pending} />}
