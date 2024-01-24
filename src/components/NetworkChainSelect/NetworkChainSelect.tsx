@@ -1,6 +1,7 @@
 import { Dropdown, Flex, MenuProps, message } from "antd";
 import Image from "next/image";
 import { useEffect, useMemo } from "react";
+import clsx from "clsx";
 import { useNetwork, useSwitchNetwork } from "wagmi";
 import { getChainLogo } from "../../utils/getChainLogo";
 import { NetworkName } from "../../common/enums/NetworkName";
@@ -23,7 +24,12 @@ export default function NetworkChainSelect() {
         if (chain && chainNetworks.some((network) => network === chain.network)) {
             return chain.name;
         }
-        return 'Switch Network';
+        return 'Wrong Network';
+    }, [chain]);
+
+    const isKnownChain = useMemo(() => {
+        const chainNetworks = Object.values(NetworkName);
+        return chain && chainNetworks.some((network) => network === chain.network);
     }, [chain]);
 
     const chainsMenu = useMemo(() => {
@@ -70,7 +76,7 @@ export default function NetworkChainSelect() {
                 }}
                 rootClassName={styles.dropdown}
             >
-                <Flex align="center" gap={8} className={styles.dropdownBtn}>
+                <Flex align="center" gap={8} className={clsx(styles.dropdownBtn, { [styles.wrong]: !isKnownChain })}>
                     {chainLogo && <Image src={chainLogo} width={24} height={24} alt="" />}
 
                     <div className={styles.value}>{chainName}</div>
