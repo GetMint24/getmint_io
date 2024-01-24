@@ -36,10 +36,8 @@ export function useBridge(nft: NFTDto, onAfterBridge?: (previousChain?: ChainDto
             const chain = ChainStore.chains.find(c => c.id === selectedChain);
 
             if (chain) {
-                let _currentNetwork: string = currentChain?.network!;
-
                 const priceList = await estimateBridge(_chains, nftChain?.token!, {
-                    contractAddress: CONTRACT_ADDRESS[_currentNetwork as NetworkName],
+                    contractAddress: CONTRACT_ADDRESS[nft.chainNetwork as NetworkName],
                     chainToSend: {
                         id: chain.chainId,
                         name: chain.name,
