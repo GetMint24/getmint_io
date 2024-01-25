@@ -19,6 +19,9 @@ model User {
   twitterLogin           String?      @map("twitter_login")
   twitterToken           Json?        @map("twitter_token")
   avatar                 String?
+  // ID пользователя, кто пригласил другого пользователя в сервис
+  reffererId             String?
+  reffererAddress        String?
   nfts                   Nft[]
   balanceLogs            BalanceLog[]
 
@@ -56,6 +59,7 @@ model BalanceLog {
   mintLog     MintLog?
   bridgeLog   BridgeLog?
   tweetLog    TweetLog?
+  refferalLog RefferalLog?
 
   @@map(name: "balance_logs")
 }
@@ -95,12 +99,27 @@ model TweetLog {
   @@map(name: "tweet_logs")
 }
 
+model RefferalLog {
+  id           String     @id @default(uuid())
+  balanceLog   BalanceLog @relation(fields: [balanceLogId], references: [id], onDelete: Cascade)
+  balanceLogId String     @unique @map("balance_log_id")
+
+  // Кто пригласил
+  reffererId String @map("refferer_id")
+  // Кого пригласили
+  refferalId String @map("refferal_id")
+
+  @@map(name: "refferal_logs")
+}
+
 model Chain {
-  id      String @id @default(uuid())
+  id      String  @id @default(uuid())
   name    String
   network String
-  chainId Int    @unique @map("chain_id")
-  lzChain Int    @map("lz_chain")
+  chainId Int     @unique @map("chain_id")
+  lzChain Int     @map("lz_chain")
+  rpcUrl  String?
+  token   String?
   Nft     Nft[]
 
   @@map(name: "chains")

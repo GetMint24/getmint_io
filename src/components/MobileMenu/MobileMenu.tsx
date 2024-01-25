@@ -68,7 +68,7 @@ export default function MobileMenu() {
                 <nav className={styles.nav}>
                     <NavLink href="/" title="Mint" cost={20} onClick={handleCloseMenu} />
                     <NavLink href="/bridge" title="Bridge NFT" cost={10} onClick={handleCloseMenu} />
-                    <NavLink href="/leaderboard" title={<>Leaderboard <SoonLabel /></>} onClick={handleCloseMenu} />
+                    <NavLink href="/leaderboard" title="Leaderboard" onClick={handleCloseMenu} />
                     <NavLink href="/meme" title={<>Meme <SoonLabel /></>} onClick={handleCloseMenu} />
                 </nav>
 

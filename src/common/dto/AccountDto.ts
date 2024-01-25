@@ -3,9 +3,10 @@ import { TwitterUser } from "../types";
 
 export interface AccountDto {
     id: string,
+    refferer: string | null;
     balance: {
-        refferalsCount: number;
         refferals: number;
+        refferalsMintCount: number;
         mintsCount: number;
         mints: number;
         bridgesCount: number;
@@ -19,4 +20,9 @@ export interface AccountDto {
         token: OAuth2UserOptions['token'];
         user?: TwitterUser;
     },
+    refferals: {
+        count: number;
+        mintsCount: number;
+        claimAmount: number;
+    }
 }

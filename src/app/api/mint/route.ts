@@ -1,4 +1,3 @@
-import axios from "axios";
 import { User } from "@prisma/client";
 
 import prisma from "../../../utils/prismaClient";
@@ -68,8 +67,6 @@ export async function POST(request: Request) {
     return Response.json(createdNFT);
 }
 
-
-
 interface CreateNFTDto {
     name: string;
     description?: string;
@@ -113,6 +110,26 @@ async function createNFT(data: CreateNFTDto) {
                 transactionHash: data.transactionHash
             }
         });
+
+        if (data.user.reffererId) {
+            const balanceLog = await context.balanceLog.create({
+                data: {
+                    userId: data.user.reffererId,
+                    operation: BalanceOperation.Debit,
+                    description: 'Начисление за минт от реферального пользователя',
+                    type: BalanceLogType.RefferalMint,
+                    amount: BalanceOperationCost.RefferalMint,
+                }
+            });
+
+            await context.refferalLog.create({
+                data: {
+                    balanceLogId: balanceLog.id,
+                    reffererId: data.user.reffererId,
+                    refferalId: data.userId
+                }
+            });
+        }
 
         return nft;
     });

@@ -9,7 +9,7 @@ import AppStore from "../store/AppStore";
 export default function Home() {
     const [showConfirm, setShowConfirm] = useState(false);
     const params = useSearchParams();
-    const { clearTwitter } = AppStore;
+    const { clearTwitter, setReffererAddress } = AppStore;
     const router = useRouter();
 
     const handleClear = async (id: string) => {
@@ -38,9 +38,14 @@ export default function Home() {
     useEffect(() => {
         const oldUserId = params.get('oldUserId');
         const newUserId = params.get('newUserId');
+        const reffererAddress = params.get('ref');
 
         if (oldUserId && newUserId) {
             setShowConfirm(true);
+        }
+
+        if (reffererAddress) {
+            setReffererAddress(reffererAddress);
         }
     }, [params]);
 

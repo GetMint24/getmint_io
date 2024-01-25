@@ -1,0 +1,151 @@
+.back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.64;
+    transition: all 0.3s ease-out;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+.back:hover {
+    opacity: 1;
+}
+
+.title {
+    font-size: 24px;
+}
+
+.container {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+}
+
+.card {
+    width: 100%;
+    max-width: 559px;
+}
+
+.image {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 12px;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    height: 344px;
+    background: #161D27;
+}
+
+.image img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.account {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.64);
+}
+
+.chain {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.xp {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: rgba(255, 255, 255, 0.64);
+    font-weight: 600;
+}
+
+.description {
+    margin-top: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.64);
+}
+
+.form {
+    margin-top: 12px;
+}
+
+.history {
+    flex-grow: 1;
+}
+
+@media screen and (max-width: 1360px) {
+    .card {
+        max-width: 447px;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .card {
+        max-width: none;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .back {
+        font-size: 14px;
+    }
+
+    .back img {
+        width: 20px !important;
+        height: 20px !important;
+    }
+
+    .title {
+        font-size: 20px;
+    }
+    
+    .container {
+        gap: 20px;
+    }
+
+    .image {
+        padding: 8px;
+        height: 311px;
+    }
+
+    .info {
+        flex-direction: column;
+        align-items: stretch;
+        margin-top: 20px;
+    }
+
+    .account {
+        order: 1;
+    }
+
+    .chain {
+        justify-content: space-between;
+    }
+
+    .form {
+        margin-top: 20px;
+    }
+}

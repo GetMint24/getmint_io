@@ -32,6 +32,16 @@ export class InternalError extends Response {
     }
 }
 
+export class NotFoundError extends Response {
+    constructor(message: string) {
+        super(JSON.stringify({
+            message
+        }), { status: 404, headers: {
+            'Content-Type': 'application/json'
+        } });
+    }
+}
+
 export class OkResponse extends Response {
     constructor() {
         super('', {

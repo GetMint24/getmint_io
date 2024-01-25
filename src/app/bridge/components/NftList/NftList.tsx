@@ -1,18 +1,21 @@
 import { Flex, Spin } from "antd";
 import { observer } from "mobx-react-lite";
+import { useRouter } from "next/navigation";
 import PinataImage from "../../../../components/PinataImage";
 import NftStore from "../../../../store/NftStore";
 import ChainLabel from "../../../../components/ChainLabel/ChainLabel";
 import { NFTDto } from "../../../../common/dto/NFTDto";
 import ListCard from "../../../../components/ListCard/ListCard";
+import { BalanceOperationCost } from "../../../../common/enums/BalanceOperationCost";
 
 import styles from "./NftList.module.css";
 
 function NftList() {
+    const router = useRouter();
     const nfts = [...NftStore.nfts].sort((a, b) => a.chainName.localeCompare(b.chainName));
 
     const handleCardClick = (nft: NFTDto) => {
-        NftStore.setNft(nft.id);
+        router.push(`/nfts/${nft.id}`);
     };
 
     if (NftStore.loading) {
@@ -35,7 +38,7 @@ function NftList() {
                     }
                     image={<PinataImage hash={nft.pinataImageHash} name={nft.name} />}
                     title={nft.name}
-                    xp={20}
+                    xp={BalanceOperationCost.Bridge}
                     onClick={() => handleCardClick(nft)}
                     className={styles.listItem}
                 />

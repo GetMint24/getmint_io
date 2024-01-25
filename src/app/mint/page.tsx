@@ -22,7 +22,7 @@ import NftStore from "../../store/NftStore";
 function Page() {
     const [messageApi, contextHolder] = message.useMessage();
     const [isNFTPending, setIsNFTPending] = useState<boolean>(false);
-    const { walletConnected, openAccountDrawer, fetchAccount } = AppStore;
+    const { account, walletConnected, openAccountDrawer, fetchAccount } = AppStore;
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -51,8 +51,11 @@ function Page() {
                         id: chain.id,
                         name: chain.name,
                         network: chain.network,
-                        lzChain: null
-                    }
+                        lzChain: null,
+                        token: 'ETH'
+                    },
+                    account,
+                    accountAddress: address!
                 });
 
                 if (result.result) {

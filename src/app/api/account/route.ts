@@ -1,11 +1,12 @@
-import prisma from "../../../utils/prismaClient";
 import Joi from "joi";
+import { OAuth2UserOptions } from "twitter-api-sdk/dist/OAuth2User";
+import prisma from "../../../utils/prismaClient";
+
 import { BadRequest } from "../utils/responses";
 import { AccountDto } from "../../../common/dto/AccountDto";
 import { BalanceLogType } from "../../../common/enums/BalanceLogType";
 import { BalanceOperation } from "../../../common/enums/BalanceOperation";
 import { TwitterUser } from "../../../common/types";
-import { OAuth2UserOptions } from "twitter-api-sdk/dist/OAuth2User";
 
 interface CreateAccountDto {
     metamaskAddress: string;
@@ -29,10 +30,35 @@ export async function GET(request: Request) {
     });
 
     if (!user) {
+        const reffererAddress = request.headers.get('X-Refferer-Address') ?? '';
+
+        let reffererId;
+        let reffererMetamaskAddress;
+
+        const isSameAddress = metamaskWalletAddress.toLowerCase() === reffererAddress.toLowerCase();
+
+        if (reffererAddress && !isSameAddress) {
+            const reffererUser = await prisma.user.findFirst({
+                where: {
+                    metamaskWalletAddress: {
+                        contains: reffererAddress,
+                        mode: 'insensitive'
+                    }
+                }
+            });
+
+            if (reffererUser) {
+                reffererId = reffererUser.id;
+                reffererMetamaskAddress = reffererUser.metamaskWalletAddress;
+            }
+        }
+
         user = await prisma.user.create({
             data: {
-                metamaskWalletAddress
-            }
+                metamaskWalletAddress,
+                reffererId,
+                reffererAddress: reffererMetamaskAddress
+            },
         });
     }
 
@@ -52,10 +78,10 @@ export async function GET(request: Request) {
         _sum: { amount: true }
     });
 
-    const aggregateByType = (type: BalanceLogType) => {
+    const aggregateByType = (type: BalanceLogType, userId: string) => {
         return prisma.balanceLog.aggregate({
             where: {
-                userId: user!.id,
+                userId: userId,
                 type,
                 operation: BalanceOperation.Debit
             },
@@ -64,15 +90,34 @@ export async function GET(request: Request) {
         });
     };
 
-    const mints = await aggregateByType(BalanceLogType.Mint);
-    const bridges = await aggregateByType(BalanceLogType.Bridge);
-    const refferals = await aggregateByType(BalanceLogType.Refferal);
-    const twitterActivityDaily = await aggregateByType(BalanceLogType.TwitterActivityDaily);
-    const twitterGetmintSubscription = await aggregateByType(BalanceLogType.TwitterGetmintSubscription);
-    const tweets = await aggregateByType(BalanceLogType.CreateTweet);
+    const mints = await aggregateByType(BalanceLogType.Mint, user.id!);
+    const bridges = await aggregateByType(BalanceLogType.Bridge, user.id!);
+    const twitterActivityDaily = await aggregateByType(BalanceLogType.TwitterActivityDaily, user.id!);
+    const twitterGetmintSubscription = await aggregateByType(BalanceLogType.TwitterGetmintSubscription, user.id!);
+    const tweets = await aggregateByType(BalanceLogType.CreateTweet, user.id!);
+
+    const refferalMints = await prisma.balanceLog.aggregate({
+        where: {
+            userId: {
+                in: await prisma.user.findMany({
+                    where: { reffererId: user.id },
+                    select: { id: true }
+                }).then(response => response.map(r => r.id))
+            },
+            type: BalanceLogType.Mint,
+            operation: BalanceOperation.Debit
+        },
+        _sum: { amount: true },
+        _count: { amount: true }
+    });
+
+    const refferalsCount = await prisma.user.count({
+        where: { reffererId: user.id },
+    });
 
     const accountDto: AccountDto = {
         id: user.id,
+        refferer: user.reffererAddress,
         balance: {
             total: total._sum.amount || 0,
             mints: mints._sum.amount || 0,
@@ -80,14 +125,19 @@ export async function GET(request: Request) {
             bridges: bridges._sum.amount || 0,
             bridgesCount: bridges._count.amount,
             twitterActivity: (twitterActivityDaily._sum.amount || 0) + (twitterGetmintSubscription._sum.amount || 0) + (tweets._sum.amount || 0),
-            refferals: refferals._sum.amount || 0,
-            refferalsCount: refferals._count.amount
+            refferals: refferalMints._sum.amount || 0,
+            refferalsMintCount: refferalMints._count.amount || 0,
         },
         twitter: {
             connected: user.twitterEnabled,
             followed: !!twitterGetmintSubscription._count.amount && user.followedGetmintTwitter,
             token,
             user: twitterUser,
+        },
+        refferals: {
+            count: refferalsCount,
+            mintsCount: refferalMints._count.amount,
+            claimAmount: 0
         }
     };
 

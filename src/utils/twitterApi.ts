@@ -38,7 +38,7 @@ class TwitterApi {
     }
 
     async createTweet(id: string) {
-        return this.client.tweets.createTweet({ text: TWEET_CONTENT + `\n${process.env.APP_URL}/api/image/${id}\n${process.env.APP_URL}` });
+        return this.client.tweets.createTweet({ text: TWEET_CONTENT + `\n${process.env.APP_URL}/nfts/${id}` });
     }
 
     async requestToken(code: string) {

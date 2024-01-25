@@ -2,8 +2,8 @@ import { Flex, Modal } from "antd";
 import { ReactNode } from "react";
 import styles from "./Modal.module.css";
 
-interface Props {
-    children: ReactNode;
+export interface UiModalProps {
+    children?: ReactNode;
     open?: boolean;
     title?: ReactNode;
     footer?: ReactNode;
@@ -13,7 +13,7 @@ interface Props {
     onClose?(): void;
 }
 
-export default function UiModal({ open, children, title, footer, width, hideCloseIcon, maskClosable, onClose }: Props) {
+export default function UiModal({ open, children, title, footer, width, hideCloseIcon, maskClosable, onClose }: UiModalProps) {
     return (
         <Modal
             open={open}

@@ -7,10 +7,16 @@ import { ChainDto } from "../common/dto/ChainDto";
 import { CreateTweetDto } from "../common/dto/CreateTweetDto";
 import { LeaderDto } from "../common/dto/LeaderDto";
 import { RandomImageDto } from "../common/dto/RandomImageDto";
+import { OperationHistoryDto } from "../common/dto/OperationHistoryDto";
 
 class ApiService {
     async getAccount(): Promise<AccountDto> {
         const response = await apiClient.get('account');
+        return response.data;
+    }
+
+    async getNft(id: string): Promise<NFTDto> {
+        const response = await apiClient.get<NFTDto>('nft', { params: { id } });
         return response.data;
     }
 
@@ -88,6 +94,11 @@ class ApiService {
 
     async deleteFileFromCloud(key: string) {
         const response = await apiClient.post<{ status: 'ok' | 'failed' }>('cloud/delete', { key });
+        return response.data;
+    }
+
+    async getNftHistory(nftId: string, currentNetwork: string) {
+        const response = await apiClient.get<OperationHistoryDto[]>('history', { params: { nftId, currentNetwork } });
         return response.data;
     }
 }

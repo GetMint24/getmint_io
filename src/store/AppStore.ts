@@ -5,6 +5,7 @@ import ApiService from "../services/ApiService";
 import { CreateTweetDto } from "../common/dto/CreateTweetDto";
 import NftStore from "./NftStore";
 import { notification } from "antd";
+import { decodeAddress } from "../core/contractController";
 
 enableStaticRendering(typeof window === 'undefined');
 
@@ -13,10 +14,15 @@ class AppStore {
     walletConnected = false;
     accountDrawerOpened = false;
     metamaskWalletAddress: string | undefined;
+    referrerAddress: string = '';
     loading = false;
 
     constructor() {
         makeAutoObservable(this, undefined, { autoBind: true });
+    }
+
+    clearAccount() {
+        this.account = null;
     }
 
     async fetchAccount() {
@@ -97,6 +103,15 @@ class AppStore {
             console.error(e);
         }
     }
-}
 
+    setReffererAddress(refCode: string) {
+        try {
+            this.referrerAddress = decodeAddress(refCode);
+            localStorage.setItem('refCode', refCode);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+}
 export default new AppStore();
