@@ -17,6 +17,7 @@ import NftStore from "../../../store/NftStore";
 import AppStore from "../../../store/AppStore";
 import { twitterApi } from "../../../utils/twitterApi";
 import ChainStore from "../../../store/ChainStore";
+import { TWEET_CONTENT } from "../../../common/constants";
 
 interface NftPageProps {
     params: { nft: string };
@@ -35,11 +36,34 @@ function NftPage({ params, searchParams }: NftPageProps) {
     const createTweetHandler = async () => {
         if (account && nft) {
             if (account.twitter.connected) {
-                await createTweet({
+                const status  = await createTweet({
                     userId: account.id,
                     nftId: nft.id,
                 });
+
+                if (status == 'failed'){
+                    const url = new URL('https://twitter.com/intent/tweet');
+                    url.searchParams.append('text', TWEET_CONTENT + `\n${process.env.APP_URL}/nfts/${nft.id}`);
+                    window.open(url, '_blank');        
+                }
+
+
                 refetch();
+            } else {
+                const authUrl = twitterApi.getAuthUrl(`${account.id}:${nft.id}`);
+                window.location.assign(authUrl);
+            }
+        }
+    };
+
+    const createIntentTweetHandler = async () => {
+        if (account && nft) {
+            if (account.twitter.connected) {
+                const url = new URL('https://twitter.com/intent/tweet');
+                url.searchParams.append('text', TWEET_CONTENT + `\n${process.env.APP_URL}/nfts/${nft.id}`);
+                //url.searchParams.append('region', 'follow_link');
+                //url.searchParams.append('screen_name', 'GetMint_io');
+                window.open(url, '_blank');
             } else {
                 const authUrl = twitterApi.getAuthUrl(`${account.id}:${nft.id}`);
                 window.location.assign(authUrl);
