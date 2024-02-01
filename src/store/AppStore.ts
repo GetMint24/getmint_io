@@ -74,7 +74,7 @@ class AppStore {
         } catch (e) {
             console.error(e);
             notification.warning({
-                message: 'The tweet may have already been created',
+                message: 'Twitter API is temporarily unavailable.\nPlease try again later!',
                 duration: 10000
             })
         } finally {
