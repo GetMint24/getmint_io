@@ -90,7 +90,7 @@ function Page() {
                     return;
                 }
 
-                await messageApi.error('Something went wrong :(');
+                await messageApi.error('Oops, Something went wrong :(\nPlease reload this page and try again.');
             } finally {
                 setIsNFTPending(false);
             }
