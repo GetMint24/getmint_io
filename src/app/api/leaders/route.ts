@@ -9,7 +9,7 @@ export async function GET(request: Request) {
         where: { 
             operation: BalanceOperation.Debit,
             userId : { not: '75deaeb6-d01f-4997-b7b0-348cde511ced' },
-            type : BalanceLogType.Mint || BalanceLogType.Bridge
+            type : { in: [ BalanceLogType.Mint, BalanceLogType.Bridge ] }
         },
         orderBy: { _sum: { amount: 'desc' } },
         _sum: { amount: true },
@@ -18,7 +18,7 @@ export async function GET(request: Request) {
     const leadersIds = leadersLogs.map((log) => log.userId);
     const leadersLogsByType = await prisma.balanceLog.groupBy({
         by: ['userId', 'type'],
-        where: { userId: { in: leadersIds }, operation: BalanceOperation.Debit, type : BalanceLogType.Mint || BalanceLogType.Bridge },
+        where: { userId: { in: leadersIds }, operation: BalanceOperation.Debit, type : { in: [ BalanceLogType.Mint, BalanceLogType.Bridge ] } },
         _count: { amount: true }
     });
     const leaders = await prisma.user.findMany({ where: { id: { in: leadersIds } } });
