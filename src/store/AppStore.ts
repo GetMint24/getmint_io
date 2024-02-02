@@ -71,13 +71,26 @@ class AppStore {
             if (status === 'ok') {
                 await NftStore.getNfts();
             }
+
+            return status;
+
         } catch (e) {
             console.error(e);
-            notification.warning({
-                message: 'Twitter API is temporarily unavailable.\nPlease try again later!',
-                duration: 10000
-            })
+            return 'failed';
+
         } finally {
+            this.loading = false;
+        }
+    }
+
+    async createIntentTweet(data: CreateTweetDto) {
+        this.loading = true;
+
+        try {
+            await ApiService.createIntentTweet(data);
+        } catch (e) {
+            console.error(e);
+        }finally {
             this.loading = false;
         }
     }

@@ -67,6 +67,11 @@ class ApiService {
         return response.data;
     }
 
+    async createIntentTweet(data: CreateTweetDto) {
+        const response = await apiClient.post<{ status: 'ok' | 'failed' }>('twitter/create-intent-tweet', data);
+        return response.data;
+    }
+
     async clearTwitter(userId: string) {
         const response = await apiClient.post<{ status: 'ok' | 'failed' }>('twitter/clear', { userId });
         return response.data;
