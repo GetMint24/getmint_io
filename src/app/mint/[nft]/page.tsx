@@ -46,14 +46,13 @@ function NftPage({ params, searchParams }: NftPageProps) {
                 //в случае, если не получилось создать твит через API (сейчас доступно 50 твитов в день), 
                 //то создаём через Intent
                 if (status === 'failed'){
-                   console.log(account.id);
                     await createIntentTweet({
                         userId: account.id,
                         nftId: nft.id,
                     });
                     const url = new URL('https://twitter.com/intent/tweet');
                     url.searchParams.append('text', TWEET_CONTENT);
-                    url.searchParams.append('url', 'https://getmint.io/nfts/f6739b2d-1bd0-4e5d-be36-099468e612ac');
+                    url.searchParams.append('url', `${process.env.APP_URL}/nfts/${nft.id}`);
                     window.open(url, '_blank');
                 }
 
