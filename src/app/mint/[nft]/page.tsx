@@ -26,7 +26,7 @@ interface NftPageProps {
 
 function NftPage({ params, searchParams }: NftPageProps) {
     const [nft, setNft] = useState(NftStore.selectNftByHash(params.nft));
-    const { account, createTweet, loading, fetchAccount } = AppStore;
+    const { account, createTweet, createIntentTweet,loading, fetchAccount } = AppStore;
     const router = useRouter();
 
     const refetch = () => {
@@ -35,35 +35,29 @@ function NftPage({ params, searchParams }: NftPageProps) {
 
     const createTweetHandler = async () => {
         if (account && nft) {
+
+            var status;
+
             if (account.twitter.connected) {
-                const status  = await createTweet({
+                status = await createTweet({
                     userId: account.id,
                     nftId: nft.id,
                 });
-
-                if (status == 'failed'){
+                //в случае, если не получилось создать твит через API (сейчас доступно 50 твитов в день), 
+                //то создаём через Intent
+                if (status === 'failed'){
+                   console.log(account.id);
+                    await createIntentTweet({
+                        userId: account.id,
+                        nftId: nft.id,
+                    });
                     const url = new URL('https://twitter.com/intent/tweet');
-                    url.searchParams.append('text', TWEET_CONTENT + `\n${process.env.APP_URL}/nfts/${nft.id}`);
-                    window.open(url, '_blank');        
+                    url.searchParams.append('text', TWEET_CONTENT);
+                    url.searchParams.append('url', 'https://getmint.io/nfts/f6739b2d-1bd0-4e5d-be36-099468e612ac');
+                    window.open(url, '_blank');
                 }
 
-
                 refetch();
-            } else {
-                const authUrl = twitterApi.getAuthUrl(`${account.id}:${nft.id}`);
-                window.location.assign(authUrl);
-            }
-        }
-    };
-
-    const createIntentTweetHandler = async () => {
-        if (account && nft) {
-            if (account.twitter.connected) {
-                const url = new URL('https://twitter.com/intent/tweet');
-                url.searchParams.append('text', TWEET_CONTENT + `\n${process.env.APP_URL}/nfts/${nft.id}`);
-                //url.searchParams.append('region', 'follow_link');
-                //url.searchParams.append('screen_name', 'GetMint_io');
-                window.open(url, '_blank');
             } else {
                 const authUrl = twitterApi.getAuthUrl(`${account.id}:${nft.id}`);
                 window.location.assign(authUrl);
