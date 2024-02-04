@@ -65,6 +65,8 @@ class AppStore {
     async createTweet(data: CreateTweetDto) {
         this.loading = true;
 
+        return 'failed';
+/*
         try {
             const { status } = await ApiService.createTweet(data);
 
@@ -77,10 +79,10 @@ class AppStore {
         } catch (e) {
             console.error(e);
             return 'failed';
-
         } finally {
             this.loading = false;
         }
+        */
     }
 
     async createIntentTweet(data: CreateTweetDto) {
