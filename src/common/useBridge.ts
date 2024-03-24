@@ -6,7 +6,7 @@ import { EstimationBridgeType, bridgeNFT, estimateBridge } from "../core/contrac
 import { ChainDto } from "./dto/ChainDto";
 import ChainStore from "../store/ChainStore";
 import AppStore from "../store/AppStore";
-import { CONTRACT_ADDRESS, DEFAULT_REFUEL_COST_USD, UnailableNetworks } from "./constants";
+import { DEFAULT_REFUEL_COST_USD, UnailableNetworks, getContractAddress } from "./constants";
 import { NetworkName } from "./enums/NetworkName";
 import ApiService from "../services/ApiService";
 
@@ -45,7 +45,7 @@ export function useBridge(nft: NFTDto, onAfterBridge?: (previousChain?: ChainDto
                 let _currentNetwork: string = currentChain?.network!;
 
                 const priceList = await estimateBridge(_chains, nftChain?.token!, {
-                    contractAddress: CONTRACT_ADDRESS[_currentNetwork as NetworkName],
+                    contractAddress: getContractAddress(nft.networkType, _currentNetwork as NetworkName),
                     chainToSend: {
                         id: chain.chainId,
                         name: chain.name,
@@ -53,6 +53,7 @@ export function useBridge(nft: NFTDto, onAfterBridge?: (previousChain?: ChainDto
                         lzChain: chain.lzChain,
                         token: chain.token
                     },
+                    networkType: nft.networkType,
                     account,
                     accountAddress: address!
                 }, nft?.tokenId, refuelEnabled, refuelCost);
@@ -82,7 +83,8 @@ export function useBridge(nft: NFTDto, onAfterBridge?: (previousChain?: ChainDto
             }
 
             const result = await bridgeNFT({
-                contractAddress: CONTRACT_ADDRESS[_currentNetwork as NetworkName],
+                contractAddress: getContractAddress(nft.networkType, _currentNetwork as NetworkName),
+                networkType: nft.networkType,
                 chainToSend: {
                     id: chainToSend.chainId,
                     name: chainToSend.name,

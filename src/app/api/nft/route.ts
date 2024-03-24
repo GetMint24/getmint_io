@@ -31,6 +31,7 @@ export async function GET(request: NextRequest) {
             userWalletAddress: nft.user.metamaskWalletAddress,
             userName: nft.user.twitterLogin,
             tweeted: !!nft.tweetLog,
+            networkType: nft.networkType
         });
     }
 

@@ -1,7 +1,10 @@
 import { BadRequest } from "../utils/responses";
 import prisma from "../../../utils/prismaClient";
+import { NetworkType } from "../../../common/enums/NetworkType";
+import { NextRequest } from "next/server";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
+    console.log(request.nextUrl.searchParams)
     const metamaskWalletAddress = request.headers.get('X-Metamask-Address');
 
     if (!metamaskWalletAddress) {
@@ -16,9 +19,12 @@ export async function GET(request: Request) {
         return new BadRequest('User not found');
     }
 
+    const params = request.nextUrl.searchParams;
+
     const nfts = await prisma.nft.findMany({
         where: {
-            userId: user.id
+            userId: user.id,
+            networkType: params.get('type') as NetworkType
         },
         select: {
             id: true,
@@ -29,7 +35,8 @@ export async function GET(request: Request) {
             tokenId: true,
             tweetLog: true,
             chain: true,
-            user: true
+            user: true,
+            networkType: true
         }
     }).then(list => list.map(item => {
         return ({
@@ -47,6 +54,7 @@ export async function GET(request: Request) {
             userWalletAddress: item.user.metamaskWalletAddress,
             userName: item.user.twitterLogin,
             tweeted: !!item.tweetLog,
+            networkType: item.networkType
         })
     }));
 

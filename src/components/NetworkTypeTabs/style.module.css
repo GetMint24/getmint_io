@@ -1,0 +1,40 @@
+.tabs {
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background-color: transparent;
+    padding: 4px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 4px 12px;
+    outline: 0;
+    border: none;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    transition: .3s;
+    background-color: transparent;
+}
+
+.btn svg {
+    opacity: .32;
+    transition: 0.15s;
+}
+
+.btn:hover svg {
+    opacity: 1;
+}
+
+.active {
+    background-color: rgba(255,255,255,.08);
+}
+
+.active svg {
+    opacity: 1;
+}

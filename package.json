@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@alch/alchemy-web3": "^1.4.7",
+    "@ant-design/icons": "^5.3.5",
     "@aws-sdk/client-s3": "^3.490.0",
     "@pinata/sdk": "^2.1.0",
     "@prisma/client": "^5.6.0",

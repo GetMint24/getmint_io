@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAccount, useNetwork } from "wagmi";
 import { observer } from "mobx-react-lite";
 import { AxiosError } from "axios";
-import { message } from 'antd';
+import { Flex, message } from 'antd';
 
 import styles from './page.module.css';
 import Card from "../../components/ui/Card/Card";
@@ -13,15 +13,18 @@ import MintForm, { MintSubmitEvent } from "./components/MintForm/MintForm";
 import CostLabel from "../../components/CostLabel/CostLabel";
 import ApiService from "../../services/ApiService";
 import AppStore from "../../store/AppStore";
-import { CONTRACT_ADDRESS } from "../../common/constants";
+import { getContractAddress } from "../../common/constants";
 import { NetworkName } from "../../common/enums/NetworkName";
 import { mintNFT } from "../../core/contractController";
 import ChainStore from "../../store/ChainStore";
 import NftStore from "../../store/NftStore";
+import { NetworkType } from "../../common/enums/NetworkType";
+import NetworkTypeTabs from "../../components/NetworkTypeTabs/NetworkTypeTabs";
 
 function Page() {
     const [messageApi, contextHolder] = message.useMessage();
     const [isNFTPending, setIsNFTPending] = useState<boolean>(false);
+    const [currentNetwork, setCurrentNetwork] = useState<NetworkType>(NetworkType.LayerZero);
     const { account, walletConnected, openAccountDrawer, fetchAccount } = AppStore;
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -46,7 +49,8 @@ function Page() {
                 });
 
                 const result = await mintNFT({
-                    contractAddress: CONTRACT_ADDRESS[chain.network as NetworkName],
+                    contractAddress: getContractAddress(currentNetwork, chain.network as NetworkName),
+                    networkType: currentNetwork,
                     chainToSend: {
                         id: chain.id,
                         name: chain.name,
@@ -65,7 +69,8 @@ function Page() {
                         metamaskWalletAddress: address as string,
                         tokenId: result.blockId!,
                         chainNetwork: chain?.network!,
-                        transactionHash: result?.transactionHash!
+                        transactionHash: result?.transactionHash!,
+                        networkType: currentNetwork
                     });
 
                     await messageApi.success('NFT Successfully minted');
@@ -113,10 +118,14 @@ function Page() {
             {contextHolder}
 
             <Card className={styles.page} isLoading={isNFTPending} title={(
-                <div className={styles.title}>
-                    <span>Mint</span>
-                    <CostLabel cost={20} size="large" />
-                </div>
+                <Flex justify="space-between" wrap="wrap">
+                    <div className={styles.title}>
+                        <span className={styles.titleLabel}>Mint</span>
+                        <CostLabel cost={20} size="large" />
+                    </div>
+
+                    <NetworkTypeTabs selected={currentNetwork} onSelect={setCurrentNetwork} />
+                </Flex>
             )}>
                 <MintForm onSubmit={_mintNFT} />
             </Card>

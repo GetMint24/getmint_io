@@ -2,12 +2,14 @@ import { ethers } from "ethers";
 import { hexToNumber } from "web3-utils";
 import axios, { AxiosResponse } from "axios";
 
-import abi from "./abi.json";
+import lzAbi from "./abi.json";
+import hyperlineAbi from "./hyperlane-abi.json";
 import { NetworkName } from "../common/enums/NetworkName";
-import { CONTRACT_ADDRESS, DEFAULT_REFUEL_COST_USD } from "../common/constants";
+import { DEFAULT_REFUEL_COST_USD, LZ_CONTRACT_ADDRESS } from "../common/constants";
 import { AccountDto } from "../common/dto/AccountDto";
 import { wait } from "../utils/wait";
 import { ChainDto } from "../common/dto/ChainDto";
+import { NetworkType } from "../common/enums/NetworkType";
 
 interface ChainToSend {
     id: number;
@@ -21,6 +23,7 @@ interface ControllerFunctionProps {
     account: AccountDto | null;
     accountAddress: string;
     contractAddress: string;
+    networkType: NetworkType;
     chainToSend: ChainToSend;
 }
 
@@ -35,18 +38,31 @@ interface ControllerFunctionResult {
 const TRANSACTION_WAIT: number = 60000;
 const LZ_VERSION = 1;
 
+const getAbi = (type: NetworkType) => {
+    if (type === NetworkType.LayerZero) {
+        return lzAbi;
+    }
+
+    if (type === NetworkType.Hyperlane) {
+        return hyperlineAbi;
+    }
+
+    return lzAbi;
+}
+
 /**
  * Mint NFT Functionality
  * @param contractAddress Contract address for selected chain
  * @param chainToSend Current chain to send NFT
  * @param account User account
  */
-export const mintNFT = async ({ contractAddress, chainToSend, account }: ControllerFunctionProps): Promise<ControllerFunctionResult> => {
+export const mintNFT = async ({ contractAddress, chainToSend, account, networkType }: ControllerFunctionProps): Promise<ControllerFunctionResult> => {
     const provider = new ethers.BrowserProvider((window as any).ethereum);
 
     const signer = await provider.getSigner();
     const sender = await signer.getAddress();
 
+    const abi = getAbi(networkType);
     const contract = new ethers.Contract(contractAddress, abi, signer);
     const mintFee = await contract.mintFee();
 
@@ -110,7 +126,7 @@ export type EstimationBridgeType = (EstimationBridge | null)[]
 export const estimateBridge = async (
     chains: ChainDto[],
     token: string,
-    { contractAddress }: ControllerFunctionProps,
+    { contractAddress, networkType }: ControllerFunctionProps,
     tokenId: number,
     refuel: boolean = false,
     refuelCost: number = DEFAULT_REFUEL_COST_USD
@@ -127,6 +143,7 @@ export const estimateBridge = async (
             ["address"], [sender]
         );
 
+        const abi = getAbi(networkType);
         const contract = new ethers.Contract(contractAddress, abi, signer);
         const _dstChainId = chainToSend?.lzChain;
 
@@ -195,7 +212,7 @@ export const estimateBridge = async (
  *
  */
 export const bridgeNFT = async (
-    { contractAddress, chainToSend }: ControllerFunctionProps,
+    { contractAddress, chainToSend, networkType }: ControllerFunctionProps,
     tokenId: number,
     refuel: boolean = false,
     refuelCost: number = DEFAULT_REFUEL_COST_USD
@@ -209,6 +226,7 @@ export const bridgeNFT = async (
         ["address"], [sender]
     );
 
+    const abi = getAbi(networkType);
     const contract = new ethers.Contract(contractAddress, abi, signer);
     const _dstChainId = chainToSend?.lzChain;
 
@@ -310,7 +328,7 @@ export async function claimReferralFee(chain: ChainDto) {
 
         const signer = await provider.getSigner();
 
-        const contract = new ethers.Contract(CONTRACT_ADDRESS[chain.network as NetworkName], abi, signer);
+        const contract = new ethers.Contract(LZ_CONTRACT_ADDRESS[chain.network as NetworkName], lzAbi, signer);
 
         const txResponse = await contract.claimReferrerEarnings();
         const receipt = await txResponse.wait(null, 60000);
@@ -334,7 +352,7 @@ export async function claimReferralFee(chain: ChainDto) {
 
 export async function getReffererEarnedInNetwork(chain: ChainDto, accountAddress: string) {
     const provider = new ethers.JsonRpcProvider(chain.rpcUrl);
-    const contract = new ethers.Contract(CONTRACT_ADDRESS[chain.network as NetworkName], abi, provider);
+    const contract = new ethers.Contract(LZ_CONTRACT_ADDRESS[chain.network as NetworkName], lzAbi, provider);
     const earned = await contract.referrersEarnedAmount(accountAddress);
     return ethers.formatEther(earned);
 }
