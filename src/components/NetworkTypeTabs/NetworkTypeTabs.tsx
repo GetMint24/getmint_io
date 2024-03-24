@@ -39,8 +39,10 @@ export default function NetworkTypeTabs(props: NetworkTypeTabsProps) {
                         [cn.active]: selected === item.value
                     })}
                     onClick={() => {
-                        setSelected(item.value);
-                        props.onSelect(item.value);
+                        if (selected !== item.value) {
+                            setSelected(item.value);
+                            props.onSelect(item.value);
+                        }
                     }}
                 >
                     {item.label}

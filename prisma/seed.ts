@@ -7,6 +7,7 @@ const chains = [
         name: 'Base',
         network: 'base',
         lzChain: 184,
+        hyperlaneChain: 8453,
         token: 'ETH',
         rpcUrl: 'https://mainnet.base.org'
     },
@@ -15,6 +16,7 @@ const chains = [
         name: 'Arbitrum Nova',
         network: 'arbitrum-nova',
         lzChain: 175,
+        hyperlaneChain: null,
         token: 'ETH',
         rpcUrl: 'https://arbitrum-nova.drpc.org'
     },
@@ -23,6 +25,7 @@ const chains = [
         name: 'Arbitrum One',
         network: 'arbitrum',
         lzChain: 110,
+        hyperlaneChain: 42161,
         token: 'ETH',
         rpcUrl: 'https://arb1.arbitrum.io/rpc'
     },
@@ -31,6 +34,7 @@ const chains = [
         name: 'Avalance',
         network: 'avalanche',
         lzChain: 106,
+        hyperlaneChain: 43114,
         token: 'AVAX',
         rpcUrl: 'https://rpc.ankr.com/avalanche'
     },
@@ -39,6 +43,7 @@ const chains = [
         name: 'Linea Mainnet',
         network: 'linea-mainnet',
         lzChain: 183,
+        hyperlaneChain: null,
         token: 'ETH',
         rpcUrl: 'https://linea.drpc.org',
     },
@@ -47,6 +52,7 @@ const chains = [
         name: 'Mantle',
         network: 'mantle',
         lzChain: 181,
+        hyperlaneChain: null,
         token: 'MNT',
         rpcUrl: 'https://rpc.mantle.xyz'
     },
@@ -55,6 +61,7 @@ const chains = [
         name: 'OP Mainnet',
         network: 'optimism',
         lzChain: 111,
+        hyperlaneChain: 10,
         token: 'ETH',
         rpcUrl: 'https://rpc.ankr.com/optimism'
     },
@@ -63,6 +70,7 @@ const chains = [
         name: 'Polygon',
         network: 'matic',
         lzChain: 109,
+        hyperlaneChain: 137,
         token: 'MATIC',
         rpcUrl: 'https://rpc.ankr.com/polygon'
     },
@@ -71,6 +79,7 @@ const chains = [
         name: 'Polygon zkEVM',
         network: 'polygon-zkevm',
         lzChain: 158,
+        hyperlaneChain: 1101,
         token: 'MATIC',
         rpcUrl: 'https://zkevm-rpc.com'
     },
@@ -79,6 +88,7 @@ const chains = [
         name: 'Scroll',
         network: 'scroll',
         lzChain: 214,
+        hyperlaneChain: 534352,
         token: 'ETH',
         rpcUrl: 'https://scroll.blockpi.network/v1/rpc/public'
     },
@@ -87,6 +97,7 @@ const chains = [
         name: 'Zora',
         network: 'zora',
         lzChain: 195,
+        hyperlaneChain: null,
         token: 'ETH',
         rpcUrl: 'https://rpc.zora.energy'
     },
@@ -95,6 +106,7 @@ const chains = [
         name: 'zkSync Era',
         network: 'zksync-era',
         lzChain: 165,
+        hyperlaneChain: null,
         token: 'ETH',
         rpcUrl: 'https://mainnet.era.zksync.io'
     },
@@ -103,6 +115,7 @@ const chains = [
         name: 'BNB Smart Chain',
         network: 'bsc',
         lzChain: 102,
+        hyperlaneChain: 56,
         token: 'BNB',
         rpcUrl: 'https://rpc.ankr.com/bsc'
     }
