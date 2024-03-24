@@ -1,3 +1,5 @@
+import { NetworkType } from "../enums/NetworkType";
+
 export interface NFTDto {
     id: string;
     pinataImageHash: string;
@@ -13,4 +15,5 @@ export interface NFTDto {
     userWalletAddress: string;
     userName: string | null;
     tweeted: boolean;
+    networkType: NetworkType;
 }

@@ -8,6 +8,7 @@ import { CreateTweetDto } from "../common/dto/CreateTweetDto";
 import { LeaderDto } from "../common/dto/LeaderDto";
 import { RandomImageDto } from "../common/dto/RandomImageDto";
 import { OperationHistoryDto } from "../common/dto/OperationHistoryDto";
+import { NetworkType } from "../common/enums/NetworkType";
 
 class ApiService {
     async getAccount(): Promise<AccountDto> {
@@ -38,6 +39,7 @@ class ApiService {
         formData.append('tokenId', `${data.tokenId}`);
         formData.append('chainNetwork', data.chainNetwork);
         formData.append('transactionHash', data.transactionHash);
+        formData.append('networkType', data.networkType);
 
         const response = await apiClient.post('mint', formData);
         return response.data;
@@ -47,8 +49,10 @@ class ApiService {
         await apiClient.post('bridge', data);
     }
 
-    async getCollection() {
-        const response = await apiClient.get<NFTDto[]>('collection');
+    async getCollection(type = NetworkType.LayerZero) {
+        const response = await apiClient.get<NFTDto[]>('collection', {
+            params: { type }
+        });
         return response.data;
     }
 

@@ -3,3 +3,8 @@
     align-items: center;
     gap: 12px;
 }
+
+.titleLabel {
+    font-size: 32px;
+    font-weight: 600;
+}

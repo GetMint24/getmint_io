@@ -1,3 +1,5 @@
+import { NetworkType } from "../enums/NetworkType";
+
 export interface MintDto {
     id: string;
     pinataImageHash: string;
@@ -12,4 +14,5 @@ export interface CreateMintDto {
     tokenId: number;
     chainNetwork: string;
     transactionHash: string;
+    networkType: NetworkType;
 }
