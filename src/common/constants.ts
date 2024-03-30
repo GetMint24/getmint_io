@@ -1,6 +1,6 @@
 import { CryptoAddress } from "./types";
 import { NetworkName } from "./enums/NetworkName";
-import { NetworkType } from "./enums/NetworkType";
+import { BridgeType } from "./enums/BridgeType";
 
 
 export const LZ_CONTRACT_ADDRESS: Record<NetworkName, CryptoAddress> = {
@@ -35,12 +35,18 @@ export const HYPERLANE_CONTRACT_ADDRESS: Record<NetworkName, CryptoAddress> = {
     [NetworkName.BSC]: '0x991fC265f163fc33328FBD2b7C8aa9B77840Ed42'
 };
 
-export function getContractAddress(ntType: NetworkType, network: NetworkName): CryptoAddress {
-    if (ntType === NetworkType.LayerZero) {
+export const HyperlaneAvailableNetworks = [
+    NetworkName.Base,
+    NetworkName.Polygon,
+    NetworkName.Arbitrum
+];
+
+export function getContractAddress(ntType: BridgeType, network: NetworkName): CryptoAddress {
+    if (ntType === BridgeType.LayerZero) {
         return LZ_CONTRACT_ADDRESS[network as NetworkName];
     }
 
-    if (ntType === NetworkType.Hyperlane) {
+    if (ntType === BridgeType.Hyperlane) {
         return HYPERLANE_CONTRACT_ADDRESS[network as NetworkName];
     }
 

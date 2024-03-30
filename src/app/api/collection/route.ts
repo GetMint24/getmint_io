@@ -1,10 +1,9 @@
 import { BadRequest } from "../utils/responses";
 import prisma from "../../../utils/prismaClient";
-import { NetworkType } from "../../../common/enums/NetworkType";
+import { BridgeType } from "../../../common/enums/BridgeType";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
-    console.log(request.nextUrl.searchParams)
     const metamaskWalletAddress = request.headers.get('X-Metamask-Address');
 
     if (!metamaskWalletAddress) {
@@ -24,7 +23,7 @@ export async function GET(request: NextRequest) {
     const nfts = await prisma.nft.findMany({
         where: {
             userId: user.id,
-            networkType: params.get('type') as NetworkType
+            networkType: params.get('type') as BridgeType
         },
         select: {
             id: true,

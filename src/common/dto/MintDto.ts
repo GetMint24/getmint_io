@@ -1,4 +1,4 @@
-import { NetworkType } from "../enums/NetworkType";
+import { BridgeType } from "../enums/BridgeType";
 
 export interface MintDto {
     id: string;
@@ -14,5 +14,5 @@ export interface CreateMintDto {
     tokenId: number;
     chainNetwork: string;
     transactionHash: string;
-    networkType: NetworkType;
+    networkType: BridgeType;
 }

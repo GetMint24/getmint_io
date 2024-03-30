@@ -20,6 +20,8 @@ import BridgeForm from "./components/BridgeForm/BridgeForm";
 import { OperationHistoryDto } from "../../../common/dto/OperationHistoryDto";
 
 import styles from "./page.module.css";
+import HyperlaneSvg from "../../../components/NetworkTypeTabs/HyperlaneSvg";
+import { BridgeType } from "../../../common/enums/BridgeType";
 
 interface Props {
     params: { nft: string },
@@ -89,7 +91,12 @@ function Page({ params }: Props) {
                         <Image src="/svg/ui/back-arrow.svg" width={24} height={24} alt="" />
                         <span>Back</span>
                     </div>
-                    <div className={styles.title}>{nft.name}</div>
+                    <Flex align="center" justify="space-between" wrap="wrap">
+                        <div className={styles.title}>{nft.name}</div>
+                        {nft.networkType === BridgeType.Hyperlane && (
+                            <div><HyperlaneSvg /></div>
+                        )}
+                    </Flex>
                 </>
             }
         >

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { NetworkType } from "../../common/enums/NetworkType";
+import { BridgeType } from "../../common/enums/BridgeType";
 import HyperlaneSvg from './HyperlaneSvg';
 import LzSvg from "./LzSvg";
 import cn from './style.module.css';
@@ -7,22 +7,22 @@ import clsx from "clsx";
 
 const options = [
     {
-        value: NetworkType.LayerZero,
+        value: BridgeType.LayerZero,
         label: <LzSvg />
     },
     {
-        value: NetworkType.Hyperlane,
+        value: BridgeType.Hyperlane,
         label: <HyperlaneSvg />
     }
 ];
 
 interface NetworkTypeTabsProps {
-    selected: NetworkType;
-    onSelect: (value: NetworkType) => void;
+    selected: BridgeType;
+    onSelect: (value: BridgeType) => void;
 }
 
 export default function NetworkTypeTabs(props: NetworkTypeTabsProps) {
-    const [selected, setSelected] = useState(NetworkType.LayerZero);
+    const [selected, setSelected] = useState(BridgeType.LayerZero);
 
     useEffect(() => {
         if (props.selected) {

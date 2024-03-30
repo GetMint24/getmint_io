@@ -2,7 +2,7 @@ import { makeAutoObservable } from "mobx";
 import { enableStaticRendering } from "mobx-react-lite";
 import ApiService from "../services/ApiService";
 import { NFTDto } from "../common/dto/NFTDto";
-import { NetworkType } from "../common/enums/NetworkType";
+import { BridgeType } from "../common/enums/BridgeType";
 
 enableStaticRendering(typeof window === 'undefined');
 
@@ -10,7 +10,7 @@ class NftStore {
     loading: boolean = false;
     nfts: NFTDto[] = [];
     selectedNftId: string | null = null;
-    currentNetworkType = NetworkType.LayerZero;
+    currentNetworkType = BridgeType.LayerZero;
 
     constructor() {
         makeAutoObservable(this);
@@ -42,7 +42,7 @@ class NftStore {
         return this.nfts.find((nft) => nft.pinataImageHash === hash);
     }
 
-    setSelectedNetworkType(type: NetworkType) {
+    setSelectedNetworkType(type: BridgeType) {
         this.currentNetworkType = type;
     }
 }

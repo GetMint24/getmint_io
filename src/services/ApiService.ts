@@ -8,7 +8,7 @@ import { CreateTweetDto } from "../common/dto/CreateTweetDto";
 import { LeaderDto } from "../common/dto/LeaderDto";
 import { RandomImageDto } from "../common/dto/RandomImageDto";
 import { OperationHistoryDto } from "../common/dto/OperationHistoryDto";
-import { NetworkType } from "../common/enums/NetworkType";
+import { BridgeType } from "../common/enums/BridgeType";
 
 class ApiService {
     async getAccount(): Promise<AccountDto> {
@@ -49,7 +49,7 @@ class ApiService {
         await apiClient.post('bridge', data);
     }
 
-    async getCollection(type = NetworkType.LayerZero) {
+    async getCollection(type = BridgeType.LayerZero) {
         const response = await apiClient.get<NFTDto[]>('collection', {
             params: { type }
         });

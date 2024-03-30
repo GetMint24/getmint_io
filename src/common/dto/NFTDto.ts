@@ -1,4 +1,4 @@
-import { NetworkType } from "../enums/NetworkType";
+import { BridgeType } from "../enums/BridgeType";
 
 export interface NFTDto {
     id: string;
@@ -15,5 +15,5 @@ export interface NFTDto {
     userWalletAddress: string;
     userName: string | null;
     tweeted: boolean;
-    networkType: NetworkType;
+    networkType: BridgeType;
 }

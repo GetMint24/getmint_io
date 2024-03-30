@@ -9,7 +9,7 @@ import { DEFAULT_REFUEL_COST_USD, LZ_CONTRACT_ADDRESS } from "../common/constant
 import { AccountDto } from "../common/dto/AccountDto";
 import { wait } from "../utils/wait";
 import { ChainDto } from "../common/dto/ChainDto";
-import { NetworkType } from "../common/enums/NetworkType";
+import { BridgeType } from "../common/enums/BridgeType";
 
 interface ChainToSend {
     id: number;
@@ -23,7 +23,7 @@ interface ControllerFunctionProps {
     account: AccountDto | null;
     accountAddress: string;
     contractAddress: string;
-    networkType: NetworkType;
+    networkType: BridgeType;
     chainToSend: ChainToSend;
 }
 
@@ -38,12 +38,12 @@ interface ControllerFunctionResult {
 const TRANSACTION_WAIT: number = 60000;
 const LZ_VERSION = 1;
 
-const getAbi = (type: NetworkType) => {
-    if (type === NetworkType.LayerZero) {
+const getAbi = (type: BridgeType) => {
+    if (type === BridgeType.LayerZero) {
         return lzAbi;
     }
 
-    if (type === NetworkType.Hyperlane) {
+    if (type === BridgeType.Hyperlane) {
         return hyperlineAbi;
     }
 
@@ -431,7 +431,7 @@ export const bridgeNFT = async (
     refuel: boolean = false,
     refuelCost: number = DEFAULT_REFUEL_COST_USD
 ): Promise<ControllerFunctionResult> => {
-    if (networkType === NetworkType.LayerZero) {
+    if (networkType === BridgeType.LayerZero) {
         return lzBridge(
             {contractAddress, chainToSend, networkType, account: null, accountAddress: ''},
             tokenId,
@@ -440,7 +440,7 @@ export const bridgeNFT = async (
         );
     }
 
-    if (networkType === NetworkType.Hyperlane) {
+    if (networkType === BridgeType.Hyperlane) {
         return hyperlaneBridge(
             {contractAddress, chainToSend, networkType, account: null, accountAddress: ''},
             tokenId,

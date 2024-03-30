@@ -7,8 +7,12 @@ import { getChainLogo } from "../../utils/getChainLogo";
 import { NetworkName } from "../../common/enums/NetworkName";
 
 import styles from "./NetworkChainSelect.module.css";
+import { useSearchParams } from "next/navigation";
+import { BridgeType } from "../../common/enums/BridgeType";
+import { HyperlaneAvailableNetworks } from "../../common/constants";
 
 export default function NetworkChainSelect() {
+    const searchParams = useSearchParams();
     const [messageApi, contextHolder] = message.useMessage();
     const { chain, chains } = useNetwork();
     const { reset, switchNetwork, error } = useSwitchNetwork(
@@ -33,7 +37,16 @@ export default function NetworkChainSelect() {
     }, [chain]);
 
     const chainsMenu = useMemo(() => {
+        const bridge = searchParams.get('bridge');
+
         const items: MenuProps['items'] = [...chains]
+            .filter(c => {
+                if (bridge === BridgeType.Hyperlane) {
+                    return HyperlaneAvailableNetworks.includes(c.network as NetworkName);
+                }
+
+                return true;
+            })
             .sort((a, b) => a.name.localeCompare(b.name))
             .map(c => ({
                 key: c.id,
@@ -42,7 +55,7 @@ export default function NetworkChainSelect() {
             }));
 
         return items;
-    }, [chains]);
+    }, [chains, searchParams]);
 
     const chainLogo = useMemo(() => getChainLogo(chain?.network!), [chain]);
 
@@ -57,6 +70,10 @@ export default function NetworkChainSelect() {
             void messageApi.warning('User rejected the request');
         }
     }, [error, messageApi]);
+
+    useEffect(() => {
+
+    }, [searchParams]);
 
     if (!chain || !switchNetwork) {
         return null;

@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useAccount, useNetwork } from "wagmi";
 import { observer } from "mobx-react-lite";
 import { AxiosError } from "axios";
@@ -18,19 +18,30 @@ import { NetworkName } from "../../common/enums/NetworkName";
 import { mintNFT } from "../../core/contractController";
 import ChainStore from "../../store/ChainStore";
 import NftStore from "../../store/NftStore";
-import { NetworkType } from "../../common/enums/NetworkType";
+import { BridgeType } from "../../common/enums/BridgeType";
 import NetworkTypeTabs from "../../components/NetworkTypeTabs/NetworkTypeTabs";
 
 function Page() {
     const [messageApi, contextHolder] = message.useMessage();
     const [isNFTPending, setIsNFTPending] = useState<boolean>(false);
-    const [currentNetwork, setCurrentNetwork] = useState<NetworkType>(NetworkType.LayerZero);
+    const [currentBridge, setCurrentBridge] = useState<BridgeType>(BridgeType.LayerZero);
     const { account, walletConnected, openAccountDrawer, fetchAccount } = AppStore;
     const router = useRouter();
+    const pathname = usePathname();
     const searchParams = useSearchParams();
 
     const { chain } = useNetwork();
     const { address } = useAccount();
+
+    const createQueryString = useCallback(
+        (name: string, value: string) => {
+            const params = new URLSearchParams(searchParams.toString())
+            params.set(name, value)
+
+            return params.toString()
+        },
+        [searchParams]
+    );
 
     const _mintNFT = async (data: MintSubmitEvent, key?: string) => {
         if (!walletConnected) {
@@ -49,8 +60,8 @@ function Page() {
                 });
 
                 const result = await mintNFT({
-                    contractAddress: getContractAddress(currentNetwork, chain.network as NetworkName),
-                    networkType: currentNetwork,
+                    contractAddress: getContractAddress(currentBridge, chain.network as NetworkName),
+                    networkType: currentBridge,
                     chainToSend: {
                         id: chain.id,
                         name: chain.name,
@@ -70,7 +81,7 @@ function Page() {
                         tokenId: result.blockId!,
                         chainNetwork: chain?.network!,
                         transactionHash: result?.transactionHash!,
-                        networkType: currentNetwork
+                        networkType: currentBridge
                     });
 
                     await messageApi.success('NFT Successfully minted');
@@ -108,8 +119,14 @@ function Page() {
 
     useEffect(() => {
         const tweeted = searchParams.get('tweeted');
+        const bridge = searchParams.get('bridge');
+
         if (tweeted) {
             messageApi.info('Tweet was created');
+        }
+
+        if (bridge) {
+            setCurrentBridge(bridge as BridgeType);
         }
     }, [searchParams]);
 
@@ -124,7 +141,10 @@ function Page() {
                         <CostLabel cost={20} size="large" />
                     </div>
 
-                    <NetworkTypeTabs selected={currentNetwork} onSelect={setCurrentNetwork} />
+                    <NetworkTypeTabs selected={currentBridge} onSelect={bridge => {
+                        setCurrentBridge(bridge);
+                        router.push(pathname + '?' + createQueryString('bridge', bridge));
+                    }} />
                 </Flex>
             )}>
                 <MintForm onSubmit={_mintNFT} />
