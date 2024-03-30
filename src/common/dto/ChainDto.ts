@@ -4,6 +4,7 @@ export interface ChainDto {
     network: string;
     chainId: number;
     lzChain: number;
+    hyperlaneChain: number;
     token: string;
     rpcUrl: string;
 }

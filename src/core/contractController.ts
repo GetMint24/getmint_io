@@ -16,6 +16,7 @@ interface ChainToSend {
     name: string;
     network: string;
     lzChain: number | null;
+    hyperlaneChain: number | null;
     token: string;
 }
 
@@ -196,6 +197,7 @@ export const estimateBridge = async (
             name: chain.name,
             network: chain.network,
             lzChain: chain.lzChain,
+            hyperlaneChain: chain.lzChain,
             token: chain.token
         })
     }))
@@ -315,57 +317,21 @@ const lzBridge = async (
 const hyperlaneBridge = async (
     { contractAddress, chainToSend, networkType }: ControllerFunctionProps,
     tokenId: number,
-    refuel: boolean = false,
-    refuelCost: number = DEFAULT_REFUEL_COST_USD
 ): Promise<ControllerFunctionResult> => {
     const provider = new ethers.BrowserProvider((window as any).ethereum);
 
     const signer = await provider.getSigner();
     const sender = await signer.getAddress();
 
-    const _toAddress = ethers.solidityPacked(
-        ["address"], [sender]
-    );
-
     const abi = getAbi(networkType);
+
     const contract = new ethers.Contract(contractAddress, abi, signer);
-    const _dstChainId = chainToSend?.lzChain;
-
-    const MIN_DST_GAS = await contract.minDstGasLookup(_dstChainId, LZ_VERSION);
-
-    let adapterParams;
-    if (refuel) {
-        const price = await fetchPrice(chainToSend?.token);
-
-        if (!price) {
-            return {
-                result: false,
-                message: 'Something went wrong :(',
-                transactionHash: ''
-            }
-        }
-
-        const REFUEL_AMOUNT = (refuelCost / price).toFixed(8);
-
-        const refuelAmountEth = ethers.parseUnits(
-            REFUEL_AMOUNT,
-            18
-        );
-
-        adapterParams = ethers.solidityPacked(
-            ["uint16", "uint256", "uint256", "address"],
-            [2, MIN_DST_GAS, refuelAmountEth, sender]
-        );
-    } else {
-        adapterParams = ethers.solidityPacked(
-            ["uint16", "uint256"],
-            [LZ_VERSION, MIN_DST_GAS]
-        );
-    }
+    const _dstChainId = chainToSend?.hyperlaneChain;
+    const _receiver = sender.replace('0x', '0x000000000000000000000000');
 
     const nativeFee = await contract.getHyperlaneMessageFee(
         _dstChainId,
-        _toAddress
+        _receiver
     );
 
     const userBalance = await provider.getBalance(sender);
@@ -381,23 +347,13 @@ const hyperlaneBridge = async (
     const bridgeOptions = {
         value: nativeFee,
         gasLimit: BigInt(0)
-    }
-
-    bridgeOptions.gasLimit = await contract.transferRemote.estimateGas(
-        sender,
-        _dstChainId,
-        _toAddress,
-        tokenId,
-        sender,
-        ethers.ZeroAddress,
-        adapterParams,
-        bridgeOptions
-    );
+    };
 
     const transaction = await contract.transferRemote(
         _dstChainId,
-        _toAddress,
-        tokenId
+        _receiver,
+        tokenId,
+        bridgeOptions
     );
 
     await wait();
@@ -443,9 +399,7 @@ export const bridgeNFT = async (
     if (networkType === BridgeType.Hyperlane) {
         return hyperlaneBridge(
             {contractAddress, chainToSend, networkType, account: null, accountAddress: ''},
-            tokenId,
-            refuel,
-            refuelCost
+            tokenId
         );
     }
 

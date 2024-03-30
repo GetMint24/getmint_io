@@ -14,6 +14,7 @@ import CostLabel from "../../../../../components/CostLabel/CostLabel";
 import ChainLabel from "../../../../../components/ChainLabel/ChainLabel";
 
 import styles from "./BridgeForm.module.css";
+import { BridgeType } from "../../../../../common/enums/BridgeType";
 
 interface Props {
     nft: NFTDto;
@@ -72,7 +73,7 @@ function BridgeForm({ nft, className, onAfterBridge }: Props) {
             {!isMobile ? (
                 <ChainSelect chains={chains} value={selectedChain} onChange={onChangeChain} priceList={bridgePriceList} />
             ) : (
-                <RefuelSwitch
+                nft.networkType !== BridgeType.Hyperlane && <RefuelSwitch
                     refuel={refuelCost}
                     onChangeRefuelGas={onChangeRefuelGas}
                     checked={refuelEnabled}
@@ -81,7 +82,7 @@ function BridgeForm({ nft, className, onAfterBridge }: Props) {
             )}
             <div className={styles.actions}>
                 {!isMobile ? (
-                    <RefuelSwitch
+                    nft.networkType !== BridgeType.Hyperlane && <RefuelSwitch
                         refuel={refuelCost}
                         onChangeRefuelGas={onChangeRefuelGas}
                         checked={refuelEnabled}
