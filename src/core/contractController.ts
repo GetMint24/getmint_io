@@ -349,7 +349,7 @@ const hyperlaneBridge = async (
         _receiver,
         tokenId,
         {
-            value: nativeFee
+            value: nativeFee + await contract.bridgeFee(),
         }
     );
 
