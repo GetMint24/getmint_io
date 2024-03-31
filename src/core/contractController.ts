@@ -344,16 +344,13 @@ const hyperlaneBridge = async (
         }
     }
 
-    const bridgeOptions = {
-        value: nativeFee,
-        gasLimit: BigInt(0)
-    };
-
     const transaction = await contract.transferRemote(
         _dstChainId,
         _receiver,
         tokenId,
-        bridgeOptions
+        {
+            value: nativeFee
+        }
     );
 
     await wait();
