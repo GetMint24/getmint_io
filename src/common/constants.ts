@@ -19,29 +19,33 @@ export const LZ_CONTRACT_ADDRESS: Record<NetworkName, CryptoAddress> = {
     [NetworkName.BSC]: '0x991fC265f163fc33328FBD2b7C8aa9B77840Ed42'
 };
 
-export const HYPERLANE_CONTRACT_ADDRESS: Record<NetworkName, CryptoAddress> = {
-    [NetworkName.Base]: '0xCb70E0357A6bfa1D8AE7043156CB57d6e9BdbC55',
-    [NetworkName.ArbitrumNova]: '0x991fC265f163fc33328FBD2b7C8aa9B77840Ed42',
-    [NetworkName.LineaMainnet]: '0x991fC265f163fc33328FBD2b7C8aa9B77840Ed42',
-    [NetworkName.Optimism]: '0x991fC265f163fc33328FBD2b7C8aa9B77840Ed42',
-    [NetworkName.PolygonzkEVM]: '0x991fC265f163fc33328FBD2b7C8aa9B77840Ed42',
-    [NetworkName.Polygon]: '0x37e890a71dcba5fb732b149950eeec4dd01b6db5',
-    [NetworkName.Zora]: '0x991fC265f163fc33328FBD2b7C8aa9B77840Ed42',
-    [NetworkName.Scroll]: '0x991fC265f163fc33328FBD2b7C8aa9B77840Ed42',
-    [NetworkName.Mantle]: '0x991fC265f163fc3s3328FBD2b7C8aa9B77840Ed42',
-    [NetworkName.Arbitrum]: '0x700de81c88a27be0c73c209fe51ab4a4d8bfe3fc',
-    [NetworkName.Avalanche]: '0x7a9ed9A5EF8dF626Bf934AaCe84c66267b37842c',
-    [NetworkName.ZkSync]: '0x569aA521b05752D22de8B3DBb91D92f65baa7E6f',
-    [NetworkName.BSC]: '0x991fC265f163fc33328FBD2b7C8aa9B77840Ed42'
+export const HYPERLANE_CONTRACT_ADDRESS: Record<NetworkName, CryptoAddress | null> = {
+    [NetworkName.Base]: '0x7e67c93cd0059B9957dF63Df6418B394D1070627',
+    [NetworkName.ArbitrumNova]: null,
+    [NetworkName.LineaMainnet]: null,
+    [NetworkName.Optimism]: '0x7e67c93cd0059B9957dF63Df6418B394D1070627',
+    [NetworkName.PolygonzkEVM]: null,
+    [NetworkName.Polygon]: '0x7e67c93cd0059B9957dF63Df6418B394D1070627',
+    [NetworkName.Zora]: null,
+    [NetworkName.Scroll]: '0x7e67c93cd0059B9957dF63Df6418B394D1070627',
+    [NetworkName.Mantle]: null,
+    [NetworkName.Arbitrum]: '0x7e67c93cd0059B9957dF63Df6418B394D1070627',
+    [NetworkName.Avalanche]: '0x7e67c93cd0059B9957dF63Df6418B394D1070627',
+    [NetworkName.ZkSync]: null,
+    [NetworkName.BSC]: '0x7e67c93cd0059B9957dF63Df6418B394D1070627'
 };
 
 export const HyperlaneAvailableNetworks = [
     NetworkName.Base,
     NetworkName.Polygon,
-    NetworkName.Arbitrum
+    NetworkName.Arbitrum,
+    NetworkName.Optimism,
+    NetworkName.Scroll,
+    NetworkName.Avalanche,
+    NetworkName.BSC
 ];
 
-export function getContractAddress(ntType: BridgeType, network: NetworkName): CryptoAddress {
+export function getContractAddress(ntType: BridgeType, network: NetworkName): CryptoAddress | null {
     if (ntType === BridgeType.LayerZero) {
         return LZ_CONTRACT_ADDRESS[network as NetworkName];
     }
