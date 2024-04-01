@@ -118,7 +118,25 @@ const chains = [
         hyperlaneChain: 56,
         token: 'BNB',
         rpcUrl: 'https://rpc.ankr.com/bsc'
-    }
+    },
+    {
+        chainId: 42220,
+        name: 'Celo',
+        network: 'celo',
+        lzChain: 125,
+        hyperlaneChain: 42220,
+        token: 'CELO',
+        rpcUrl: 'https://forno.celo.org'
+    },
+    {
+        chainId: 100,
+        name: 'Gnosis',
+        network: 'gnosis',
+        lzChain: 145,
+        hyperlaneChain: 100,
+        token: 'xDAI',
+        rpcUrl: 'https://rpc.gnosischain.com'
+    },
 ];
 
 async function seed() {

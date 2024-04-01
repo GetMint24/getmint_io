@@ -12,4 +12,6 @@ export enum NetworkName {
     Mantle = 'mantle',
     ZkSync = 'zksync-era',
     BSC = 'bsc',
+    Celo = 'celo',
+    Gnosis = 'gnosis',
 }

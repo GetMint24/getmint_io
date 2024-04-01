@@ -7,7 +7,7 @@ import {
     arbitrumNova,
     avalanche,
     base,
-    bsc,
+    bsc, celo, gnosis,
     linea,
     mantle,
     optimism,
@@ -15,7 +15,7 @@ import {
     polygonZkEvm,
     scroll,
     zkSync,
-    zora
+    zora,
 } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
@@ -34,7 +34,9 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
         polygonZkEvm,
         mantle,
         zkSync,
-        bsc
+        bsc,
+        celo,
+        gnosis
     ],
     [
         publicProvider()

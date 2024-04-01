@@ -16,23 +16,43 @@ export const LZ_CONTRACT_ADDRESS: Record<NetworkName, CryptoAddress> = {
     [NetworkName.Arbitrum]: '0x809E8c06e6110CD6a055a7d2044EF7e0B29Ce2e3',
     [NetworkName.Avalanche]: '0x7a9ed9A5EF8dF626Bf934AaCe84c66267b37842c',
     [NetworkName.ZkSync]: '0x569aA521b05752D22de8B3DBb91D92f65baa7E6f',
-    [NetworkName.BSC]: '0x991fC265f163fc33328FBD2b7C8aa9B77840Ed42'
+    [NetworkName.BSC]: '0x991fC265f163fc33328FBD2b7C8aa9B77840Ed42',
+    [NetworkName.Celo]: '0x',
+    [NetworkName.Gnosis]: '0x',
 };
 
-export const HYPERLANE_CONTRACT_ADDRESS: Record<NetworkName, CryptoAddress | null> = {
+export const LZAvailableNetworks = [
+    NetworkName.Base,
+    NetworkName.ArbitrumNova,
+    NetworkName.LineaMainnet,
+    NetworkName.PolygonzkEVM,
+    NetworkName.Polygon,
+    NetworkName.Arbitrum,
+    NetworkName.Optimism,
+    NetworkName.Scroll,
+    NetworkName.Avalanche,
+    NetworkName.BSC,
+    NetworkName.Zora,
+    NetworkName.Mantle,
+    NetworkName.ZkSync
+];
+
+export const HYPERLANE_CONTRACT_ADDRESS: Record<NetworkName, CryptoAddress> = {
     [NetworkName.Base]: '0x7e67c93cd0059B9957dF63Df6418B394D1070627',
-    [NetworkName.ArbitrumNova]: null,
-    [NetworkName.LineaMainnet]: null,
+    [NetworkName.ArbitrumNova]: '0x',
+    [NetworkName.LineaMainnet]: '0x',
     [NetworkName.Optimism]: '0x7e67c93cd0059B9957dF63Df6418B394D1070627',
-    [NetworkName.PolygonzkEVM]: null,
+    [NetworkName.PolygonzkEVM]: '0x',
     [NetworkName.Polygon]: '0x7e67c93cd0059B9957dF63Df6418B394D1070627',
-    [NetworkName.Zora]: null,
+    [NetworkName.Zora]: '0x',
     [NetworkName.Scroll]: '0x7e67c93cd0059B9957dF63Df6418B394D1070627',
-    [NetworkName.Mantle]: null,
+    [NetworkName.Mantle]: '0x',
     [NetworkName.Arbitrum]: '0x7e67c93cd0059B9957dF63Df6418B394D1070627',
     [NetworkName.Avalanche]: '0x7e67c93cd0059B9957dF63Df6418B394D1070627',
-    [NetworkName.ZkSync]: null,
-    [NetworkName.BSC]: '0x7e67c93cd0059B9957dF63Df6418B394D1070627'
+    [NetworkName.ZkSync]: '0x',
+    [NetworkName.BSC]: '0x7e67c93cd0059B9957dF63Df6418B394D1070627',
+    [NetworkName.Celo]: '0x7e67c93cd0059B9957dF63Df6418B394D1070627',
+    [NetworkName.Gnosis]: '0x7e67c93cd0059B9957dF63Df6418B394D1070627',
 };
 
 export const HyperlaneAvailableNetworks = [
@@ -42,10 +62,12 @@ export const HyperlaneAvailableNetworks = [
     NetworkName.Optimism,
     NetworkName.Scroll,
     NetworkName.Avalanche,
-    NetworkName.BSC
+    NetworkName.BSC,
+    NetworkName.Gnosis,
+    NetworkName.Celo
 ];
 
-export function getContractAddress(ntType: BridgeType, network: NetworkName): CryptoAddress | null {
+export function getContractAddress(ntType: BridgeType, network: NetworkName): CryptoAddress {
     if (ntType === BridgeType.LayerZero) {
         return LZ_CONTRACT_ADDRESS[network as NetworkName];
     }
@@ -57,7 +79,7 @@ export function getContractAddress(ntType: BridgeType, network: NetworkName): Cr
     return '' as CryptoAddress;
 }
 
-export const UnailableNetworks: Record<NetworkName, NetworkName[]> = {
+export const UnailableLZNetworks: Record<NetworkName, NetworkName[]> = {
     [NetworkName.ArbitrumNova]: [
         NetworkName.Mantle,
         NetworkName.PolygonzkEVM,
@@ -97,6 +119,8 @@ export const UnailableNetworks: Record<NetworkName, NetworkName[]> = {
         NetworkName.Mantle,
         NetworkName.Scroll,
     ],
+    [NetworkName.Celo]: [],
+    [NetworkName.Gnosis]: [],
 }
 
 export const DEFAULT_REFUEL_COST_USD = 0.25;

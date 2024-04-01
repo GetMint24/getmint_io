@@ -2,13 +2,19 @@ import { useEffect, useState } from "react";
 import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
 import { notification } from "antd";
 import { NFTDto } from "./dto/NFTDto";
-import { EstimationBridgeType, bridgeNFT, estimateBridge } from "../core/contractController";
+import { bridgeNFT, estimateBridge, EstimationBridgeType } from "../core/contractController";
 import { ChainDto } from "./dto/ChainDto";
 import ChainStore from "../store/ChainStore";
 import AppStore from "../store/AppStore";
-import { DEFAULT_REFUEL_COST_USD, UnailableNetworks, getContractAddress } from "./constants";
+import {
+    DEFAULT_REFUEL_COST_USD,
+    getContractAddress,
+    HyperlaneAvailableNetworks, LZAvailableNetworks,
+    UnailableLZNetworks
+} from "./constants";
 import { NetworkName } from "./enums/NetworkName";
 import ApiService from "../services/ApiService";
+import { BridgeType } from "./enums/BridgeType";
 
 interface SubmittedData {
     previousChain: ChainDto;
@@ -134,9 +140,17 @@ export function useBridge(nft: NFTDto, onAfterBridge?: (previousChain?: ChainDto
 
     useEffect(() => {
         if (chains.length && nft) {
-            const _chains = chains
-                .filter(x => x.id !== nft.chainId)
-                .filter(x => !UnailableNetworks[x.network as NetworkName].includes(nft.chainNetwork as NetworkName));
+            let _chains = chains.filter(x => x.id !== nft.chainId);
+
+            if (nft.networkType === BridgeType.LayerZero) {
+                _chains = _chains
+                    .filter(x => LZAvailableNetworks.includes(x.network as NetworkName))
+                    .filter(x => !UnailableLZNetworks[x.network as NetworkName].includes(nft.chainNetwork as NetworkName));
+            }
+
+            if (nft.networkType === BridgeType.Hyperlane) {
+                _chains = _chains.filter(x => HyperlaneAvailableNetworks.includes(x.network as NetworkName));
+            }
 
             setChains(_chains);
             setSelectedChain(_chains[0].id);
