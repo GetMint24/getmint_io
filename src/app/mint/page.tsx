@@ -92,7 +92,7 @@ function Page() {
                         await ApiService.deleteFileFromCloud(key);
                     }
 
-                    router.push(`/mint/${nft.pinataImageHash}?successful=true`);
+                    router.push(`/mint/${nft.id}?successful=true`);
 
                     await fetchAccount();
                 } else {

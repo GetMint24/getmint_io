@@ -18,6 +18,7 @@ import AppStore from "../../../store/AppStore";
 import { twitterApi } from "../../../utils/twitterApi";
 import ChainStore from "../../../store/ChainStore";
 import { TWEET_CONTENT } from "../../../common/constants";
+import ApiService from "../../../services/ApiService";
 
 interface NftPageProps {
     params: { nft: string };
@@ -30,7 +31,7 @@ function NftPage({ params, searchParams }: NftPageProps) {
     const router = useRouter();
 
     const refetch = () => {
-        NftStore.getNfts().then(() => setNft(NftStore.selectNftByHash(params.nft)));
+        ApiService.getNft(params.nft).then(setNft);
     }
 
     const createTweetHandler = async () => {
