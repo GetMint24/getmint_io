@@ -28,15 +28,16 @@
 
 .row > * {
     flex-grow: 1;
+    width: 100%;
 }
 
 .row > *:last-child {
     text-align: right;
-    max-width: 118px;
+    max-width: min(15%, 118px);
 }
 
 .row > *:first-child {
-    max-width: 136px;
+    max-width: min(20%, 136px);
 }
 
 .operation {
@@ -48,6 +49,7 @@
 .scheme {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
 }
 
@@ -68,6 +70,7 @@
     flex-direction: column;
     gap: 12px;
     flex-grow: 1;
+    overflow: hidden;
 }
 
 .label {
@@ -80,6 +83,23 @@
     font-weight: 600;
 }
 
+.transactionLinkWrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.centeredTitle {
+    text-align: center;
+}
+
+.transactionLink {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
 
 @media screen and (max-width: 768px) {
     .scheme {
@@ -87,7 +107,6 @@
         gap: 4px;
         flex-grow: 1;
         align-items: center;
-        margin-top: 10px;
     }
 
     .scheme img {
@@ -101,5 +120,15 @@
 
     .chainLabel {
         font-size: 12px;
+    }
+
+    .info {
+        width: 100%;
+    }
+
+    .infoRightSide {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
     }
 }

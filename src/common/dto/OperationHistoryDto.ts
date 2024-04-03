@@ -3,4 +3,5 @@ export interface OperationHistoryDto {
     chainNetwork: string;
     targetChainNetwork?: string;
     date: Date;
+    transactionHash: string | undefined
 }

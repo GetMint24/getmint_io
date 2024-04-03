@@ -8,6 +8,7 @@ enableStaticRendering(typeof window === 'undefined');
 class ChainStore {
     loading = false;
     chains: ChainDto[] = [];
+    isSelectedWrongChain: boolean = false;
 
     constructor() {
         makeAutoObservable(this, undefined, { autoBind: true });
@@ -30,6 +31,10 @@ class ChainStore {
 
     getChainByNetwork(network: string) {
         return this.chains.find((chain) => chain.network === network);
+    }
+
+    setIsSelectedWrongChain(value: boolean) {
+        this.isSelectedWrongChain = value
     }
 }
 

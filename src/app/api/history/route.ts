@@ -1,6 +1,17 @@
 import { NextRequest } from "next/server";
 import { BadRequest } from "../utils/responses";
 import prisma from "../../../utils/prismaClient";
+import { HyperlaneTransactionInfo } from "../../../common/dto/HyperlaneTransactionInfo";
+import axios from "axios";
+import { toDictionary } from "../../../utils/to-dictionary";
+import { BalanceLog, BridgeLog, MintLog } from "@prisma/client";
+
+interface BalanceMintBridgeLog extends BalanceLog {
+    mintLog: MintLog | null,
+    bridgeLog: BridgeLog | null,
+}
+
+const HYPERLANE_BASE_URL = 'https://explorer.hyperlane.xyz/api'
 
 export async function GET(request: NextRequest) {
     const nftId = request.nextUrl.searchParams.get('nftId');
@@ -19,6 +30,8 @@ export async function GET(request: NextRequest) {
         include: { mintLog: true, bridgeLog: true },
     });
 
+    const hyperlaneTransactionsByHash = await getHyperlaneTransactions(balanceLogs)
+
     const history = balanceLogs.map((log, index) => {
         const network = log.bridgeLog ? log.bridgeLog.previousChain : log.mintLog && index ? balanceLogs[index - 1].bridgeLog?.previousChain : currentNetwork;
         const targetNetwork = log.bridgeLog?.nextChain;
@@ -28,8 +41,37 @@ export async function GET(request: NextRequest) {
             chainNetwork: network,
             targetChainNetwork: targetNetwork,
             date: log.createdAt,
+            transactionHash: log.bridgeLog?.transactionHash ? hyperlaneTransactionsByHash[log.bridgeLog.transactionHash].id : undefined
         };
     });
 
     return Response.json(history);
+}
+
+async function getHyperlaneTransactions(balanceLogs: BalanceMintBridgeLog[]) {
+    const hyperlaneTransactionPromises = balanceLogs.reduce((promises: Promise<HyperlaneTransactionInfo['result']>[], log) => {
+        if (log.bridgeLog?.transactionHash) {
+            promises.push(getHyperlaneTransactionInfo(log.bridgeLog.transactionHash))
+        }
+
+        return promises
+    }, [])
+
+    const hyperlaneTransactions = await Promise.all(hyperlaneTransactionPromises)
+    return toDictionary(hyperlaneTransactions.flat(), (t) => t.origin.hash)
+}
+
+async function getHyperlaneTransactionInfo(hash: string) {
+    const response = await axios<HyperlaneTransactionInfo>(
+        HYPERLANE_BASE_URL, 
+        { 
+            params: { 
+                module: 'message', 
+                action: 'get-messages',
+                'origin-tx-hash': hash
+            } 
+        }
+    );
+
+    return response.data.result;
 }

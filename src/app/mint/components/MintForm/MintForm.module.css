@@ -18,6 +18,31 @@
     gap: 8px;
 }
 
+.submitButton {
+    position: relative;
+}
+
+.bridgeType {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.LzSvg {
+    width: 70px;
+    height: auto;
+}
+
+.Hyperlane svg {
+    width: 16px;
+    height: auto;
+}
+
+.Hyperlane h4 {
+    font-size: 12px;
+    font-weight: 400;
+}
 
 @media screen and (max-width: 440px) {
     .withExtra input {

@@ -36,15 +36,17 @@ function Page() {
         NftStore.getNfts();
     }, [address]);
 
+    const isHyperlaneBridge = NftStore.currentNetworkType === BridgeType.Hyperlane;
+
     return (
         <Card title={(
-            <Flex justify="space-between" wrap="wrap">
+            <Flex className={styles.header} justify="space-between" wrap="wrap">
                 <div className={styles.title}>
-                    <span className={styles.titleLabel}>Bridge NFT</span>
+                    <span className={styles.titleLabel}>Bridge {isHyperlaneBridge ? 'hNFT' : 'oNFT'}</span>
                     <CostLabel cost={10} size="large" />
                 </div>
 
-                <NetworkTypeTabs selected={NftStore.currentNetworkType} onSelect={(type) => {
+                <NetworkTypeTabs className={styles.networkType} selected={NftStore.currentNetworkType} onSelect={(type) => {
                     NftStore.setSelectedNetworkType(type);
                     NftStore.getNfts();
                 }} />

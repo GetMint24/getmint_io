@@ -11,6 +11,11 @@ import { generateNftName, generateNftDescription } from "../../../../utils/gener
 import ApiService from "../../../../services/ApiService";
 
 import styles from './MintForm.module.css';
+import ChainStore from "../../../../store/ChainStore";
+import { observer } from "mobx-react-lite";
+import { BridgeType } from "../../../../common/enums/BridgeType";
+import LzSvg from "../../../../components/NetworkTypeTabs/LzSvg";
+import HyperlaneSvg from "../../../../components/NetworkTypeTabs/HyperlaneSvg";
 
 export interface MintFormData {
     file: string;
@@ -23,10 +28,11 @@ export interface MintSubmitEvent extends Omit<MintFormData, 'file'> {
 }
 
 interface MintFormProps {
+    currentBridge: BridgeType
     onSubmit: (data: MintSubmitEvent, key?: string) => void;
 }
 
-export default function MintForm({ onSubmit }: MintFormProps) {
+function MintForm({ currentBridge, onSubmit }: MintFormProps) {
     const [isGenerating, setIsGenerating] = useState(false);
     const [file, setFile] = useState<File | null>(null);
     const [fileKey, setFileKey] = useState<string>('');
@@ -150,8 +156,15 @@ export default function MintForm({ onSubmit }: MintFormProps) {
                     </div>
                 </FormControl>
 
-                <Button type="submit" block>Get Mint</Button>
+                <Button className={styles.submitButton} type="submit" block disabled={ChainStore.isSelectedWrongChain}>
+                    Get Mint
+                    <span className={styles.bridgeType}>
+                        {currentBridge === BridgeType.LayerZero? <LzSvg className={styles.LzSvg} /> : <HyperlaneSvg rootClassName={styles.Hyperlane} withoutOpacity />}
+                    </span>
+                </Button>
             </form>
         </>
     )
 }
+
+export default observer(MintForm)

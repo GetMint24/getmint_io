@@ -3,6 +3,10 @@
     margin: auto;
 }
 
+.header {
+    gap: 10px;
+}
+
 .title {
     display: flex;
     align-items: center;
@@ -13,4 +17,14 @@
 .titleLabel {
     font-size: 32px;
     font-weight: 600;
+}
+
+.networkType {
+    max-width: 330px;
+}
+
+@media screen and (max-width: 550px) {
+    .networkType {
+        max-width: unset
+    }
 }

@@ -22,6 +22,7 @@ import { OperationHistoryDto } from "../../../common/dto/OperationHistoryDto";
 import styles from "./page.module.css";
 import HyperlaneSvg from "../../../components/NetworkTypeTabs/HyperlaneSvg";
 import { BridgeType } from "../../../common/enums/BridgeType";
+import LzSvg from "../../../components/NetworkTypeTabs/LzSvg";
 
 interface Props {
     params: { nft: string },
@@ -91,11 +92,11 @@ function Page({ params }: Props) {
                         <Image src="/svg/ui/back-arrow.svg" width={24} height={24} alt="" />
                         <span>Back</span>
                     </div>
-                    <Flex align="center" justify="space-between" wrap="wrap">
+                    <Flex className={styles.header} align="center" justify="space-between" wrap="wrap">
                         <div className={styles.title}>{nft.name}</div>
-                        {nft.networkType === BridgeType.Hyperlane && (
-                            <div><HyperlaneSvg /></div>
-                        )}
+                        <div>
+                            {nft.networkType === BridgeType.LayerZero? <LzSvg /> : <HyperlaneSvg />}
+                        </div>
                     </Flex>
                 </>
             }
@@ -136,7 +137,7 @@ function Page({ params }: Props) {
                     )}
                 </div>
                 
-                <History history={history} loading={isLoadingHistory} className={styles.history} />
+                <History history={history} loading={isLoadingHistory} className={styles.history} bridgeType={nft.networkType} />
             </div>
         </Card>
     );

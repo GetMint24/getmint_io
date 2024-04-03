@@ -131,24 +131,26 @@ function Page() {
         }
     }, [searchParams]);
 
+    const isHyperlaneBridge = currentBridge === BridgeType.Hyperlane;
+
     return (
         <>
             {contextHolder}
 
             <Card className={styles.page} isLoading={isNFTPending} title={(
-                <Flex justify="space-between" wrap="wrap">
+                <Flex className={styles.header} justify="space-between" wrap="wrap">
                     <div className={styles.title}>
-                        <span className={styles.titleLabel}>Mint</span>
-                        <CostLabel cost={20} size="large" />
+                        <span className={styles.titleLabel}>Mint{isHyperlaneBridge && ' hNFT'}</span>
+                        {!isHyperlaneBridge && <CostLabel cost={20} size="large" />}
                     </div>
 
-                    <NetworkTypeTabs selected={currentBridge} onSelect={bridge => {
+                    <NetworkTypeTabs className={styles.networkType} selected={currentBridge} onSelect={bridge => {
                         setCurrentBridge(bridge);
                         router.push(pathname + '?' + createQueryString('bridge', bridge));
                     }} />
                 </Flex>
             )}>
-                <MintForm onSubmit={_mintNFT} />
+                <MintForm onSubmit={_mintNFT} currentBridge={currentBridge} />
             </Card>
         </>
     )
