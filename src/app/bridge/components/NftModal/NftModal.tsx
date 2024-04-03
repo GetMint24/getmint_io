@@ -13,6 +13,7 @@ import { useBridge } from "../../../../common/useBridge";
 import { ChainDto } from "../../../../common/dto/ChainDto";
 
 import styles from "./NftModal.module.css";
+import { BridgeType } from "../../../../common/enums/BridgeType";
 
 interface Props {
     onSubmit(data: SuccessfulBridgeData): void;
@@ -61,13 +62,13 @@ function NftModal({ onSubmit }: Props) {
             footer={
                 nft && (
                     <Flex gap={12} className={clsx(styles.footer, isPending && styles.footerPending)}>
-                        <RefuelSwitch
+                        {nft.networkType !== BridgeType.Hyperlane && <RefuelSwitch
                             refuel={refuelCost}
                             onChangeRefuelGas={onChangeRefuelGas}
                             checked={refuelEnabled}
                             onChange={onChangeRefuelEnabled}
                             className={styles.switch}
-                        />
+                        />}
 
                         <Flex gap={8} flex={1} className={styles.actions}>
                             <ChainSelect

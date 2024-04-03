@@ -1,7 +1,6 @@
 import { useMedia } from "use-media";
 import { observer } from "mobx-react-lite";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
 import { Spin } from "antd";
 import Image from "next/image";
 import { intlFormatDistance } from "date-fns";
@@ -9,9 +8,11 @@ import { BalanceLogType } from "../../../../../common/enums/BalanceLogType";
 import { OperationHistoryDto } from "../../../../../common/dto/OperationHistoryDto";
 import ChainLabel from "../../../../../components/ChainLabel/ChainLabel";
 import ChainStore from "../../../../../store/ChainStore";
-import ApiService from "../../../../../services/ApiService";
 
 import styles from "./History.module.css";
+import { BridgeType } from "../../../../../common/enums/BridgeType";
+import { getBridgeBlockExplorer } from "../../../../../utils/getBridgeBlockExplorer";
+import { LinkSvg } from "../../../../../components/LinkSvg/LinkSvg";
 
 const OPERATION_ICONS = {
     [BalanceLogType.Mint]: '/svg/mint-operation.svg',
@@ -25,12 +26,16 @@ const OPERATION_NAME = {
 
 interface Props {
     history: OperationHistoryDto[];
+    bridgeType: BridgeType,
     loading?: boolean;
     className?: string;
 }
 
-function History({ history, loading, className }: Props) {
+function History({ history, bridgeType, loading, className }: Props) {
     const isMobile = useMedia({ maxWidth: 768 });
+    
+    const isHyperlaneBridgeType = bridgeType === BridgeType.Hyperlane
+    const showLinkColumn = isHyperlaneBridgeType ? history.some((h) => h.transactionHash) : false;
 
     if (isMobile) {
         return (
@@ -60,17 +65,27 @@ function History({ history, loading, className }: Props) {
                                     <div className={styles.value}>{intlFormatDistance(new Date(item.date), new Date(), { locale: 'en-US' })}</div>
                                 </div>
                             </div>
-                            <div className={styles.chains}>
-                                <div className={styles.label}>Network</div>
-                                <div className={styles.scheme}>
-                                    <ChainLabel network={chain.network} label={chain.name} justify="center" iconClassName={styles.icon} labelClassName={styles.chainLabel} />
-                                    {targetChain && (
-                                        <>
-                                            <Image src="/svg/scheme-arrow.svg" width={16} height={16} alt="" className={styles.arrow} />
-                                            <ChainLabel network={targetChain.network} label={targetChain.name} justify="center" iconClassName={styles.icon} labelClassName={styles.chainLabel} />
-                                        </>
-                                    )}
+                            <div className={styles.info}>
+                                <div className={styles.infoRightSide}>
+                                    <div className={styles.label}>Network</div>
+                                    <div className={styles.scheme}>
+                                        <ChainLabel network={chain.network} label={chain.name} justify="center" iconClassName={styles.icon} labelClassName={styles.chainLabel} />
+                                        {targetChain && (
+                                            <>
+                                                <Image src="/svg/scheme-arrow.svg" width={16} height={16} alt="" className={styles.arrow} />
+                                                <ChainLabel network={targetChain.network} label={targetChain.name} justify="center" iconClassName={styles.icon} labelClassName={styles.chainLabel} />
+                                            </>
+                                        )}
+                                    </div>
                                 </div>
+                                {showLinkColumn && item.transactionHash && <div className={styles.infoRightSide}>
+                                    <div className={styles.label}>Link</div>
+                                    <a className={styles.transactionLink} href={getBridgeBlockExplorer(BridgeType.Hyperlane, item.transactionHash)} target="_blank">
+                                        hyperlane.xyz
+                                        <LinkSvg />
+                                    </a>
+                                </div>}
+
                             </div>
                         </div>
                     );
@@ -84,7 +99,8 @@ function History({ history, loading, className }: Props) {
             <div className={styles.head}>
                 <div className={styles.row}>
                     <div>Action</div>
-                    <div>Network</div>
+                    <div className={styles.centeredTitle}>Network</div>
+                    {showLinkColumn && <div className={styles.centeredTitle}>Link</div>}
                     <div>Time</div>
                 </div>
             </div>
@@ -107,7 +123,7 @@ function History({ history, loading, className }: Props) {
                                     <span>{OPERATION_NAME[item.type]}</span>
                                 </div>
                             </div>
-                            <div>
+                            <div >
                                 <div className={styles.scheme}>
                                     <ChainLabel network={chain.network} label={chain.name} />
                                     {targetChain && (
@@ -118,6 +134,16 @@ function History({ history, loading, className }: Props) {
                                     )}
                                 </div>
                             </div>
+                            {showLinkColumn && !item.transactionHash && <div className={styles.transactionLinkWrapper} />}
+                            {showLinkColumn && item.transactionHash && 
+                                <div className={styles.transactionLinkWrapper}>
+                                    <a className={styles.transactionLink} href={getBridgeBlockExplorer(BridgeType.Hyperlane, item.transactionHash)} target="_blank">
+                                        hyperlane.xyz
+
+                                        <LinkSvg />
+                                    </a>
+                                </div>
+                            }
                             <div>{intlFormatDistance(new Date(item.date), new Date(), { locale: 'en-US' })}</div>
                         </div>
                     )

@@ -18,6 +18,7 @@ const options = [
 
 interface NetworkTypeTabsProps {
     selected: BridgeType;
+    className?: string;
     onSelect: (value: BridgeType) => void;
 }
 
@@ -31,7 +32,7 @@ export default function NetworkTypeTabs(props: NetworkTypeTabsProps) {
     }, [props.selected]);
 
     return (
-        <div className={cn.tabs}>
+        <div className={clsx(cn.tabs, props.className) }>
             {options.map(item => (
                 <button
                     key={item.value}

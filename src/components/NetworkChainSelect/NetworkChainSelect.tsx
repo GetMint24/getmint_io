@@ -1,25 +1,23 @@
-import { Dropdown, Flex, MenuProps, message } from "antd";
+import { Dropdown, Flex,  message } from "antd";
 import Image from "next/image";
 import { useEffect, useMemo } from "react";
 import clsx from "clsx";
 import { useNetwork, useSwitchNetwork } from "wagmi";
 import { getChainLogo } from "../../utils/getChainLogo";
-import { NetworkName } from "../../common/enums/NetworkName";
 
 import styles from "./NetworkChainSelect.module.css";
 import { useSearchParams } from "next/navigation";
-import { BridgeType } from "../../common/enums/BridgeType";
-import { HyperlaneAvailableNetworks } from "../../common/constants";
-import { ChainDto } from "../../common/dto/ChainDto";
+import { getChainsByBridgeType } from "./helpers/getChainsByBridgeType";
+import ChainStore from "../../store/ChainStore";
+import { observer } from "mobx-react-lite";
 
-interface NetworkChainSelectProps {
-    chainsInfo: ChainDto[];
-}
+const WRONG_NETWORK = 'Wrong Network'
 
-export default function NetworkChainSelect({ chainsInfo }: NetworkChainSelectProps) {
+function NetworkChainSelect() {
     const searchParams = useSearchParams();
     const [messageApi, contextHolder] = message.useMessage();
     const { chain, chains } = useNetwork();
+    const setIsSelectedWrongChain = ChainStore.setIsSelectedWrongChain
     const { reset, switchNetwork, error } = useSwitchNetwork(
         {
             onSettled: () => {
@@ -28,44 +26,19 @@ export default function NetworkChainSelect({ chainsInfo }: NetworkChainSelectPro
         }
     );
 
-    const currentBridge = (searchParams.get('bridge') as BridgeType) || BridgeType.LayerZero;
-
-    const isKnownChain = useMemo(() => {
-        const chainNetworks = Object.values(NetworkName);
-        const isNetwork = chainNetworks.some((network) => network === chain?.network);
-        const isAvailable = chainsInfo.find(x => x.network === chain?.network)?.availableBridgeTypes?.includes(currentBridge);
-
-        return chain && isNetwork && isAvailable;
-    }, [chain, chainsInfo, currentBridge]);
-
-    const chainName = useMemo(() => {
-        if (chain && isKnownChain) {
-            return chain.name;
-        }
-
-        return 'Wrong Network';
-    }, [chain, isKnownChain]);
-
-    const chainsMenu = useMemo(() => {
+    const { chainsMenu, isKnownChain, chainName } = useMemo(() => {
         const bridge = searchParams.get('bridge');
 
-        const items: MenuProps['items'] = [...chains]
-            .filter(c => {
-                if (bridge === BridgeType.Hyperlane) {
-                    return HyperlaneAvailableNetworks.includes(c.network as NetworkName);
-                }
+        const availableChains = getChainsByBridgeType(chains, bridge)
+        const isKnownChain = !!(chain && availableChains.some(({label}) => label === chain.name))
 
-                return true;
-            })
-            .sort((a, b) => a.name.localeCompare(b.name))
-            .map(c => ({
-                key: c.id,
-                label: c.name,
-                icon: <Image width={24} height={24} src={getChainLogo(c.network)} alt="" />,
-            }));
-
-        return items;
-    }, [chains, searchParams]);
+        setIsSelectedWrongChain(!isKnownChain)
+        return {
+            chainsMenu: availableChains,
+            isKnownChain,
+            chainName: isKnownChain ? chain.name : WRONG_NETWORK
+        }
+    }, [chains, searchParams, chain]);
 
     const chainLogo = useMemo(() => isKnownChain && getChainLogo(chain?.network!), [chain, isKnownChain]);
 
@@ -80,10 +53,6 @@ export default function NetworkChainSelect({ chainsInfo }: NetworkChainSelectPro
             void messageApi.warning('User rejected the request');
         }
     }, [error, messageApi]);
-
-    useEffect(() => {
-
-    }, [searchParams]);
 
     if (!chain || !switchNetwork) {
         return null;
@@ -104,7 +73,7 @@ export default function NetworkChainSelect({ chainsInfo }: NetworkChainSelectPro
                 rootClassName={styles.dropdown}
             >
                 <Flex align="center" gap={8} className={clsx(styles.dropdownBtn, { [styles.wrong]: !isKnownChain })}>
-                    {chainLogo && <Image src={chainLogo} width={24} height={24} alt="" />}
+                    {chainLogo && isKnownChain && <Image src={chainLogo} width={24} height={24} alt="" />}
 
                     <div className={styles.value}>{chainName}</div>
 
@@ -114,3 +83,5 @@ export default function NetworkChainSelect({ chainsInfo }: NetworkChainSelectPro
         </>
     )
 }
+
+export default observer(NetworkChainSelect)
