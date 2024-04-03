@@ -43,7 +43,7 @@ function Page({ params }: Props) {
             if (nft) {
                 setNft(nft);
                 setIsLoadingHistory(true);
-                const history = await ApiService.getNftHistory(nft.id, nft.chainNetwork);
+                const history = await ApiService.getNftHistory(nft.id, nft.chainNetwork, nft.networkType);
                 setHistory(history);
                 setIsLoadingHistory(false);
             } else {

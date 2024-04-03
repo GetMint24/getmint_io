@@ -10,13 +10,19 @@ import { useSearchParams } from "next/navigation";
 import { getChainsByBridgeType } from "./helpers/getChainsByBridgeType";
 import ChainStore from "../../store/ChainStore";
 import { observer } from "mobx-react-lite";
+import { ChainDto } from "../../common/dto/ChainDto";
+import { BridgeType } from "../../common/enums/BridgeType";
 
 const WRONG_NETWORK = 'Wrong Network'
 
-function NetworkChainSelect() {
+interface NetworkChainSelectProps {
+    chainsInfo: ChainDto[];
+}
+
+function NetworkChainSelect({ chainsInfo }: NetworkChainSelectProps) {
     const searchParams = useSearchParams();
     const [messageApi, contextHolder] = message.useMessage();
-    const { chain, chains } = useNetwork();
+    const { chain } = useNetwork();
     const setIsSelectedWrongChain = ChainStore.setIsSelectedWrongChain
     const { reset, switchNetwork, error } = useSwitchNetwork(
         {
@@ -26,19 +32,20 @@ function NetworkChainSelect() {
         }
     );
 
+    const currentBridge = (searchParams.get('bridge') as BridgeType) || BridgeType.LayerZero;
+
     const { chainsMenu, isKnownChain, chainName } = useMemo(() => {
-        const bridge = searchParams.get('bridge');
 
-        const availableChains = getChainsByBridgeType(chains, bridge)
-        const isKnownChain = !!(chain && availableChains.some(({label}) => label === chain.name))
+        const availableChains = getChainsByBridgeType(chainsInfo, currentBridge)
+        const chainInfo = chain ? chainsInfo.find((c) => c.chainId === chain.id) : undefined
+        const isKnownChain = chainInfo && currentBridge ? chainInfo.availableBridgeTypes.includes(currentBridge) : false
 
-        setIsSelectedWrongChain(!isKnownChain)
         return {
             chainsMenu: availableChains,
             isKnownChain,
-            chainName: isKnownChain ? chain.name : WRONG_NETWORK
+            chainName: isKnownChain && chain ? chain.name : WRONG_NETWORK
         }
-    }, [chains, searchParams, chain]);
+    }, [searchParams, chain, chainsInfo, currentBridge]);
 
     const chainLogo = useMemo(() => isKnownChain && getChainLogo(chain?.network!), [chain, isKnownChain]);
 
@@ -53,6 +60,10 @@ function NetworkChainSelect() {
             void messageApi.warning('User rejected the request');
         }
     }, [error, messageApi]);
+
+    useEffect(() => {
+        setIsSelectedWrongChain(!isKnownChain)
+    }, [isKnownChain])
 
     if (!chain || !switchNetwork) {
         return null;

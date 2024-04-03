@@ -106,8 +106,8 @@ class ApiService {
         return response.data;
     }
 
-    async getNftHistory(nftId: string, currentNetwork: string) {
-        const response = await apiClient.get<OperationHistoryDto[]>('history', { params: { nftId, currentNetwork } });
+    async getNftHistory(nftId: string, currentNetwork: string, bridgeType: BridgeType) {
+        const response = await apiClient.get<OperationHistoryDto[]>('history', { params: { nftId, currentNetwork, bridgeType } });
         return response.data;
     }
 }

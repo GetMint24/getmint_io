@@ -1,10 +1,8 @@
 import { ReactNode } from "react";
 import { BridgeType } from "../../../common/enums/BridgeType";
-import { NetworkName } from "../../../common/enums/NetworkName";
-import { HyperlaneAvailableNetworks } from "../../../common/constants";
 import Image from "next/image";
 import { getChainLogo } from "../../../utils/getChainLogo";
-import { Chain } from "wagmi";
+import { ChainDto } from "../../../common/dto/ChainDto";
 
 interface ChainMenuItem {
   key: number,
@@ -12,21 +10,17 @@ interface ChainMenuItem {
   icon: ReactNode,
 }
 
-export function getChainsByBridgeType(chains: Chain[], bridge: string | null) {
-  const items: ChainMenuItem[] = [...chains]
-    .filter(c => {
-        if (bridge === BridgeType.Hyperlane) {
-          return HyperlaneAvailableNetworks.includes(c.network as NetworkName);
-        }
-
-        return true;
+export function getChainsByBridgeType(chainsInfo: ChainDto[], bridge: string | null) {
+  const items = chainsInfo.reduce((res: ChainMenuItem[], chainInfo) => {
+    if (chainInfo.availableBridgeTypes.includes(bridge as BridgeType)) {
+      res.push({
+        key: chainInfo.chainId,
+        label: chainInfo.name,
+        icon: <Image width={24} height={24} src={getChainLogo(chainInfo.network)} alt="" />,
     })
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .map(c => ({
-        key: c.id,
-        label: c.name,
-        icon: <Image width={24} height={24} src={getChainLogo(c.network)} alt="" />,
-    }));
+    }
+    return res
+  }, [])
 
-    return items
+  return items.sort((a, b) => a.label.localeCompare(b.label))
 }
