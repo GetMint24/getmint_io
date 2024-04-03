@@ -1,3 +1,5 @@
+import { BridgeType } from "../enums/BridgeType";
+
 export interface ChainDto {
     id: string;
     name: string;
@@ -7,4 +9,5 @@ export interface ChainDto {
     hyperlaneChain: number;
     token: string;
     rpcUrl: string;
+    availableBridgeTypes: BridgeType[];
 }

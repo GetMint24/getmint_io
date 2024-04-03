@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import { BridgeType } from "../src/common/enums/BridgeType";
 const prisma = new PrismaClient()
 
 const chains = [
@@ -9,7 +10,8 @@ const chains = [
         lzChain: 184,
         hyperlaneChain: 8453,
         token: 'ETH',
-        rpcUrl: 'https://mainnet.base.org'
+        rpcUrl: 'https://mainnet.base.org',
+        availableBridgeTypes: [BridgeType.LayerZero, BridgeType.Hyperlane]
     },
     {
         chainId: 42170,
@@ -18,7 +20,8 @@ const chains = [
         lzChain: 175,
         hyperlaneChain: null,
         token: 'ETH',
-        rpcUrl: 'https://arbitrum-nova.drpc.org'
+        rpcUrl: 'https://arbitrum-nova.drpc.org',
+        availableBridgeTypes: [BridgeType.LayerZero]
     },
     {
         chainId: 42161,
@@ -27,7 +30,8 @@ const chains = [
         lzChain: 110,
         hyperlaneChain: 42161,
         token: 'ETH',
-        rpcUrl: 'https://arb1.arbitrum.io/rpc'
+        rpcUrl: 'https://arb1.arbitrum.io/rpc',
+        availableBridgeTypes: [BridgeType.LayerZero, BridgeType.Hyperlane]
     },
     {
         chainId: 43114,
@@ -36,7 +40,8 @@ const chains = [
         lzChain: 106,
         hyperlaneChain: 43114,
         token: 'AVAX',
-        rpcUrl: 'https://rpc.ankr.com/avalanche'
+        rpcUrl: 'https://rpc.ankr.com/avalanche',
+        availableBridgeTypes: [BridgeType.LayerZero, BridgeType.Hyperlane]
     },
     {
         chainId: 59144,
@@ -46,6 +51,7 @@ const chains = [
         hyperlaneChain: null,
         token: 'ETH',
         rpcUrl: 'https://linea.drpc.org',
+        availableBridgeTypes: [BridgeType.LayerZero]
     },
     {
         chainId: 5000,
@@ -54,7 +60,8 @@ const chains = [
         lzChain: 181,
         hyperlaneChain: null,
         token: 'MNT',
-        rpcUrl: 'https://rpc.mantle.xyz'
+        rpcUrl: 'https://rpc.mantle.xyz',
+        availableBridgeTypes: [BridgeType.LayerZero]
     },
     {
         chainId: 10,
@@ -63,7 +70,8 @@ const chains = [
         lzChain: 111,
         hyperlaneChain: 10,
         token: 'ETH',
-        rpcUrl: 'https://rpc.ankr.com/optimism'
+        rpcUrl: 'https://rpc.ankr.com/optimism',
+        availableBridgeTypes: [BridgeType.LayerZero, BridgeType.Hyperlane]
     },
     {
         chainId: 137,
@@ -72,7 +80,8 @@ const chains = [
         lzChain: 109,
         hyperlaneChain: 137,
         token: 'MATIC',
-        rpcUrl: 'https://rpc.ankr.com/polygon'
+        rpcUrl: 'https://rpc.ankr.com/polygon',
+        availableBridgeTypes: [BridgeType.LayerZero, BridgeType.Hyperlane]
     },
     {
         chainId: 1101,
@@ -81,7 +90,8 @@ const chains = [
         lzChain: 158,
         hyperlaneChain: 1101,
         token: 'MATIC',
-        rpcUrl: 'https://zkevm-rpc.com'
+        rpcUrl: 'https://zkevm-rpc.com',
+        availableBridgeTypes: [BridgeType.LayerZero],
     },
     {
         chainId: 534352,
@@ -90,7 +100,8 @@ const chains = [
         lzChain: 214,
         hyperlaneChain: 534352,
         token: 'ETH',
-        rpcUrl: 'https://scroll.blockpi.network/v1/rpc/public'
+        rpcUrl: 'https://scroll.blockpi.network/v1/rpc/public',
+        availableBridgeTypes: [BridgeType.LayerZero, BridgeType.Hyperlane]
     },
     {
         chainId: 7777777,
@@ -99,7 +110,8 @@ const chains = [
         lzChain: 195,
         hyperlaneChain: null,
         token: 'ETH',
-        rpcUrl: 'https://rpc.zora.energy'
+        rpcUrl: 'https://rpc.zora.energy',
+        availableBridgeTypes: [BridgeType.LayerZero]
     },
     {
         chainId: 324,
@@ -108,7 +120,8 @@ const chains = [
         lzChain: 165,
         hyperlaneChain: null,
         token: 'ETH',
-        rpcUrl: 'https://mainnet.era.zksync.io'
+        rpcUrl: 'https://mainnet.era.zksync.io',
+        availableBridgeTypes: [BridgeType.LayerZero]
     },
     {
         chainId: 56,
@@ -117,7 +130,8 @@ const chains = [
         lzChain: 102,
         hyperlaneChain: 56,
         token: 'BNB',
-        rpcUrl: 'https://rpc.ankr.com/bsc'
+        rpcUrl: 'https://rpc.ankr.com/bsc',
+        availableBridgeTypes: [BridgeType.LayerZero, BridgeType.Hyperlane]
     },
     {
         chainId: 42220,
@@ -126,7 +140,8 @@ const chains = [
         lzChain: 125,
         hyperlaneChain: 42220,
         token: 'CELO',
-        rpcUrl: 'https://forno.celo.org'
+        rpcUrl: 'https://forno.celo.org',
+        availableBridgeTypes: [BridgeType.Hyperlane]
     },
     {
         chainId: 100,
@@ -135,7 +150,8 @@ const chains = [
         lzChain: 145,
         hyperlaneChain: 100,
         token: 'xDAI',
-        rpcUrl: 'https://rpc.gnosischain.com'
+        rpcUrl: 'https://rpc.gnosischain.com',
+        availableBridgeTypes: [BridgeType.Hyperlane]
     },
 ];
 

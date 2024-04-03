@@ -10,8 +10,13 @@ import styles from "./NetworkChainSelect.module.css";
 import { useSearchParams } from "next/navigation";
 import { BridgeType } from "../../common/enums/BridgeType";
 import { HyperlaneAvailableNetworks } from "../../common/constants";
+import { ChainDto } from "../../common/dto/ChainDto";
 
-export default function NetworkChainSelect() {
+interface NetworkChainSelectProps {
+    chainsInfo: ChainDto[];
+}
+
+export default function NetworkChainSelect({ chainsInfo }: NetworkChainSelectProps) {
     const searchParams = useSearchParams();
     const [messageApi, contextHolder] = message.useMessage();
     const { chain, chains } = useNetwork();
@@ -23,18 +28,23 @@ export default function NetworkChainSelect() {
         }
     );
 
-    const chainName = useMemo(() => {
-        const chainNetworks = Object.values(NetworkName);
-        if (chain && chainNetworks.some((network) => network === chain.network)) {
-            return chain.name;
-        }
-        return 'Wrong Network';
-    }, [chain]);
+    const currentBridge = (searchParams.get('bridge') as BridgeType) || BridgeType.LayerZero;
 
     const isKnownChain = useMemo(() => {
         const chainNetworks = Object.values(NetworkName);
-        return chain && chainNetworks.some((network) => network === chain.network);
-    }, [chain]);
+        const isNetwork = chainNetworks.some((network) => network === chain?.network);
+        const isAvailable = chainsInfo.find(x => x.network === chain?.network)?.availableBridgeTypes?.includes(currentBridge);
+
+        return chain && isNetwork && isAvailable;
+    }, [chain, chainsInfo, currentBridge]);
+
+    const chainName = useMemo(() => {
+        if (chain && isKnownChain) {
+            return chain.name;
+        }
+
+        return 'Wrong Network';
+    }, [chain, isKnownChain]);
 
     const chainsMenu = useMemo(() => {
         const bridge = searchParams.get('bridge');
@@ -57,7 +67,7 @@ export default function NetworkChainSelect() {
         return items;
     }, [chains, searchParams]);
 
-    const chainLogo = useMemo(() => getChainLogo(chain?.network!), [chain]);
+    const chainLogo = useMemo(() => isKnownChain && getChainLogo(chain?.network!), [chain, isKnownChain]);
 
     const handleSwitchNetwork = (chainId: number) => {
         if (switchNetwork) {

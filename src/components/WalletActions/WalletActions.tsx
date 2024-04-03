@@ -11,6 +11,7 @@ import AppStore from "../../store/AppStore";
 import NetworkChainSelect from "../NetworkChainSelect/NetworkChainSelect";
 
 import styles from './WalletActions.module.css';
+import ChainStore from "../../store/ChainStore";
 
 function WalletActions() {
     const { account, openAccountDrawer, setWalletConnected, setWalletAddress } = AppStore;
@@ -43,7 +44,7 @@ function WalletActions() {
                 </Button>
             ) : (
                 <Flex gap={10}>
-                    <NetworkChainSelect />
+                    <NetworkChainSelect chainsInfo={ChainStore.chains} />
 
                     {address && (
                         <Button className={styles.btn} onClick={openAccountDrawer}>

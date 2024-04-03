@@ -13,6 +13,8 @@ import Drawer from "../ui/Drawer/Drawer";
 import { generateGradient } from "../../utils/generators";
 
 import styles from "./MobileMenu.module.css";
+import ChainStore from "../../store/ChainStore";
+import { observer } from "mobx-react-lite";
 
 interface NavLinkProps {
     href: string;
@@ -32,7 +34,7 @@ function NavLink({ href, title, cost, onClick }: NavLinkProps) {
     )
 }
 
-export default function MobileMenu() {
+function MobileMenu() {
     const [isOpen, setIsOpen] = useState(false);
     const { openAccountDrawer } = AppStore;
     const { isConnected, isConnecting } = useAccount();
@@ -75,7 +77,7 @@ export default function MobileMenu() {
                 {isConnected ? (
                     <Flex vertical gap={12}>
                         <strong className={styles.selectLabel}>Select chain</strong>
-                        <NetworkChainSelect />
+                        <NetworkChainSelect chainsInfo={ChainStore.chains} />
                     </Flex>
                 ) : (
                     <Button onClick={connectWallet}>
@@ -86,3 +88,5 @@ export default function MobileMenu() {
         </>
     )
 }
+
+export default observer(MobileMenu);
