@@ -52,7 +52,7 @@ export const HYPERLANE_CONTRACT_ADDRESS: Record<NetworkName, CryptoAddress> = {
     [NetworkName.ZkSync]: '0x',
     [NetworkName.BSC]: '0xd4ae5f284d43996a646fb6f6e940e047039f4846',
     [NetworkName.Celo]: '0xd4ae5f284d43996a646fb6f6e940e047039f4846',
-    [NetworkName.Gnosis]: '0xd4ae5f284d43996a646fb6f6e940e047039f4846',
+    [NetworkName.Gnosis]: '0x0e8006241334C4AaF3E64b6E22c2D9AcBf565500',
 };
 
 export const HyperlaneAvailableNetworks = [

@@ -151,7 +151,7 @@ const chains = [
         hyperlaneChain: 100,
         token: 'xDAI',
         rpcUrl: 'https://rpc.gnosischain.com',
-        availableBridgeTypes: []
+        availableBridgeTypes: [BridgeType.Hyperlane]
     },
 ];
 
