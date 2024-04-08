@@ -10,6 +10,8 @@ import { AccountDto } from "../common/dto/AccountDto";
 import { wait } from "../utils/wait";
 import { ChainDto } from "../common/dto/ChainDto";
 import { BridgeType } from "../common/enums/BridgeType";
+import { estimateFeeForBridge } from "./helpers";
+import { LZ_VERSION } from "./constants";
 
 interface ChainToSend {
     id: number;
@@ -37,7 +39,6 @@ interface ControllerFunctionResult {
 }
 
 const TRANSACTION_WAIT: number = 60000;
-const LZ_VERSION = 1;
 
 const getAbi = (type: BridgeType) => {
     if (type === BridgeType.LayerZero) {
@@ -139,67 +140,27 @@ export const estimateBridge = async (
 
     const price = await fetchPrice(token);
 
-    async function estimate(chainToSend: ChainToSend) {
-        const _toAddress = ethers.solidityPacked(
-            ["address"], [sender]
-        );
-
-        const abi = getAbi(networkType);
-        const contract = new ethers.Contract(contractAddress, abi, signer);
-        const _dstChainId = chainToSend?.lzChain;
-
-        const MIN_DST_GAS = await contract.minDstGasLookup(_dstChainId, LZ_VERSION);
-
-        let adapterParams;
-
-        if (refuel) {
-            if (!price) {
-                return null;
-            }
-
-            const REFUEL_AMOUNT = (refuelCost / price).toFixed(8);
-
-            const refuelAmountEth = ethers.parseUnits(
-                REFUEL_AMOUNT,
-                18
-            );
-
-            adapterParams = ethers.solidityPacked(
-                ["uint16", "uint256", "uint256", "address"],
-                [2, MIN_DST_GAS, refuelAmountEth, sender]
-            );
-        } else {
-            adapterParams = ethers.solidityPacked(
-                ["uint16", "uint256"],
-                [LZ_VERSION, MIN_DST_GAS]
-            );
-        }
-
-        const { nativeFee } = await contract.estimateSendFee(
-            _dstChainId,
-            _toAddress,
-            tokenId,
-            false,
-            adapterParams
-        );
-
-        const formatted = ethers.formatEther(nativeFee);
-
-        return {
-            network: chainToSend.network as NetworkName,
-            price: (price! * parseFloat(formatted)).toFixed(2)
-        }
-    }
-
+    const abi = getAbi(networkType);
+    const contract = new ethers.Contract(contractAddress, abi, signer);
+    
     return Promise.all(chains.map(chain => {
-        return estimate({
-            id: chain.chainId,
-            name: chain.name,
-            network: chain.network,
-            lzChain: chain.lzChain,
-            hyperlaneChain: chain.lzChain,
-            token: chain.token
-        })
+        return estimateFeeForBridge(
+            contract, 
+            sender, 
+            networkType, 
+            refuel,
+            refuelCost,
+            price, 
+            tokenId,
+            {
+                id: chain.chainId,
+                name: chain.name,
+                network: chain.network,
+                lzChain: chain.lzChain,
+                hyperlaneChain: chain.hyperlaneChain,
+                token: chain.token
+            }
+        )
     }))
 };
 
