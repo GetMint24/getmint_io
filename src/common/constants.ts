@@ -38,21 +38,21 @@ export const LZAvailableNetworks = [
 ];
 
 export const HYPERLANE_CONTRACT_ADDRESS: Record<NetworkName, CryptoAddress> = {
-    [NetworkName.Base]: '0xd4ae5f284d43996a646fb6f6e940e047039f4846',
+    [NetworkName.Base]: '0x6C236B0D12C888dA4da04272D17C9c497f79E73C',
     [NetworkName.ArbitrumNova]: '0x',
     [NetworkName.LineaMainnet]: '0x',
-    [NetworkName.Optimism]: '0xd4ae5f284d43996a646fb6f6e940e047039f4846',
+    [NetworkName.Optimism]: '0x6C236B0D12C888dA4da04272D17C9c497f79E73C',
     [NetworkName.PolygonzkEVM]: '0x',
-    [NetworkName.Polygon]: '0xd4ae5f284d43996a646fb6f6e940e047039f4846',
+    [NetworkName.Polygon]: '0x6C236B0D12C888dA4da04272D17C9c497f79E73C',
     [NetworkName.Zora]: '0x',
-    [NetworkName.Scroll]: '0xd4ae5f284d43996a646fb6f6e940e047039f4846',
+    [NetworkName.Scroll]: '0x6C236B0D12C888dA4da04272D17C9c497f79E73C',
     [NetworkName.Mantle]: '0x',
-    [NetworkName.Arbitrum]: '0xd4ae5f284d43996a646fb6f6e940e047039f4846',
-    [NetworkName.Avalanche]: '0xd4ae5f284d43996a646fb6f6e940e047039f4846',
+    [NetworkName.Arbitrum]: '0x6C236B0D12C888dA4da04272D17C9c497f79E73C',
+    [NetworkName.Avalanche]: '0x6C236B0D12C888dA4da04272D17C9c497f79E73C',
     [NetworkName.ZkSync]: '0x',
-    [NetworkName.BSC]: '0xd4ae5f284d43996a646fb6f6e940e047039f4846',
-    [NetworkName.Celo]: '0xd4ae5f284d43996a646fb6f6e940e047039f4846',
-    [NetworkName.Gnosis]: '0x0e8006241334C4AaF3E64b6E22c2D9AcBf565500',
+    [NetworkName.BSC]: '0x6C236B0D12C888dA4da04272D17C9c497f79E73C',
+    [NetworkName.Celo]: '0x6C236B0D12C888dA4da04272D17C9c497f79E73C',
+    [NetworkName.Gnosis]: '0x6C236B0D12C888dA4da04272D17C9c497f79E73C',
 };
 
 export const HyperlaneAvailableNetworks = [

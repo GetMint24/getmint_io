@@ -33,7 +33,8 @@
 
 .row > *:last-child {
     text-align: right;
-    max-width: min(15%, 118px);
+    white-space: nowrap;
+    flex: 1 1 400px;
 }
 
 .row > *:first-child {
@@ -49,7 +50,6 @@
 .scheme {
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 8px;
 }
 
@@ -130,5 +130,9 @@
         display: flex;
         flex-direction: column;
         align-items: flex-end;
+    }
+
+    .card {
+        gap: 0;
     }
 }

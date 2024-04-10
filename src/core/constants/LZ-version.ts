@@ -1,0 +1,1 @@
+export const LZ_VERSION = 1;
