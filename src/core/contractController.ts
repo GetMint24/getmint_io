@@ -290,10 +290,7 @@ const hyperlaneBridge = async (
     const _dstChainId = chainToSend?.hyperlaneChain;
     const _receiver = sender.replace('0x', '0x000000000000000000000000');
 
-    const nativeFee = await contract.getHyperlaneMessageFee(
-        _dstChainId,
-        _receiver
-    );
+    const nativeFee = await contract.getHyperlaneMessageFee(_dstChainId);
 
     const userBalance = await provider.getBalance(sender);
 

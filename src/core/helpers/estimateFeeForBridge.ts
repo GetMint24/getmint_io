@@ -13,13 +13,8 @@ interface ChainToSend {
     token: string;
 }
 
-export const estimateFeeForHyperlane = async (contract: Contract, sender: string, chainToSend: ChainToSend, price: number | null) => {
-    const _receiver = sender.replace('0x', '0x000000000000000000000000');
-
-    const nativeFee = await contract.getHyperlaneMessageFee(
-        chainToSend.hyperlaneChain,
-        _receiver
-    );
+export const estimateFeeForHyperlane = async (contract: Contract, chainToSend: ChainToSend, price: number | null) => {
+    const nativeFee = await contract.getHyperlaneMessageFee(chainToSend.hyperlaneChain);
 
     const fee = nativeFee + await contract.bridgeFee()
     const formatted = ethers.formatEther(fee);
@@ -94,7 +89,7 @@ export const estimateFeeForBridge = (
     chainToSend: ChainToSend
 ) => {
     if (bridgeType === BridgeType.Hyperlane) {
-        return estimateFeeForHyperlane(contract, sender, chainToSend, price)
+        return estimateFeeForHyperlane(contract, chainToSend, price)
     } else {
         return estimateFeeForLZ(contract, sender, chainToSend, refuel, refuelCost, price, tokenId)
     }
