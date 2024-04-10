@@ -223,9 +223,11 @@ const lzBridge = async (
         adapterParams
     );
 
+    const nativeFeeWithMultiplayer = BigInt(nativeFee) * BigInt(12) / BigInt(10)
+
     const userBalance = await provider.getBalance(sender);
 
-    if (userBalance < nativeFee) {
+    if (userBalance < nativeFeeWithMultiplayer) {
         return {
             result: false,
             message: 'Not enough funds to send',
@@ -234,7 +236,7 @@ const lzBridge = async (
     }
 
     const bridgeOptions = {
-        value: nativeFee,
+        value: nativeFeeWithMultiplayer,
         gasLimit: BigInt(0)
     }
 
@@ -290,7 +292,7 @@ const hyperlaneBridge = async (
     const _dstChainId = chainToSend?.hyperlaneChain;
     const _receiver = sender.replace('0x', '0x000000000000000000000000');
 
-    const nativeFee = await contract.getHyperlaneMessageFee(_dstChainId);
+    const nativeFee = BigInt(await contract.getHyperlaneMessageFee(_dstChainId)) * BigInt(12) / BigInt(10);
 
     const userBalance = await provider.getBalance(sender);
 
