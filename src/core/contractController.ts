@@ -10,7 +10,7 @@ import { AccountDto } from "../common/dto/AccountDto";
 import { wait } from "../utils/wait";
 import { ChainDto } from "../common/dto/ChainDto";
 import { BridgeType } from "../common/enums/BridgeType";
-import { estimateFeeForBridge } from "./helpers";
+import { estimateFeeForBridge, getBridgeFeeWithMultiplier } from "./helpers";
 import { LZ_VERSION } from "./constants";
 
 interface ChainToSend {
@@ -223,7 +223,7 @@ const lzBridge = async (
         adapterParams
     );
 
-    const nativeFeeWithMultiplayer = BigInt(nativeFee) * BigInt(12) / BigInt(10)
+    const nativeFeeWithMultiplayer = getBridgeFeeWithMultiplier(BigInt(nativeFee), chainToSend.network as NetworkName)
 
     const userBalance = await provider.getBalance(sender);
 
@@ -292,11 +292,12 @@ const hyperlaneBridge = async (
     const _dstChainId = chainToSend?.hyperlaneChain;
     const _receiver = sender.replace('0x', '0x000000000000000000000000');
 
-    const nativeFee = BigInt(await contract.getHyperlaneMessageFee(_dstChainId)) * BigInt(12) / BigInt(10);
+    const nativeFee = await contract.getHyperlaneMessageFee(_dstChainId);
+    const nativeFeeWithMultiplayer = getBridgeFeeWithMultiplier(BigInt(nativeFee), chainToSend.network as NetworkName)
 
     const userBalance = await provider.getBalance(sender);
 
-    if (userBalance < nativeFee) {
+    if (userBalance < nativeFeeWithMultiplayer) {
         return {
             result: false,
             message: 'Not enough funds to send',
@@ -309,7 +310,7 @@ const hyperlaneBridge = async (
         _receiver,
         tokenId,
         {
-            value: nativeFee + await contract.bridgeFee(),
+            value: nativeFeeWithMultiplayer + await contract.bridgeFee(),
         }
     );
 
