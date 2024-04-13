@@ -10,7 +10,7 @@ import { AccountDto } from "../common/dto/AccountDto";
 import { wait } from "../utils/wait";
 import { ChainDto } from "../common/dto/ChainDto";
 import { BridgeType } from "../common/enums/BridgeType";
-import { estimateFeeForBridge, getBridgeFeeWithMultiplier } from "./helpers";
+import { estimateFeeForBridge, getGasLimitForBridge } from "./helpers";
 import { LZ_VERSION } from "./constants";
 
 interface ChainToSend {
@@ -223,11 +223,9 @@ const lzBridge = async (
         adapterParams
     );
 
-    const nativeFeeWithMultiplayer = getBridgeFeeWithMultiplier(BigInt(nativeFee), chainToSend.network as NetworkName)
-
     const userBalance = await provider.getBalance(sender);
 
-    if (userBalance < nativeFeeWithMultiplayer) {
+    if (userBalance < nativeFee) {
         return {
             result: false,
             message: 'Not enough funds to send',
@@ -236,11 +234,11 @@ const lzBridge = async (
     }
 
     const bridgeOptions = {
-        value: nativeFeeWithMultiplayer,
+        value: nativeFee,
         gasLimit: BigInt(0)
     }
 
-    bridgeOptions.gasLimit = await contract.sendFrom.estimateGas(
+    const defaultGasLimit = await contract.sendFrom.estimateGas(
         sender,
         _dstChainId,
         _toAddress,
@@ -251,6 +249,8 @@ const lzBridge = async (
         bridgeOptions
     );
 
+    bridgeOptions.gasLimit = getGasLimitForBridge(defaultGasLimit)
+    
     const transaction = await contract.sendFrom(
         sender,
         _dstChainId,
@@ -293,11 +293,9 @@ const hyperlaneBridge = async (
     const _receiver = sender.replace('0x', '0x000000000000000000000000');
 
     const nativeFee = await contract.getHyperlaneMessageFee(_dstChainId);
-    const nativeFeeWithMultiplayer = getBridgeFeeWithMultiplier(BigInt(nativeFee), chainToSend.network as NetworkName)
-
     const userBalance = await provider.getBalance(sender);
 
-    if (userBalance < nativeFeeWithMultiplayer) {
+    if (userBalance < nativeFee) {
         return {
             result: false,
             message: 'Not enough funds to send',
@@ -305,12 +303,20 @@ const hyperlaneBridge = async (
         }
     }
 
+    const defaultGasLimit = await contract.transferRemote.estimateGas( _dstChainId,
+        _receiver,
+        tokenId,
+        {
+            value: nativeFee + await contract.bridgeFee(),
+        }) 
+
     const transaction = await contract.transferRemote(
         _dstChainId,
         _receiver,
         tokenId,
         {
-            value: nativeFeeWithMultiplayer + await contract.bridgeFee(),
+            value: nativeFee + await contract.bridgeFee(),
+            gasLimit: getGasLimitForBridge(defaultGasLimit)
         }
     );
 

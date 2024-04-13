@@ -1,2 +1,2 @@
 export * from './estimateFeeForBridge'
-export * from './getBridgeFeeWithMultiplier'
+export * from './getGasLimitForBridge'
