@@ -242,7 +242,7 @@ function Account() {
                     </div>
 
                     <div className={styles.card}>
-                        <div className={styles.cardTitle}>Refferal</div>
+                        <div className={styles.cardTitle}>Refferal (only for LayerZero mint)</div>
                         <div className={styles.divider}></div>
                         <div>
                             <FormControl className={styles.refferalLinkControl} title="Your refferal link">
