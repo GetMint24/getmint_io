@@ -39,6 +39,7 @@ interface ControllerFunctionResult {
 }
 
 const TRANSACTION_WAIT: number = 60000;
+const NFTS_COUNT = 1;
 
 const getAbi = (type: BridgeType) => {
     if (type === BridgeType.LayerZero) {
@@ -82,10 +83,16 @@ export const mintNFT = async ({ contractAddress, chainToSend, account, networkTy
     let gasLimit, txResponse;
 
     if (account?.refferer) {
-        gasLimit = await contract['mint(address)'].estimateGas(account.refferer, options);
-        options.gasLimit = gasLimit;
+        if (networkType === BridgeType.LayerZero) {
+            gasLimit = await contract['mint(address)'].estimateGas(account.refferer, options);
+            options.gasLimit = gasLimit;
 
-        txResponse = await contract['mint(address)'](account.refferer, options);
+            txResponse = await contract['mint(address)'](account.refferer, options);
+        } else {
+            gasLimit = await contract.batchMintWithReferrer.estimateGas(NFTS_COUNT, account.refferer, options);
+            options.gasLimit = gasLimit;
+            txResponse = await contract.batchMintWithReferrer(NFTS_COUNT, account.refferer, options);
+        }
     } else {
         gasLimit = await contract['mint()'].estimateGas(options);
         options.gasLimit = gasLimit;
