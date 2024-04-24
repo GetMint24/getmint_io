@@ -39,6 +39,17 @@ export async function sendNFTImage(image: File, name: string, description: strin
     };
 }
 
+export async function deleteNFTImage(imageHash: string) {
+    return axios.delete(
+        `https://api.pinata.cloud/pinning/unpin/${imageHash}`,
+        {
+            headers: {
+                Authorization: `Bearer ${process.env.PINATA_JWT}`,
+            },
+        }
+    );
+}
+
 function generateNFTMetadata(name: string, description: string, imageHash: string) {
     return {
         pinataContent: {
