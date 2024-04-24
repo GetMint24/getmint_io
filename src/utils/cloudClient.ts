@@ -20,7 +20,7 @@ class CloudClient {
     async getRandomImage(): Promise<RandomImageDto> {
         const { Contents } = await this.client.send(new ListObjectsV2Command({
             Bucket: 'getmint',
-            StartAfter: 'Images/',
+            StartAfter: 'Images/new/',
         }));
 
         if (!Contents?.length) {
