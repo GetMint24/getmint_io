@@ -12,6 +12,8 @@ import { claimReferralFee } from "../../../core/contractController";
 import { NetworkName } from "../../../common/enums/NetworkName";
 import ChainStore from "../../../store/ChainStore";
 import { getChainNetworkByChainName } from "../../../utils/getChainNetworkByName";
+import HyperlaneSvg from "../../NetworkTypeTabs/HyperlaneSvg";
+import { BridgeType } from "../../../common/enums/BridgeType";
 
 interface ClaimsModalProps extends UiModalProps {
     earnedItems: EarnedItem[];
@@ -26,22 +28,24 @@ export default function ClaimsModal(props: ClaimsModalProps) {
     const { chain: currentChain } = useAccount();
     const { switchChainAsync } = useSwitchChain();
 
-    const claim = async (network: NetworkName) => {
+    const claim = async (network: NetworkName, bridgeType: BridgeType) => {
         const chain = ChainStore.chains.find(x => x.network === network);
 
         if (chain && currentChain) {
             setIsPending(true);
 
-            const currentChainNetwork = getChainNetworkByChainName(currentChain.name)
-
-            if (currentChainNetwork !== network) {
-                await switchChainAsync?.({
-                    chainId: chain.chainId
-                });
-            }
+            
 
             try {
-                const response = await claimReferralFee(chain);
+                const currentChainNetwork = getChainNetworkByChainName(currentChain.name)
+
+                if (currentChainNetwork !== network) {
+                    await switchChainAsync?.({
+                        chainId: chain.chainId
+                    });
+                }
+
+                const response = await claimReferralFee(chain, bridgeType);
 
                 if (response.result) {
                     onClaimed();
@@ -63,26 +67,47 @@ export default function ClaimsModal(props: ClaimsModalProps) {
     };
 
     return (
-        <UiModal {...etc} title="Claim" width={400}>
+        <UiModal {...etc} title="Claim" width={600}>
             <div className={clsx(styles.wrapper, isPending && styles.wrapperLoading)}>
                 <div className={styles.table}>
                     <div className={styles.tableHead}>
                         <div>Network</div>
-                        <div>Amount</div>
+                        <div className={styles.bridgeType}>Amount</div>
+                        <div className={styles.bridgeType}>
+                            <Image className={styles.lzIcon} width={24} height={24} src='/svg/layer-zero-logo.svg' alt='Layerzero' />
+                        </div>
+                        <div className={styles.bridgeType}>
+                            <HyperlaneSvg className={styles.hyperlaneIcon} showText={false} withoutOpacity />
+                        </div>
                     </div>
 
                     {earnedItems.map(item => (
                         <div className={styles.row} key={item.chainNetwork}>
                             <div className={styles.network}><Image src={getChainLogo(item.chainNetwork)} width={24} height={24} alt="" /> {item.chainName}</div>
-                            <div className={clsx(styles.claim, item.formattedPrice === ZERO_VALUE && styles.claimZero)}>
-                                <div>{item.formattedPrice !== ZERO_VALUE ? item.formattedPrice : '$0'}</div>
-                                {item.formattedPrice !== ZERO_VALUE && (
-                                    <div>
-                                        <button onClick={() => claim(item.chainNetwork)} className={styles.btn}>
-                                            Claim {item.formattedPrice}
-                                        </button>
-                                    </div>
-                                )}
+                            <div className={clsx(styles.claim, item.earnedSum === ZERO_VALUE && styles.claimZero)}>
+                                {item.earnedSum}
+                            </div>
+                            <div className={styles.claim}>
+                                {
+                                    item.lz.formattedPrice !== ZERO_VALUE && (
+                                        <div>
+                                            <button onClick={() => claim(item.chainNetwork, BridgeType.LayerZero)} className={styles.btn}>
+                                                Claim {item.lz.formattedPrice}
+                                            </button>
+                                        </div>
+                                    )
+                                }
+                            </div>
+                            <div className={styles.claim}>
+                                {
+                                    item.hyperlane.formattedPrice !== ZERO_VALUE && (
+                                        <div>
+                                            <button onClick={() => claim(item.chainNetwork, BridgeType.Hyperlane)} className={styles.btn}>
+                                                Claim {item.hyperlane.formattedPrice}
+                                            </button>
+                                        </div>
+                                    )
+                                }
                             </div>
                         </div>
                     ))}
