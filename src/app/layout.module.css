@@ -1,3 +1,16 @@
+.body {
+    display: flex;
+    flex-direction: column;
+}
+
+/* RainbowKitProvider create div and we cant set class for this div */
+.body > div:first-of-type {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 100vh;
+}
+
 .wrapper {
     display: flex;
     flex-direction: column;

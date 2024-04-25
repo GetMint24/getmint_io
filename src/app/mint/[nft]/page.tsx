@@ -16,7 +16,6 @@ import BridgeForm from "./components/BridgeForm/BridgeForm";
 import NftStore from "../../../store/NftStore";
 import AppStore from "../../../store/AppStore";
 import { twitterApi } from "../../../utils/twitterApi";
-import ChainStore from "../../../store/ChainStore";
 import { TWEET_CONTENT } from "../../../common/constants";
 import ApiService from "../../../services/ApiService";
 
@@ -27,7 +26,7 @@ interface NftPageProps {
 
 function NftPage({ params, searchParams }: NftPageProps) {
     const [nft, setNft] = useState(NftStore.selectNftByHash(params.nft));
-    const { account, createTweet, createIntentTweet,loading, fetchAccount } = AppStore;
+    const { account, createTweet, createIntentTweet, loading } = AppStore;
     const router = useRouter();
 
     const refetch = () => {
@@ -71,8 +70,6 @@ function NftPage({ params, searchParams }: NftPageProps) {
 
     useEffect(() => {
         refetch();
-        ChainStore.getChains();
-        fetchAccount();
     }, []);
 
     if (!nft) {

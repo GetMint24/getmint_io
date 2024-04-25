@@ -3,6 +3,7 @@ import { BridgeType } from "../../common/enums/BridgeType";
 import { LZ_VERSION } from "../constants";
 import { DEFAULT_REFUEL_COST_USD } from "../../common/constants";
 import { NetworkName } from "../../common/enums/NetworkName";
+import { getChainNetworkByChainName } from "../../utils/getChainNetworkByName";
 
 interface ChainToSend {
     id: number;
@@ -20,7 +21,7 @@ export const estimateFeeForHyperlane = async (contract: Contract, chainToSend: C
     const formatted = ethers.formatEther(fee);
 
     return {
-        network: chainToSend.network as NetworkName,
+        network: getChainNetworkByChainName(chainToSend.name),
         price: (price! * parseFloat(formatted)).toFixed(2)
     }
 }
@@ -73,7 +74,7 @@ const estimateFeeForLZ = async (
     const formatted = ethers.formatEther(nativeFee);
 
     return {
-        network: chainToSend.network as NetworkName,
+        network: getChainNetworkByChainName(chainToSend.name),
         price: (price! * parseFloat(formatted)).toFixed(2)
     }
 }

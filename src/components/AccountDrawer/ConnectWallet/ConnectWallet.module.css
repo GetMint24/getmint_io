@@ -19,12 +19,12 @@
 }
 
 button.connectorBtn {
-    padding: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
     font-size: 16px;
+    width: 100%;
 }
 
 .closeIcon {

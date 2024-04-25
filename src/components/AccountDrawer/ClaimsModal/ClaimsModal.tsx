@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { notification, Spin } from "antd";
-import { useNetwork, useSwitchNetwork } from "wagmi";
+import { useAccount, useSwitchChain } from "wagmi";
 import clsx from "clsx";
 import styles from './ClaimsModal.module.css';
 
@@ -11,6 +11,7 @@ import { getChainLogo } from "../../../utils/getChainLogo";
 import { claimReferralFee } from "../../../core/contractController";
 import { NetworkName } from "../../../common/enums/NetworkName";
 import ChainStore from "../../../store/ChainStore";
+import { getChainNetworkByChainName } from "../../../utils/getChainNetworkByName";
 
 interface ClaimsModalProps extends UiModalProps {
     earnedItems: EarnedItem[];
@@ -22,17 +23,21 @@ export default function ClaimsModal(props: ClaimsModalProps) {
     const { earnedItems, onClaimed, ...etc } = props;
     const [isPending, setIsPending] = useState<boolean>(false);
 
-    const { chain: currentChain } = useNetwork();
-    const { switchNetworkAsync } = useSwitchNetwork();
+    const { chain: currentChain } = useAccount();
+    const { switchChainAsync } = useSwitchChain();
 
     const claim = async (network: NetworkName) => {
         const chain = ChainStore.chains.find(x => x.network === network);
 
-        if (chain) {
+        if (chain && currentChain) {
             setIsPending(true);
 
-            if (currentChain?.network !== network) {
-                await switchNetworkAsync?.(chain.chainId);
+            const currentChainNetwork = getChainNetworkByChainName(currentChain.name)
+
+            if (currentChainNetwork !== network) {
+                await switchChainAsync?.({
+                    chainId: chain.chainId
+                });
             }
 
             try {

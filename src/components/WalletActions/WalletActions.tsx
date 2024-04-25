@@ -14,23 +14,13 @@ import styles from './WalletActions.module.css';
 import ChainStore from "../../store/ChainStore";
 
 function WalletActions() {
-    const { account, openAccountDrawer, setWalletConnected, setWalletAddress } = AppStore;
-
+    const { account, openAccountDrawer } = AppStore;
     const { address, isConnected, isConnecting } = useAccount();
-
     const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
         setIsClient(true);
     }, []);
-
-    useEffect(() => {
-        setWalletConnected(isConnected);
-    }, [isConnected, setWalletConnected]);
-
-    useEffect(() => {
-        setWalletAddress(address as string);
-    }, [address, setWalletAddress]);
 
     if (!isClient) {
         return <Button className={styles.btn}>Connect a Wallet</Button>;
@@ -40,7 +30,7 @@ function WalletActions() {
         <div>
             {!isConnected ? (
                 <Button onClick={openAccountDrawer}>
-                    {isConnecting ? 'Connecting...' : 'Connect Metamask'}
+                    {isConnecting ? 'Connecting...' : 'Connect wallet'}
                 </Button>
             ) : (
                 <Flex gap={10}>

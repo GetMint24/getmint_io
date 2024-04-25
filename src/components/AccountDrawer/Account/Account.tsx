@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { useAccount, useDisconnect, useNetwork } from "wagmi";
+import { useAccount, useConfig, useDisconnect } from "wagmi";
 import clsx from "clsx";
 import { Avatar, Flex, message, Spin } from 'antd';
 import { observer } from "mobx-react-lite";
@@ -66,10 +66,12 @@ function Account() {
     const [earnedItems, setEarnedItems] = useState<EarnedItem[]>([]);
     const [showClaimsModal, setShowClaimsModal] = useState<boolean>(false);
 
-    const { chain, chains } = useNetwork();
-    const { address, connector } = useAccount();
+    const { chains } = useConfig();
+    const { address, connector, chain } = useAccount();
     const { disconnect } = useDisconnect({
-        onSuccess: closeAccountDrawer
+        mutation: {
+            onSuccess: closeAccountDrawer
+        }
     });
 
     const refferalLink = useMemo(() => {
@@ -111,11 +113,6 @@ function Account() {
             }, 30000);
         }
     };
-
-    useEffect(() => {
-        void fetchAccount();
-        ChainStore.getChains();
-    }, [fetchAccount, address]);
 
     const calculateEarnedClaims = async () => {
         if (chain && chains?.length && ChainStore.chains?.length && address) {
@@ -176,6 +173,7 @@ function Account() {
             </div>
         );
     }
+console.log(connector, 'connector');
 
     return (
         <>
@@ -323,7 +321,7 @@ function Account() {
                     <div className={styles.card}>
                         <Flex justify="space-between" gap={8} align="center" className={styles.walletConnector}>
                             <Flex align="center" gap={8}>
-                                <Image src="/svg/metamask.svg" width={32} height={32} alt="MetaMask" />
+                                {connector?.icon && <Image src={connector.icon} width={32} height={32} alt='' />}
                                 <div className={styles.connector}>
                                     <h2>{connector?.name}</h2>
                                     <AccountAddress className={styles.connectorAddress} address={address} />

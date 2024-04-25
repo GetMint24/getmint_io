@@ -81,7 +81,7 @@ function MobileMenu() {
                     </Flex>
                 ) : (
                     <Button onClick={connectWallet}>
-                        {isConnecting ? 'Connecting...' : 'Connect Metamsk'}
+                        {isConnecting ? 'Connecting...' : 'Connect wallet'}
                     </Button>
                 )}
             </Drawer>

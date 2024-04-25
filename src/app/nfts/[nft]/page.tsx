@@ -66,10 +66,6 @@ function Page({ params }: Props) {
         loadPage();
     }, [params]);
 
-    useEffect(() => {
-        getChains();
-    }, []);
-
     if (isLoading) {
         return (
             <Card>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
+import { useAccount, useSwitchChain } from "wagmi";
 import { notification } from "antd";
 import { NFTDto } from "./dto/NFTDto";
 import { bridgeNFT, estimateBridge, EstimationBridgeType } from "../core/contractController";
@@ -15,6 +15,7 @@ import {
 import { NetworkName } from "./enums/NetworkName";
 import ApiService from "../services/ApiService";
 import { BridgeType } from "./enums/BridgeType";
+import { getChainNetworkByChainName } from "../utils/getChainNetworkByName";
 
 interface SubmittedData {
     previousChain: ChainDto;
@@ -32,14 +33,15 @@ export function useBridge(nft: NFTDto, onAfterBridge?: (previousChain?: ChainDto
     const { chains } = ChainStore;
     const { account } = AppStore;
 
-    const { chain: currentChain } = useNetwork();
-    const { switchNetworkAsync } = useSwitchNetwork();
-    const { address } = useAccount();
+    const { switchChainAsync } = useSwitchChain();
+    const { address, chain: currentChain } = useAccount();
 
     const isNeedChangeChain = nft.chainNativeId !== currentChain?.id;
 
     const switchNetwork = async () => {
-        await switchNetworkAsync?.(nft?.chainNativeId);
+        await switchChainAsync?.({
+            chainId: nft?.chainNativeId
+        });
     };
 
     const estimateBridgeFee = async (selectedChain: string) => {
@@ -47,11 +49,11 @@ export function useBridge(nft: NFTDto, onAfterBridge?: (previousChain?: ChainDto
             const nftChain = ChainStore.chains.find(c => c.chainId === nft.chainNativeId);
             const chain = ChainStore.chains.find(c => c.id === selectedChain);
 
-            if (chain) {
-                let _currentNetwork: string = currentChain?.network!;
+            if (chain && currentChain) {
+                let _currentNetwork = getChainNetworkByChainName(currentChain.name) 
 
                 const priceList = await estimateBridge(_chains, nftChain?.token!, {
-                    contractAddress: getContractAddress(nft.networkType, _currentNetwork as NetworkName),
+                    contractAddress: getContractAddress(nft.networkType, _currentNetwork),
                     chainToSend: {
                         id: chain.chainId,
                         name: chain.name,
@@ -71,16 +73,22 @@ export function useBridge(nft: NFTDto, onAfterBridge?: (previousChain?: ChainDto
     };
 
     const onBridge = async () => {
+        if (!currentChain) {
+            return 
+        }
+
         try {
             setIsPending(true);
-
             const chainToSend = ChainStore.getChainById(selectedChain!);
-            let _currentNetwork: string = currentChain?.network!;
+            let _currentNetwork: string = getChainNetworkByChainName(currentChain.name) 
 
-            if (currentChain?.network !== nft.chainNetwork) {
-                const res = await switchNetworkAsync?.(nft.chainNativeId);
+            if (_currentNetwork !== nft.chainNetwork) {
+                const res = await switchChainAsync?.({
+                    chainId: nft.chainNativeId
+                });
+
                 if (res) {
-                    _currentNetwork = res.network;
+                    _currentNetwork = getChainNetworkByChainName(res.name);
                 }
             }
 
