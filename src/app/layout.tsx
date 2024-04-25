@@ -4,12 +4,14 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import styles from "./layout.module.css";
 import Script from "next/script";
+import '@rainbow-me/rainbowkit/styles.css';
 
 import Header from "../components/layout/Header/Header";
 import Footer from "../components/layout/Footer/Footer";
 import WalletProvider from "./wallet-provider";
 import StyledComponentsRegistry from "../components/AntdRegistry";
 import AccountDrawer from "../components/AccountDrawer/AccountDrawer";
+import clsx from "clsx";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -31,7 +33,7 @@ export default function RootLayout({
 }) {
   return (
         <html lang="en">
-          <body className={inter.className}>
+          <body className={clsx(inter.className, styles.body)}>
             <Script id="metrika-counter" strategy="afterInteractive">
               {`(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
                   m[i].l=1*new Date();

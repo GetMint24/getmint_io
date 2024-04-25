@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useAccount, useNetwork } from "wagmi";
+import { useAccount } from "wagmi";
 import { observer } from "mobx-react-lite";
 import { AxiosError } from "axios";
 import { Flex, message } from 'antd';
@@ -14,12 +14,11 @@ import CostLabel from "../../components/CostLabel/CostLabel";
 import ApiService from "../../services/ApiService";
 import AppStore from "../../store/AppStore";
 import { getContractAddress } from "../../common/constants";
-import { NetworkName } from "../../common/enums/NetworkName";
 import { mintNFT } from "../../core/contractController";
-import ChainStore from "../../store/ChainStore";
 import NftStore from "../../store/NftStore";
 import { BridgeType } from "../../common/enums/BridgeType";
 import NetworkTypeTabs from "../../components/NetworkTypeTabs/NetworkTypeTabs";
+import { getChainNetworkByChainName } from "../../utils/getChainNetworkByName";
 
 function Page() {
     const [messageApi, contextHolder] = message.useMessage();
@@ -30,8 +29,7 @@ function Page() {
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
-    const { chain } = useNetwork();
-    const { address } = useAccount();
+    const { address, chain } = useAccount();
 
     const createQueryString = useCallback(
         (name: string, value: string) => {
@@ -59,13 +57,15 @@ function Page() {
                     description: data.description,
                 });
 
+                const network = getChainNetworkByChainName(chain.name)
+
                 const result = await mintNFT({
-                    contractAddress: getContractAddress(currentBridge, chain.network as NetworkName),
+                    contractAddress: getContractAddress(currentBridge, network),
                     networkType: currentBridge,
                     chainToSend: {
                         id: chain.id,
                         name: chain.name,
-                        network: chain.network,
+                        network,
                         hyperlaneChain: null,
                         lzChain: null,
                         token: 'ETH'
@@ -80,7 +80,7 @@ function Page() {
                         description: data.description,
                         metamaskWalletAddress: address as string,
                         tokenId: result.blockId!,
-                        chainNetwork: chain?.network!,
+                        chainNetwork: network,
                         transactionHash: result?.transactionHash!,
                         networkType: currentBridge
                     });
@@ -94,7 +94,7 @@ function Page() {
 
                     router.push(`/mint/${nft.id}?successful=true`);
 
-                    await fetchAccount();
+                    fetchAccount();
                 } else {
                     messageApi.warning(result.message);
                 }
@@ -113,10 +113,6 @@ function Page() {
             }
         }
     };
-
-    useEffect(() => {
-        ChainStore.getChains();
-    }, []);
 
     useEffect(() => {
         const tweeted = searchParams.get('tweeted');

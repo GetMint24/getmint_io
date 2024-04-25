@@ -10,16 +10,31 @@ import MobileMenu from "../../MobileMenu/MobileMenu";
 import AppStore from "../../../store/AppStore";
 
 import styles from './Header.module.css';
+import { useAccount } from "wagmi";
+import ChainStore from "../../../store/ChainStore";
+import { useSearchParams } from "next/navigation";
+import { BridgeType } from "../../../common/enums/BridgeType";
 
 function Header() {
-    const { metamaskWalletAddress, fetchAccount } = AppStore
+    const searchParams = useSearchParams();
+
+    const { fetchAccount, setWalletConnected, setWalletAddress } = AppStore
+    const { address, isConnected } = useAccount();
+    
     const isTablet = useMedia({ maxWidth: '1320px' });
+    const bridgeType = searchParams.get('bridge') || BridgeType.LayerZero
 
     useEffect(() => {
-        if (metamaskWalletAddress) {
-            void fetchAccount();
+        ChainStore.getChains()
+    }, [bridgeType])
+
+    useEffect(() => {
+        if (address) {
+            setWalletConnected(isConnected);
+            setWalletAddress(address);
+            void fetchAccount()
         }
-    }, [fetchAccount, metamaskWalletAddress]);
+    }, [isConnected, address, setWalletConnected]);
 
     return (
         <div className={styles.header}>

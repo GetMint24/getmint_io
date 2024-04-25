@@ -10,7 +10,6 @@ import Card from "../../components/ui/Card/Card";
 import CostLabel from "../../components/CostLabel/CostLabel";
 import NftList from "./components/NftList/NftList";
 import NftStore from "../../store/NftStore";
-import ChainStore from "../../store/ChainStore";
 
 import styles from "./page.module.css";
 import NetworkTypeTabs from "../../components/NetworkTypeTabs/NetworkTypeTabs";
@@ -19,10 +18,6 @@ import { BridgeType } from "../../common/enums/BridgeType";
 function Page() {
     const { address } = useAccount();
     const searchParams = useSearchParams();
-
-    useEffect(() => {
-        ChainStore.getChains();
-    }, []);
 
     useEffect(() => {
         const bridge = searchParams.get('bridge');

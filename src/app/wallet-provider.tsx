@@ -1,65 +1,63 @@
-'use client'
+'use client';
 
-import { ReactNode } from "react";
-import { configureChains, createConfig, WagmiConfig } from "wagmi";
+import { ReactNode } from 'react';
+
+import { getDefaultConfig, RainbowKitProvider, darkTheme} from '@rainbow-me/rainbowkit';
+import { WagmiProvider } from 'wagmi';
 import {
-    arbitrum,
-    arbitrumNova,
-    avalanche,
+  arbitrum,
+  arbitrumNova,
+  avalanche,
+  base,
+  bsc,
+  celo,
+  gnosis,
+  linea,
+  mantle,
+  optimism,
+  polygon,
+  polygonZkEvm,
+  scroll,
+  zkSync,
+  zora,
+} from 'wagmi/chains';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const config = getDefaultConfig({
+  appName: 'My RainbowKit App',
+  projectId: 'YOUR_PROJECT_ID',
+  chains: [
     base,
-    bsc, celo, gnosis,
+    arbitrumNova,
+    arbitrum,
     linea,
-    mantle,
     optimism,
+    avalanche,
+    zora,
+    scroll,
     polygon,
     polygonZkEvm,
-    scroll,
+    mantle,
     zkSync,
-    zora,
-} from "wagmi/chains";
-import { publicProvider } from "wagmi/providers/public";
-import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
-
-const { chains, publicClient, webSocketPublicClient } = configureChains(
-    [
-        base,
-        arbitrumNova,
-        arbitrum,
-        linea,
-        optimism,
-        avalanche,
-        zora,
-        scroll,
-        polygon,
-        polygonZkEvm,
-        mantle,
-        zkSync,
-        bsc,
-        celo,
-        gnosis
-    ],
-    [
-        publicProvider()
-    ],
-);
-
-const config = createConfig({
-    autoConnect: true,
-    connectors: [
-        new MetaMaskConnector({ chains }),
-    ],
-    publicClient,
-    webSocketPublicClient,
+    bsc,
+    celo,
+    gnosis,
+  ],
+  ssr: true,
 });
 
+const queryClient = new QueryClient();
+
 interface WalletProviderProps {
-    children: ReactNode;
+  children: ReactNode;
 }
 
 export default function WalletProvider({ children }: WalletProviderProps) {
-    return (
-        <WagmiConfig config={config}>
-            {children}
-        </WagmiConfig>
-    )
+  return (
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        <RainbowKitProvider theme={darkTheme()}>{children}</RainbowKitProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
+  );
 }
