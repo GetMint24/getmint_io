@@ -15,7 +15,7 @@ import AccountAddress from "../../AccountAddress/AccountAddress";
 import AppStore from "../../../store/AppStore";
 import { twitterApi } from "../../../utils/twitterApi";
 import { generateGradient } from "../../../utils/generators";
-import { convertAddress, fetchPrice, getReffererEarnedInNetwork } from "../../../core/contractController";
+import { convertAddress, fetchPrice, getHyperlaneRefererEarnedInNetwork, getLZRefererEarnedInNetwork } from "../../../core/contractController";
 import ChainStore from "../../../store/ChainStore";
 import ClaimsModal from "../ClaimsModal/ClaimsModal";
 import { EarnedItem } from "../../../common/types";
@@ -119,28 +119,46 @@ function Account() {
             const actualChains = ChainStore.chains.filter(c => chains.find(x => x.id === c.chainId));
 
             const earnedList = await Promise.allSettled(actualChains.map(async actualChain => {
-                const earned = await getReffererEarnedInNetwork(actualChain, address!);
+                const LZ_earned = await getLZRefererEarnedInNetwork(actualChain, address!);
+                const hyperlaneEarned = await getHyperlaneRefererEarnedInNetwork(actualChain, address!);
                 const price = await fetchPrice(actualChain.token);
 
                 return {
                     chainName: actualChain.name,
                     chainNetwork: actualChain.network,
-                    earned,
-                    price,
-                    calculatedPrice: parseFloat(earned) * price!,
-                    formattedPrice: (parseFloat(earned) * price!).toLocaleString('en-US', {
+                    earnedSum: (parseFloat(LZ_earned + hyperlaneEarned) * price!).toLocaleString('en-US', {
                         style: 'currency',
                         currency: 'USD',
                         maximumFractionDigits: 2
-                    })
-                } as EarnedItem
-            })) as unknown as { status: string; value: EarnedItem }[];
+                    }),
+                    lz: {
+                        earned: LZ_earned,
+                        price,
+                        calculatedPrice: parseFloat(LZ_earned) * price!,
+                        formattedPrice: (parseFloat(LZ_earned) * price!).toLocaleString('en-US', {
+                            style: 'currency',
+                            currency: 'USD',
+                            maximumFractionDigits: 2
+                        })
+                    },
+                    hyperlane: {
+                        earned: hyperlaneEarned,
+                        price,
+                        calculatedPrice: parseFloat(hyperlaneEarned) * price!,
+                        formattedPrice: (parseFloat(hyperlaneEarned) * price!).toLocaleString('en-US', {
+                            style: 'currency',
+                            currency: 'USD',
+                            maximumFractionDigits: 2
+                        })
+                    }
+                }
+            })) as { status: string; value: EarnedItem }[];
 
             const filtered = earnedList.filter(x => x.status === 'fulfilled');
             setEarnedItems(filtered.map(x => x?.value!));
 
             const sum = filtered.reduce((sum, item) => {
-                return sum + item.value.calculatedPrice;
+                return sum + item.value.lz.calculatedPrice + item.value.hyperlane.calculatedPrice;
             }, 0);
 
             const earnedInDollars = (sum).toLocaleString('en-US', {
@@ -240,7 +258,7 @@ console.log(connector, 'connector');
                     </div>
 
                     <div className={styles.card}>
-                        <div className={styles.cardTitle}>Refferal (only for LayerZero mint)</div>
+                        <div className={styles.cardTitle}>Refferal</div>
                         <div className={styles.divider}></div>
                         <div>
                             <FormControl className={styles.refferalLinkControl} title="Your refferal link">
