@@ -74,6 +74,7 @@ function NetworkChainSelect({ chainsInfo }: NetworkChainSelectProps) {
     useEffect(() => {
         setIsSelectedWrongChain(!isKnownChain)
     }, [isKnownChain])
+    
 
     return (
         <>
