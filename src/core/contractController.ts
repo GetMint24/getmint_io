@@ -5,13 +5,13 @@ import axios, { AxiosResponse } from "axios";
 import lzAbi from "./abi.json";
 import hyperlineAbi from "./hyperlane-abi.json";
 import { NetworkName } from "../common/enums/NetworkName";
-import { DEFAULT_REFUEL_COST_USD, LZ_CONTRACT_ADDRESS } from "../common/constants";
+import { DEFAULT_REFUEL_COST_USD, HYPERLANE_CONTRACT_ADDRESS, LZ_CONTRACT_ADDRESS, getContractAddress } from "../common/constants";
 import { AccountDto } from "../common/dto/AccountDto";
 import { wait } from "../utils/wait";
 import { ChainDto } from "../common/dto/ChainDto";
 import { BridgeType } from "../common/enums/BridgeType";
 import { estimateFeeForBridge, getGasLimitForBridge } from "./helpers";
-import { LZ_VERSION } from "./constants";
+import { DEFAULT_REFERER_EARNINGS, LZ_VERSION } from "./constants";
 
 interface ChainToSend {
     id: number;
@@ -381,15 +381,18 @@ export const bridgeNFT = async (
     };
 };
 
-export async function claimReferralFee(chain: ChainDto) {
+export async function claimReferralFee(chain: ChainDto, bridgeType: BridgeType) {
     try {
         const provider = new ethers.BrowserProvider((window as any).ethereum);
 
         const signer = await provider.getSigner();
+    
+        const abi = getAbi(bridgeType);
+        const contractAddress = getContractAddress(bridgeType, chain.network as NetworkName)
+        const contract = new ethers.Contract(contractAddress, abi, signer);
 
-        const contract = new ethers.Contract(LZ_CONTRACT_ADDRESS[chain.network as NetworkName], lzAbi, signer);
-
-        const txResponse = await contract.claimReferrerEarnings();
+        const isHyperlaneBridgeType = bridgeType === BridgeType.Hyperlane;
+        const txResponse = isHyperlaneBridgeType ? await contract.claimRefEarnings() : await contract.claimReferrerEarnings();
         const receipt = await txResponse.wait(null, 60000);
 
         return {
@@ -409,11 +412,30 @@ export async function claimReferralFee(chain: ChainDto) {
     }
 }
 
-export async function getReffererEarnedInNetwork(chain: ChainDto, accountAddress: string) {
-    const provider = new ethers.JsonRpcProvider(chain.rpcUrl);
-    const contract = new ethers.Contract(LZ_CONTRACT_ADDRESS[chain.network as NetworkName], lzAbi, provider);
-    const earned = await contract.referrersEarnedAmount(accountAddress);
-    return ethers.formatEther(earned);
+export async function getLZRefererEarnedInNetwork(chain: ChainDto, accountAddress: string) {
+    try {
+        const provider = new ethers.JsonRpcProvider(chain.rpcUrl);
+        const LZ_contract = new ethers.Contract(LZ_CONTRACT_ADDRESS[chain.network as NetworkName], lzAbi, provider);
+    
+        const LZ_earned = await LZ_contract.referrersEarnedAmount(accountAddress);
+    
+        return ethers.formatEther(LZ_earned);
+    } catch {
+        return DEFAULT_REFERER_EARNINGS;
+    }
+}
+
+export async function getHyperlaneRefererEarnedInNetwork(chain: ChainDto, accountAddress: string) {
+    try {
+        const provider = new ethers.JsonRpcProvider(chain.rpcUrl);
+        const hyperlaneContract = new ethers.Contract(HYPERLANE_CONTRACT_ADDRESS[chain.network as NetworkName], hyperlineAbi, provider);
+    
+        const hyperlaneEarned = await hyperlaneContract.refAmountToClaim(accountAddress);
+    
+        return ethers.formatEther(hyperlaneEarned)
+    } catch {
+        return DEFAULT_REFERER_EARNINGS;
+    }
 }
 
 export async function fetchPrice(symbol: string): Promise<number | null> {

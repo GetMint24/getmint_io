@@ -5,9 +5,10 @@ import clsx from 'clsx';
 interface Props extends SVGProps<SVGSVGElement> {
     withoutOpacity?: boolean
     rootClassName?: string
+    showText?: boolean
 }
 
-export default function HyperlaneSvg({ withoutOpacity, rootClassName, ...svgProps }: Props) {
+export default function HyperlaneSvg({ withoutOpacity, rootClassName, showText = true, ...svgProps }: Props) {
     return (
         <div className={clsx(cn.hyperlane, rootClassName)} style={{opacity: withoutOpacity ? 1 : undefined}}>
             <svg width="28" height="33" viewBox="0 0 550 494" fill="none" xmlns="http://www.w3.org/2000/svg" {...svgProps}>
@@ -19,7 +20,7 @@ export default function HyperlaneSvg({ withoutOpacity, rootClassName, ...svgProp
                 <path d="M396.826 194H255V301H396.826L420 245.971L396.826 194Z" fill="white"/>
             </svg>
 
-            <h4 className={cn.hyperlaneTitle}>Hyperlane</h4>
+            {showText && <h4 className={cn.hyperlaneTitle}>Hyperlane</h4>}
         </div>
     )
 }
