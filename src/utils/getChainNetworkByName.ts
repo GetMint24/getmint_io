@@ -16,6 +16,8 @@ export enum ChainName {
     BSC = 'BNB Smart Chain',
     Celo = 'Celo',
     Gnosis = 'Gnosis',
+    Core = 'Core Dao',
+    Fantom = 'Fantom'
 }
 
 const chainNetworkByChainName: Record<ChainName, NetworkName> = {
@@ -34,6 +36,8 @@ const chainNetworkByChainName: Record<ChainName, NetworkName> = {
     [ChainName.BSC]: NetworkName.BSC,
     [ChainName.Celo]: NetworkName.Celo,
     [ChainName.Gnosis]: NetworkName.Gnosis,
+    [ChainName.Core]: NetworkName.Core,
+    [ChainName.Fantom]: NetworkName.Fantom,
 }
 
 export const getChainNetworkByChainName = (name: string) => {

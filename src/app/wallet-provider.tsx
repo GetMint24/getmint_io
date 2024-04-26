@@ -11,6 +11,8 @@ import {
   base,
   bsc,
   celo,
+  coreDao,
+  fantom,
   gnosis,
   linea,
   mantle,
@@ -42,6 +44,8 @@ const config = getDefaultConfig({
     bsc,
     celo,
     gnosis,
+    fantom,
+    coreDao
   ],
   ssr: true,
 });

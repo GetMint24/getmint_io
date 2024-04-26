@@ -141,7 +141,17 @@ const chains = [
         hyperlaneChain: 42220,
         token: 'CELO',
         rpcUrl: 'https://forno.celo.org',
-        availableBridgeTypes: [BridgeType.Hyperlane]
+        availableBridgeTypes: [BridgeType.LayerZero, BridgeType.Hyperlane]
+    },
+    {
+        chainId: 1116,
+        name: 'Core Dao',
+        network: 'coreDao',
+        lzChain: 153,
+        hyperlaneChain: null,
+        token: 'CORE',
+        rpcUrl: 'https://rpc.coredao.org',
+        availableBridgeTypes: [BridgeType.LayerZero]
     },
     {
         chainId: 100,
@@ -151,8 +161,18 @@ const chains = [
         hyperlaneChain: 100,
         token: 'xDAI',
         rpcUrl: 'https://rpc.gnosischain.com',
-        availableBridgeTypes: [BridgeType.Hyperlane]
+        availableBridgeTypes: [BridgeType.LayerZero, BridgeType.Hyperlane]
     },
+    {
+        chainId: 250,
+        name: 'Fantom',
+        network: 'fantom',
+        lzChain: 112,
+        hyperlaneChain: null,
+        token: 'FTM',
+        rpcUrl: 'https://rpc.ankr.com/fantom',
+        availableBridgeTypes: [BridgeType.LayerZero]
+    }
 ];
 
 async function seed() {

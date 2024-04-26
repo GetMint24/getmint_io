@@ -17,8 +17,10 @@ export const LZ_CONTRACT_ADDRESS: Record<NetworkName, CryptoAddress> = {
     [NetworkName.Avalanche]: '0x7a9ed9A5EF8dF626Bf934AaCe84c66267b37842c',
     [NetworkName.ZkSync]: '0x569aA521b05752D22de8B3DBb91D92f65baa7E6f',
     [NetworkName.BSC]: '0x991fC265f163fc33328FBD2b7C8aa9B77840Ed42',
-    [NetworkName.Celo]: '0x',
-    [NetworkName.Gnosis]: '0x',
+    [NetworkName.Celo]: '0x991fc265f163fc33328fbd2b7c8aa9b77840ed42',
+    [NetworkName.Gnosis]: '0x991fc265f163fc33328fbd2b7c8aa9b77840ed42',
+    [NetworkName.Fantom]: '0x991fc265f163fc33328fbd2b7c8aa9b77840ed42',
+    [NetworkName.Core]: '0x991fC265f163fc33328FBD2b7C8aa9B77840Ed42',
 };
 
 export const LZAvailableNetworks = [
@@ -34,7 +36,11 @@ export const LZAvailableNetworks = [
     NetworkName.BSC,
     NetworkName.Zora,
     NetworkName.Mantle,
-    NetworkName.ZkSync
+    NetworkName.ZkSync,
+    NetworkName.Fantom,
+    NetworkName.Core,
+    NetworkName.Celo,
+    NetworkName.Gnosis,
 ];
 
 export const HYPERLANE_CONTRACT_ADDRESS: Record<NetworkName, CryptoAddress> = {
@@ -53,6 +59,8 @@ export const HYPERLANE_CONTRACT_ADDRESS: Record<NetworkName, CryptoAddress> = {
     [NetworkName.BSC]: '0x6C236B0D12C888dA4da04272D17C9c497f79E73C',
     [NetworkName.Celo]: '0x6C236B0D12C888dA4da04272D17C9c497f79E73C',
     [NetworkName.Gnosis]: '0x6C236B0D12C888dA4da04272D17C9c497f79E73C',
+    [NetworkName.Fantom]: '0x',
+    [NetworkName.Core]: '0x',
 };
 
 export const HyperlaneAvailableNetworks = [
@@ -121,6 +129,8 @@ export const UnailableLZNetworks: Record<NetworkName, NetworkName[]> = {
     ],
     [NetworkName.Celo]: [],
     [NetworkName.Gnosis]: [],
+    [NetworkName.Core]: [],
+    [NetworkName.Fantom]: [],
 }
 
 export const DEFAULT_REFUEL_COST_USD = 0.25;

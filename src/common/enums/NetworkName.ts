@@ -13,5 +13,7 @@ export enum NetworkName {
     ZkSync = 'zksync-era',
     BSC = 'bsc',
     Celo = 'celo',
+    Core = 'coreDao',
     Gnosis = 'gnosis',
+    Fantom = 'fantom'
 }
