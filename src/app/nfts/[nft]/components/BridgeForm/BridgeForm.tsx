@@ -15,6 +15,7 @@ import ChainLabel from "../../../../../components/ChainLabel/ChainLabel";
 
 import styles from "./BridgeForm.module.css";
 import { BridgeType } from "../../../../../common/enums/BridgeType";
+import ClosingPageAlert from "../../../../../components/ClosingPageAlert/ClosingPageAlert";
 
 interface Props {
     nft: NFTDto;
@@ -46,6 +47,7 @@ function BridgeForm({ nft, className, onAfterBridge }: Props) {
                 <div className={styles.spinner}>
                     <Spin size="large" />
                 </div>
+                <ClosingPageAlert />
             </div>
         );
     }
