@@ -19,6 +19,7 @@ import NftStore from "../../store/NftStore";
 import { BridgeType } from "../../common/enums/BridgeType";
 import NetworkTypeTabs from "../../components/NetworkTypeTabs/NetworkTypeTabs";
 import { getChainNetworkByChainName } from "../../utils/getChainNetworkByName";
+import ClosingPageAlert from "../../components/ClosingPageAlert/ClosingPageAlert";
 
 function Page() {
     const [messageApi, contextHolder] = message.useMessage();
@@ -132,6 +133,8 @@ function Page() {
     return (
         <>
             {contextHolder}
+
+            {isNFTPending && <ClosingPageAlert />}
 
             <Card className={styles.page} isLoading={isNFTPending} title={(
                 <Flex className={styles.header} justify="space-between" wrap="wrap">
