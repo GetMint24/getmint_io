@@ -13,7 +13,6 @@ import { NFTDto } from "../../../../../common/dto/NFTDto";
 import RefuelSwitch from "../../../../../components/RefuelSwitch/RefuelSwitch";
 import { useBridge } from "../../../../../common/useBridge";
 import { BridgeType } from "../../../../../common/enums/BridgeType";
-import ClosingPageAlert from "../../../../../components/ClosingPageAlert/ClosingPageAlert";
 
 interface Props {
     nft: NFTDto;
@@ -86,12 +85,7 @@ export default function BridgeForm({ className, nft, onAfterBridge }: Props) {
                     }
                 </Flex>
 
-                {isPending && (
-                    <>
-                        <Spin className={styles.pending} />
-                        <ClosingPageAlert />
-                    </>
-                )}
+                {isPending && <Spin className={styles.pending} />}
             </div>
         </Flex>
     )

@@ -18,7 +18,7 @@ import { BridgeType } from "../../../common/enums/BridgeType";
 function Header() {
     const searchParams = useSearchParams();
 
-    const { fetchAccount, setWalletConnected, setWalletAddress, walletConnected } = AppStore
+    const { fetchAccount, setWalletConnected, setWalletAddress } = AppStore
     const { address, isConnected } = useAccount();
     
     const isTablet = useMedia({ maxWidth: '1320px' });
@@ -29,13 +29,12 @@ function Header() {
     }, [bridgeType])
 
     useEffect(() => {
-        setWalletConnected(isConnected);
-        setWalletAddress(address);
-
         if (address) {
+            setWalletConnected(isConnected);
+            setWalletAddress(address);
             void fetchAccount()
         }
-    }, [isConnected, address]);
+    }, [isConnected, address, setWalletConnected]);
 
     return (
         <div className={styles.header}>

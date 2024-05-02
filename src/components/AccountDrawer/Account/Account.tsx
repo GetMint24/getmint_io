@@ -59,6 +59,7 @@ function Account() {
         followTwitter,
         loading,
         clearAccount,
+        setWalletConnected
     } = AppStore;
 
     const [earnedClaims, setEarnedClaims] = useState<string>('0');
@@ -177,6 +178,7 @@ function Account() {
     const logout = () => {
         disconnect();
         clearAccount();
+        setWalletConnected(false);
     };
 
     if (!account) {
@@ -189,6 +191,7 @@ function Account() {
             </div>
         );
     }
+console.log(connector, 'connector');
 
     return (
         <>

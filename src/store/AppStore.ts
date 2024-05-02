@@ -37,7 +37,7 @@ class AppStore {
         }
     }
 
-    setWalletAddress(address: string | undefined) {
+    setWalletAddress(address: string) {
         this.metamaskWalletAddress = address;
     }
 

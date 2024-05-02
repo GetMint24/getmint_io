@@ -14,7 +14,6 @@ import { ChainDto } from "../../../../common/dto/ChainDto";
 
 import styles from "./NftModal.module.css";
 import { BridgeType } from "../../../../common/enums/BridgeType";
-import ClosingPageAlert from "../../../../components/ClosingPageAlert/ClosingPageAlert";
 
 interface Props {
     onSubmit(data: SuccessfulBridgeData): void;
@@ -81,12 +80,7 @@ function NftModal({ onSubmit }: Props) {
                             />
                             <Button className={styles.sendBtn} onClick={onBridge}>Send</Button>
                         </Flex>
-                        {isPending && (
-                            <>
-                                <Spin className={styles.pending} />
-                                <ClosingPageAlert />
-                            </>
-                        )}
+                        {isPending && <Spin className={styles.pending} />}
                     </Flex>
                 )
             }
