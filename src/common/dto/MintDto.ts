@@ -15,4 +15,6 @@ export interface CreateMintDto {
     chainNetwork: string;
     transactionHash: string;
     networkType: BridgeType;
+    pinataImageHash: string, 
+    pinataJsonHash: string
 }
