@@ -5,7 +5,6 @@ import { BadRequest } from "../utils/responses";
 import { BalanceOperation } from "../../../common/enums/BalanceOperation";
 import { BalanceLogType } from "../../../common/enums/BalanceLogType";
 import { BalanceOperationCost } from "../../../common/enums/BalanceOperationCost";
-import { sendNFTImage } from "../nft/sendNFTImage";
 import { BridgeType } from "../../../common/enums/BridgeType";
 
 /**
@@ -28,13 +27,14 @@ export async function POST(request: Request) {
 
     const formData = await request.formData();
 
-    const image: File = formData.get('image') as unknown as File;
     const name: string = formData.get('name') as unknown as string;
     const description: string | null = formData.get('description') as unknown as string;
     const tokenId = parseInt(formData.get('tokenId') as string);
     const chainNetwork = formData.get('chainNetwork') as string;
     const transactionHash = formData.get('transactionHash') as string;
     const networkType = formData.get('networkType') as BridgeType;
+    const pinataImageHash = formData.get('pinataImageHash') as string;
+    const pinataJsonHash = formData.get('pinataJsonHash') as string;
 
     const chain = await prisma.chain.findFirst({
         where: { network: chainNetwork }
@@ -43,8 +43,6 @@ export async function POST(request: Request) {
     if (!chain) {
         return new BadRequest(`Chain network ${chainNetwork} not found`);
     }
-
-    const { pinataImageHash, pinataJsonHash } = await sendNFTImage(image, name, description);
 
     const nftExists = await prisma.nft.findFirst({
         where: { pinataImageHash }

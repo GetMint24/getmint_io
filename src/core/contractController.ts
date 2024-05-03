@@ -30,7 +30,7 @@ interface ControllerFunctionProps {
     chainToSend: ChainToSend;
 }
 
-interface ControllerFunctionResult {
+export interface ControllerFunctionResult {
     result: boolean;
     message: string;
     receipt?: any;
