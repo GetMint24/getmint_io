@@ -9,6 +9,7 @@ import { LeaderDto } from "../common/dto/LeaderDto";
 import { RandomImageDto } from "../common/dto/RandomImageDto";
 import { OperationHistoryDto } from "../common/dto/OperationHistoryDto";
 import { BridgeType } from "../common/enums/BridgeType";
+import axios from "axios";
 
 class ApiService {
     async getAccount(): Promise<AccountDto> {
@@ -21,7 +22,7 @@ class ApiService {
         return response.data;
     }
 
-    async checkExistedNFT(image: File, data: { name: string; description: string }) {
+    async createNFT(image: File, data: { name: string; description: string }) {
         const formData = new FormData();
         formData.append('image', image);
         formData.append('name', data.name);
@@ -31,16 +32,17 @@ class ApiService {
         return response.data;
     }
 
-    async createMint(image: File, data: CreateMintDto): Promise<MintDto> {
+    async createMint(data: CreateMintDto): Promise<MintDto> {
         const formData = new FormData();
-        formData.append('image', image);
         formData.append('name', data.name);
         formData.append('description', data.description ?? '');
         formData.append('tokenId', `${data.tokenId}`);
         formData.append('chainNetwork', data.chainNetwork);
         formData.append('transactionHash', data.transactionHash);
         formData.append('networkType', data.networkType);
-
+        formData.append('pinataImageHash', data.pinataImageHash);
+        formData.append('pinataJsonHash', data.pinataJsonHash);
+        
         const response = await apiClient.post('mint', formData);
         return response.data;
     }
@@ -103,6 +105,18 @@ class ApiService {
 
     async deleteFileFromCloud(key: string) {
         const response = await apiClient.post<{ status: 'ok' | 'failed' }>('cloud/delete', { key });
+        return response.data;
+    }
+
+    async deleteNftImageFromPinata(imageHash: string) {
+        const response = await axios.delete(
+            `https://api.pinata.cloud/pinning/unpin/${imageHash}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${process.env.PINATA_JWT}`,
+                },
+            }
+        );
         return response.data;
     }
 
