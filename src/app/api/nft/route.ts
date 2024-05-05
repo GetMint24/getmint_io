@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import prisma from "../../../utils/prismaClient";
 import { BadRequest, NotFoundError } from "../utils/responses";
-import { deleteNFTImage, sendNFTImage } from "./sendNFTImage";
+import { sendNFTImage } from "./sendNFTImage";
 
 export async function GET(request: NextRequest) {
     const id = request.nextUrl.searchParams.get('id');
@@ -59,7 +59,7 @@ export async function POST(request: Request) {
     const name: string = formData.get('name') as unknown as string;
     const description: string | null = formData.get('description') as unknown as string;
 
-    const { pinataImageHash } = await sendNFTImage(image, name, description);
+    const { pinataImageHash, pinataJsonHash } = await sendNFTImage(image, name, description);
 
     const nftExists = await prisma.nft.findFirst({
         where: { pinataImageHash }
@@ -67,9 +67,7 @@ export async function POST(request: Request) {
 
     if (nftExists) {
         return new BadRequest('NFT already minted');
-    } else {
-        deleteNFTImage(pinataImageHash)
     }
 
-    return Response.json({ pinataImageHash });
+    return Response.json({ pinataImageHash, pinataJsonHash });
 }
