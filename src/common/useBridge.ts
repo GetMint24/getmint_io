@@ -49,7 +49,7 @@ export function useBridge(nft: NFTDto, onAfterBridge?: (previousChain?: ChainDto
             const nftChain = ChainStore.chains.find(c => c.chainId === nft.chainNativeId);
             const chain = ChainStore.chains.find(c => c.id === selectedChain);
 
-            if (chain && currentChain) {
+            if (chain && currentChain && nft?.tokenId) {
                 let _currentNetwork = getChainNetworkByChainName(currentChain.name) 
 
                 const priceList = await estimateBridge(_chains, nftChain?.token!, {
@@ -65,7 +65,7 @@ export function useBridge(nft: NFTDto, onAfterBridge?: (previousChain?: ChainDto
                     networkType: nft.networkType,
                     account,
                     accountAddress: address!
-                }, nft?.tokenId, refuelEnabled, refuelCost);
+                }, nft.tokenId, refuelEnabled, refuelCost);
 
                 setBridgePriceList(priceList);
             }
@@ -92,7 +92,7 @@ export function useBridge(nft: NFTDto, onAfterBridge?: (previousChain?: ChainDto
                 }
             }
 
-            if (!chainToSend) {
+            if (!chainToSend || !nft.tokenId) {
                 notification.error({ message: 'Something went wrong :(' });
                 return;
             }

@@ -2,6 +2,7 @@ import { BadRequest } from "../utils/responses";
 import prisma from "../../../utils/prismaClient";
 import { BridgeType } from "../../../common/enums/BridgeType";
 import { NextRequest } from "next/server";
+import { NFTDto } from "../../../common/dto/NFTDto";
 
 export async function GET(request: NextRequest) {
     const metamaskWalletAddress = request.headers.get('X-Metamask-Address');
@@ -37,25 +38,28 @@ export async function GET(request: NextRequest) {
             user: true,
             networkType: true
         }
-    }).then(list => list.map(item => {
-        return ({
-            id: item.id,
-            name: item.name,
-            pinataImageHash: item.pinataImageHash,
-            description: item.description,
-            createdAt: item.createdAt,
-            tokenId: item.tokenId,
-            chainNativeId: item.chain.chainId,
-            chainId: item.chain.id,
-            chainNetwork: item.chain.network,
-            chainName: item.chain.name,
-            userId: item.user.id,
-            userWalletAddress: item.user.metamaskWalletAddress,
-            userName: item.user.twitterLogin,
-            tweeted: !!item.tweetLog,
-            networkType: item.networkType
-        })
-    }));
+    }).then(list => list.reduce((nfts: NFTDto[], item) => {
+        if (item.tokenId) {
+            nfts.push({
+                id: item.id,
+                name: item.name,
+                pinataImageHash: item.pinataImageHash,
+                description: item.description || '',
+                createdAt: item.createdAt.toString(),
+                tokenId: item.tokenId,
+                chainNativeId: item.chain.chainId,
+                chainId: item.chain.id,
+                chainNetwork: item.chain.network,
+                chainName: item.chain.name,
+                userId: item.user.id,
+                userWalletAddress: item.user.metamaskWalletAddress,
+                userName: item.user.twitterLogin,
+                tweeted: !!item.tweetLog,
+                networkType: item.networkType as BridgeType
+            })
+        }
+        return nfts
+    }, []));
 
     return Response.json(nfts);
 }

@@ -14,15 +14,27 @@ import { useAccount } from "wagmi";
 import ChainStore from "../../../store/ChainStore";
 import { useSearchParams } from "next/navigation";
 import { BridgeType } from "../../../common/enums/BridgeType";
+import ApiService from "../../../services/ApiService";
+import NftStore from "../../../store/NftStore";
 
 function Header() {
     const searchParams = useSearchParams();
 
-    const { fetchAccount, setWalletConnected, setWalletAddress, walletConnected } = AppStore
+    const { fetchAccount, setWalletConnected, setWalletAddress } = AppStore
     const { address, isConnected } = useAccount();
     
     const isTablet = useMedia({ maxWidth: '1320px' });
     const bridgeType = searchParams.get('bridge') || BridgeType.LayerZero
+
+    useEffect(() => {
+        if (address) {
+            ApiService.syncNftsWithBlockchain().then((shouldUpdateNfts) => {
+                if (shouldUpdateNfts) {
+                    NftStore.getNfts()
+                }
+            })
+        }
+    }, [address])
 
     useEffect(() => {
         ChainStore.getChains()

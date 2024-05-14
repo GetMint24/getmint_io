@@ -1,3 +1,4 @@
+import { Hex } from "viem";
 import { NetworkName } from "./enums/NetworkName";
 
 export type CryptoAddress = `0x${string}`;
@@ -22,4 +23,15 @@ export interface EarnedItem {
     earnedSum: string;
     lz: EarnedCalculations;
     hyperlane: EarnedCalculations;
+}
+
+export interface TransactionLog {
+    _type: string,
+    address: string,
+    blockHash: string,
+    blockNumber: number,
+    data: string,
+    topics: Hex[],
+    transactionHash: string,
+    transactionIndex: number
 }

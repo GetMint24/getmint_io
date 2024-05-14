@@ -35,7 +35,7 @@ model Nft {
   name            String
   description     String?      @default("")
   createdAt       DateTime     @default(now()) @map("created_at")
-  tokenId         Int
+  tokenId         Int?
   networkType     NetworkType? @default(layer_zero) @map("network_type")
   userId          String       @map("user_id")
   user            User         @relation(fields: [userId], references: [id])

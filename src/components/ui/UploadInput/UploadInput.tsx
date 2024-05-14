@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ChangeEvent, InputHTMLAttributes, useEffect, useState } from "react";
+import { ChangeEvent, InputHTMLAttributes, forwardRef, useEffect, useState } from "react";
 
 import styles from './UploadInput.module.css';
 import { Tooltip } from "antd";
@@ -9,7 +9,7 @@ interface UploadInputProps extends InputHTMLAttributes<HTMLInputElement> {
     onUpload?: (file: File) => void;
 }
 
-export default function UploadInput({ file, onUpload, ...props }: UploadInputProps) {
+const UploadInput = forwardRef<HTMLInputElement, UploadInputProps>(({ file, onUpload, ...props }, ref ) => {
     const [selected, setSelected] = useState<string>('');
     const [preview, setPreview] = useState<string>();
 
@@ -42,7 +42,7 @@ export default function UploadInput({ file, onUpload, ...props }: UploadInputPro
     return (
         <Tooltip title={preview ? 'Click to upload' : ''}>
             <label className={styles.control}>
-                <input {...props} onChange={handleChange} type="file" hidden />
+                <input {...props} ref={ref} onChange={handleChange} type="file" hidden />
 
                 <div className={styles.inner}>
                     {preview ? (
@@ -59,4 +59,8 @@ export default function UploadInput({ file, onUpload, ...props }: UploadInputPro
             </label>
         </Tooltip>
     )
-}
+})
+
+UploadInput.displayName = 'UploadInput'
+
+export default UploadInput

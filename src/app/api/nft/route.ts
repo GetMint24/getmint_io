@@ -71,3 +71,25 @@ export async function POST(request: Request) {
 
     return Response.json({ pinataImageHash, pinataJsonHash });
 }
+
+export async function DELETE(request: NextRequest) {
+    const id = request.nextUrl.searchParams.get('id');
+
+    if (id) {
+        const nft = await prisma.nft.findFirst({
+            where: { id },
+        });
+
+        if (!nft || nft.tokenId) {
+            return Response.json('Failed')
+        }
+
+        await prisma.nft.delete({
+            where: { id },
+        })
+
+        return Response.json('Successful');
+    }
+
+    return Response.json('Failed');
+}
