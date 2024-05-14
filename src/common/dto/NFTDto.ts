@@ -6,7 +6,7 @@ export interface NFTDto {
     name: string;
     description: string;
     createdAt: string;
-    tokenId: number;
+    tokenId: number | null;
     chainNativeId: number;
     chainId: string;
     chainNetwork: string;

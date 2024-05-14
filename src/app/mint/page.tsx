@@ -49,85 +49,93 @@ function Page() {
             return;
         }
 
-        if (chain) {
-            setIsNFTPending(true);
+        if (!chain) {
+            return 
+        }
+
+        setIsNFTPending(true);
+
+        try {
+            const network = getChainNetworkByChainName(chain.name)
+            let mintResult: ControllerFunctionResult | null = null
+            let nftId: string | null = null
+            let pinataImageHash: string | null = null;
 
             try {
-                const network = getChainNetworkByChainName(chain.name)
-                let mintResult: ControllerFunctionResult | null = null
-                let nftId: string | null = null
-                let pinataImageHash: string | null = null;
+                const pinataImage = await ApiService.createNFT(data.image!, {
+                    name: data.name,
+                    description: data.description,
+                });
+                pinataImageHash = pinataImage.pinataImageHash
 
-                try {
-                    const pinataImage = await ApiService.createNFT(data.image!, {
-                        name: data.name,
-                        description: data.description,
-                    });
-                    pinataImageHash = pinataImage.pinataImageHash
+                const nft = await ApiService.createOptimisticMint({
+                    name: data.name,
+                    description: data.description,
+                    metamaskWalletAddress: address as string,
+                    chainNetwork: network,
+                    networkType: currentBridge,
+                    pinataImageHash: pinataImage.pinataImageHash,
+                    pinataJsonHash: pinataImage.pinataJsonHash
+                });
+                nftId = nft.id
 
-                    mintResult = await mintNFT({
-                        contractAddress: getContractAddress(currentBridge, network),
-                        networkType: currentBridge,
-                        chainToSend: {
-                            id: chain.id,
-                            name: chain.name,
-                            network,
-                            hyperlaneChain: null,
-                            lzChain: null,
-                            token: 'ETH'
-                        },
-                        account,
-                        accountAddress: address!
-                    });
+                mintResult = await mintNFT({
+                    contractAddress: getContractAddress(currentBridge, network),
+                    networkType: currentBridge,
+                    chainToSend: {
+                        id: chain.id,
+                        name: chain.name,
+                        network,
+                        hyperlaneChain: null,
+                        lzChain: null,
+                        token: 'ETH'
+                    },
+                    account,
+                    accountAddress: address!
+                });
 
-                    if (mintResult?.result) {
-                        const nft = await ApiService.createMint({
-                            name: data.name,
-                            description: data.description,
-                            metamaskWalletAddress: address as string,
-                            tokenId: mintResult.blockId!,
-                            chainNetwork: network,
-                            transactionHash: mintResult?.transactionHash!,
-                            networkType: currentBridge,
-                            pinataImageHash: pinataImage.pinataImageHash, 
-                            pinataJsonHash: pinataImage.pinataJsonHash
-                        });
-
-                        nftId = nft.id
-                    } else {
-                        messageApi.warning(mintResult.message);
-                    }
-                } catch (e) {
-                    if (pinataImageHash) {
-                        ApiService.deleteNftImageFromPinata(pinataImageHash);
-                    }
-
-                    throw e
-                }
-
-                if (nftId) {
-                    if (key) {
-                        ApiService.deleteFileFromCloud(key);
-                    }
-
-                    messageApi.success('NFT Successfully minted');
-                    NftStore.getNfts();
-                    fetchAccount();
-                    router.push(`/mint/${nftId}?successful=true`);
+                if (mintResult?.result) {
+                    await ApiService.confirmMint({
+                        id: nftId,
+                        tokenId: mintResult.blockId!,
+                        transactionHash: mintResult.transactionHash,
+                    })
+                } else {
+                    messageApi.warning(mintResult.message);
+                    throw new Error(mintResult.message)
                 }
             } catch (e) {
-                console.error(e);
-                setIsNFTPending(false);
-
-                if (e instanceof AxiosError) {
-                    messageApi.error(e?.response?.data?.message);
-                    return;
+                if (pinataImageHash) {
+                    ApiService.deleteNftImageFromPinata(pinataImageHash);
                 }
-
-                messageApi.error('Oops, Something went wrong :(\nPlease reload this page and try again.');
-            } finally {
-                setIsNFTPending(false);
+                
+                if (nftId) {
+                    ApiService.deleteNft(nftId)
+                }
+                
+                throw e
             }
+
+            if (key) {
+                ApiService.deleteFileFromCloud(key);
+            }
+
+            messageApi.success('NFT Successfully minted');
+            NftStore.getNfts();
+            fetchAccount();
+            router.push(`/mint/${nftId}?successful=true`);
+        } catch (e) {
+            console.error(e);
+            setIsNFTPending(false);
+
+            if (e instanceof AxiosError) {
+                messageApi.error(e?.response?.data?.message);
+                return;
+            }
+
+            messageApi.error('Oops, Something went wrong :(\nPlease reload this page and try again.');
+        } finally {
+            setIsNFTPending(false);
         }
     };
 

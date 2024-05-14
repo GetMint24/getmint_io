@@ -30,7 +30,7 @@ export default function RefuelSwitch({ className, onChangeRefuelGas, refuel, ...
 
             <Dropdown
                 trigger={['click']}
-                placement={'topCenter'}
+                placement={'top'}
                 menu={{
                     items: REFUEL_AMOUNT_USD.map(cost => ({
                         key: `${cost}`,

@@ -7,14 +7,18 @@ export interface MintDto {
     description?: string;
 }
 
-export interface CreateMintDto {
+export interface CreateOptimisticMintDto {
     name: string;
     description?: string;
     metamaskWalletAddress: string;
-    tokenId: number;
     chainNetwork: string;
-    transactionHash: string;
     networkType: BridgeType;
     pinataImageHash: string, 
     pinataJsonHash: string
+}
+
+export interface ConfirmMintDto {
+    id: string;
+    tokenId: number;
+    transactionHash: string;
 }
