@@ -2,7 +2,9 @@ import { CryptoAddress } from "./types";
 import { NetworkName } from "./enums/NetworkName";
 import { BridgeType } from "./enums/BridgeType";
 
-
+/**
+ * If you change some contract you should be add contract in ALL_CONTRACTS_FOR_SYNC
+ */
 export const LZ_CONTRACT_ADDRESS: Record<NetworkName, CryptoAddress> = {
     [NetworkName.Base]: '0x991fC265f163fc33328FBD2b7C8aa9B77840Ed42',
     [NetworkName.ArbitrumNova]: '0x991fC265f163fc33328FBD2b7C8aa9B77840Ed42',
@@ -43,6 +45,9 @@ export const LZAvailableNetworks = [
     NetworkName.Gnosis,
 ];
 
+/**
+ * If you change some contract you should be add contract in ALL_CONTRACTS_FOR_SYNC
+ */
 export const HYPERLANE_CONTRACT_ADDRESS: Record<NetworkName, CryptoAddress> = {
     [NetworkName.Base]: '0x11b965675aaafb77ab738bc797663677278d16b2',
     [NetworkName.ArbitrumNova]: '0x',

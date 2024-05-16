@@ -16,13 +16,17 @@ class NftStore {
         makeAutoObservable(this);
     }
 
-    async getNfts() {
-        this.loading = true;
+    async getNfts(withLoading = true) {
+        if (withLoading) {
+            this.loading = true;
+        }
 
         try {
             this.nfts = await ApiService.getCollection(this.currentNetworkType);
         } finally {
-            this.loading = false;
+            if (withLoading) {
+                this.loading = false;
+            }
         }
     }
 

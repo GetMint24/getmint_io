@@ -6,7 +6,7 @@ interface NftWithChain extends Nft {
   chain: Chain;
 }
 
-const ONE_MINUTE_IN_MILLISECONDS = 60 * 1000;
+const FIVE_MINUTES_IN_MILLISECONDS = 5 * 60 * 1000;
 
 export function getNftsForSync(
   unconfirmedNfts: NftWithChain[],
@@ -43,8 +43,8 @@ export function getNftsForSync(
           alreadyConfirmedTokenIds.push(nftDataForSync.tokenId);
         }
       } else {
-        // we give 10 minutes for the transaction to be displayed on the blockchain
-        if (new Date().valueOf() - nft.createdAt.valueOf() > ONE_MINUTE_IN_MILLISECONDS) {
+        // we give 5 minutes for the transaction to be displayed on the blockchain
+        if (new Date().valueOf() - nft.createdAt.valueOf() > FIVE_MINUTES_IN_MILLISECONDS) {
           res.forDelete.push({
             id: nft.id,
             pinataImageHash: nft.pinataImageHash,

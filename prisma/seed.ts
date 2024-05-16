@@ -35,7 +35,7 @@ const chains = [
     },
     {
         chainId: 43114,
-        name: 'Avalance',
+        name: 'Avalanche',
         network: 'avalanche',
         lzChain: 106,
         hyperlaneChain: 43114,

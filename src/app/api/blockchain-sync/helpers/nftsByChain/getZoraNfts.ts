@@ -3,6 +3,9 @@ import { getAddress } from "ethers";
 import { isStartWithSome } from "../../../../../utils/isStartWithSome";
 import { NftBlockchainDataForSync } from "../types";
 import { contractFuncNamesForBridge } from "../../../../../utils/contractActionNames";
+import { excludeBridgedNfts} from "../excludeBridgedNfts"
+
+const API_URL = 'https://explorer.zora.energy/api'
 
 interface TransactionsResponse {
     items: {
@@ -20,7 +23,7 @@ interface TransactionsResponse {
 
 export async function getZoraNfts(walletAddress: string, contracts: string[]) {
     const data = await axios<TransactionsResponse>(
-      `https://explorer.zora.energy/api/v2/addresses/${walletAddress}/token-transfers`
+      `${API_URL}/v2/addresses/${walletAddress}/token-transfers`
     );
 
     const bridgedTokens: number[] = [];
@@ -46,15 +49,7 @@ export async function getZoraNfts(walletAddress: string, contracts: string[]) {
       return res;
     }, []);
 
-    const nftsFromWallet = nfts.filter((({ tokenId }) => {
-        const bridgedTokenIdx = bridgedTokens.findIndex((token) => token === tokenId);
-
-        if (bridgedTokenIdx === -1) {
-            return true
-        }
-
-        bridgedTokens.splice(bridgedTokenIdx, 1)
-    }))
+    const nftsFromWallet = excludeBridgedNfts(nfts, bridgedTokens) 
 
     return nftsFromWallet;
 }

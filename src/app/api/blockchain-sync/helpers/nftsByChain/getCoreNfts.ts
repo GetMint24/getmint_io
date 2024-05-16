@@ -1,7 +1,10 @@
 import axios from "axios";
 import { getAddress } from "ethers";
-import { getTokensIdFromLogs } from "../../../../../utils/getTokensIdFromLogs";
+import { getTokenIdFromLogs } from "../../../../../utils/getTokenIdFromLogs";
 import { TransactionLog } from "../../../../../common/types";
+import { excludeBridgedNfts} from "../excludeBridgedNfts"
+
+const API_URL = 'https://openapi.coredao.org/api'
 
 interface TransactionsResponse {
     result: {
@@ -20,14 +23,14 @@ interface TransactionsInfoResponse {
 }
 
 export async function getCoreNfts(walletAddress: string, contracts: string[]) {
-    const data = await axios<TransactionsResponse>('https://openapi.coredao.org/api', {
+    const data = await axios<TransactionsResponse>(API_URL, {
       params: {
         module: 'account',
         action: 'txlist',
         address: walletAddress,
         sort: 'desc',
         offset: 50,
-        apikey: 'de1d39af36bb435eb1b17d8565a44a3b',
+        apikey: process.env.CORE_API_KEY,
       },
     });
   
@@ -39,15 +42,15 @@ export async function getCoreNfts(walletAddress: string, contracts: string[]) {
             continue
         }
 
-        const txData = await axios<TransactionsInfoResponse>('https://openapi.coredao.org/api', {
+        const txData = await axios<TransactionsInfoResponse>(API_URL, {
           params: {
             module: 'proxy',
             action: 'eth_getTransactionReceipt',
             txhash: nft.hash,
-            apikey: 'de1d39af36bb435eb1b17d8565a44a3b',
+            apikey: process.env.CORE_API_KEY,
           },
         });
-        const tokenId = getTokensIdFromLogs(txData.data.result.logs)
+        const tokenId = getTokenIdFromLogs(txData.data.result.logs)
 
         if (!tokenId) {
             continue
@@ -65,15 +68,7 @@ export async function getCoreNfts(walletAddress: string, contracts: string[]) {
         }
     }
 
-    const nftsFromWallet = nfts.filter((({tokenId}) => {
-        const bridgedTokenIdx = bridgedTokens.findIndex((token) => token === tokenId);
-
-        if (bridgedTokenIdx === -1) {
-            return true
-        }
-
-        bridgedTokens.splice(bridgedTokenIdx, 1)
-    }))
+    const nftsFromWallet = excludeBridgedNfts(nfts, bridgedTokens) 
 
     return nftsFromWallet;
 }

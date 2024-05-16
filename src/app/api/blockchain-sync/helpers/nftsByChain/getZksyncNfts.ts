@@ -1,8 +1,11 @@
 import axios from "axios";
 import { getAddress } from "ethers";
 import { NftBlockchainDataForSync } from "../types";
-import { getTokensIdFromLogs } from "../../../../../utils/getTokensIdFromLogs";
+import { getTokenIdFromLogs } from "../../../../../utils/getTokenIdFromLogs";
 import { TransactionLog } from "../../../../../common/types";
+import { excludeBridgedNfts} from "../excludeBridgedNfts"
+
+const API_URL = 'https://block-explorer-api.mainnet.zksync.io/api'
 
 interface TransactionsResponse {
     result: {
@@ -21,7 +24,7 @@ interface TokensResponse {
 
 export async function getZksyncNfts(walletAddress: string, contracts: string[]) {
     const data = await axios<TransactionsResponse>(
-      `https://block-explorer-api.mainnet.zksync.io/api`, {
+        API_URL, {
         params: {
             module: 'account',
             action: 'txlist',
@@ -41,7 +44,7 @@ export async function getZksyncNfts(walletAddress: string, contracts: string[]) 
             continue
         }
 
-        const txData = await axios<TokensResponse>('https://block-explorer-api.mainnet.zksync.io/api', {
+        const txData = await axios<TokensResponse>(API_URL, {
             params: {
               module: 'logs',
               action: 'getLogs',
@@ -56,7 +59,7 @@ export async function getZksyncNfts(walletAddress: string, contracts: string[]) 
             break;
         }
 
-        const tokenId = getTokensIdFromLogs(txData.data.result)
+        const tokenId = getTokenIdFromLogs(txData.data.result)
 
         if (!tokenId) {
             continue
@@ -74,15 +77,7 @@ export async function getZksyncNfts(walletAddress: string, contracts: string[]) 
         }
     }
 
-    const nftsFromWallet = nfts.filter((({ tokenId }) => {
-        const bridgedTokenIdx = bridgedTokens.findIndex((token) => token === tokenId);
-
-        if (bridgedTokenIdx === -1) {
-            return true
-        }
-
-        bridgedTokens.splice(bridgedTokenIdx, 1)
-    }))
+    const nftsFromWallet = excludeBridgedNfts(nfts, bridgedTokens) 
 
     return nftsFromWallet;
 }

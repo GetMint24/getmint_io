@@ -5,7 +5,7 @@ import { NftBlockchainDataForSync } from "../types";
 import { contractFuncNamesForBridge } from "../../../../../utils/contractActionNames";
 import { excludeBridgedNfts} from "../excludeBridgedNfts"
 
-const API_URL = 'https://explorer.mantle.xyz/api'
+const API_URL = 'https://gnosis.blockscout.com/api'
 
 interface TransactionsResponse {
     items: {
@@ -21,7 +21,7 @@ interface TransactionsResponse {
     }[]
 }
 
-export async function getMantleNfts(walletAddress: string, contracts: string[]) {
+export async function getGnosisNfts(walletAddress: string, contracts: string[]) {
     const data = await axios<TransactionsResponse>(
       `${API_URL}/v2/addresses/${walletAddress}/token-transfers`
     );

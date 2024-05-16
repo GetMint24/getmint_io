@@ -30,7 +30,7 @@ function Header() {
         if (address) {
             ApiService.syncNftsWithBlockchain().then((shouldUpdateNfts) => {
                 if (shouldUpdateNfts) {
-                    NftStore.getNfts()
+                    NftStore.getNfts(false)
                 }
             })
         }

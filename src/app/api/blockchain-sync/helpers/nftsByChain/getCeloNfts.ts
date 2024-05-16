@@ -1,7 +1,10 @@
 import axios from "axios";
 import { getAddress } from "ethers";
-import { getTokensIdFromLogs } from "../../../../../utils/getTokensIdFromLogs";
+import { getTokenIdFromLogs } from "../../../../../utils/getTokenIdFromLogs";
 import { TransactionLog } from "../../../../../common/types";
+import { excludeBridgedNfts} from "../excludeBridgedNfts"
+
+const API_URL = 'https://explorer.celo.org/mainnet/api'
 
 interface TransactionsResponse {
     result: {
@@ -20,7 +23,7 @@ interface TransactionsInfoResponse {
 }
 
 export async function getCeloNfts(walletAddress: string, contracts: string[]) {
-    const data = await axios<TransactionsResponse>('https://explorer.celo.org/mainnet/api', {
+    const data = await axios<TransactionsResponse>(API_URL, {
       params: {
         address: walletAddress,
         sort: 'desc',
@@ -37,14 +40,14 @@ export async function getCeloNfts(walletAddress: string, contracts: string[]) {
             continue
         }
   
-        const txData = await axios<TransactionsInfoResponse>('https://explorer.celo.org/mainnet/api', {
+        const txData = await axios<TransactionsInfoResponse>(API_URL, {
           params: {
             module: 'transaction',
             action: 'gettxinfo',
             txhash: nft.hash
           },
         });
-        const tokenId = getTokensIdFromLogs(txData.data.result.logs)
+        const tokenId = getTokenIdFromLogs(txData.data.result.logs)
   
         if (!tokenId) {
             continue
@@ -62,15 +65,7 @@ export async function getCeloNfts(walletAddress: string, contracts: string[]) {
         }
     }
 
-    const nftsFromWallet = nfts.filter((({tokenId}) => {
-        const bridgedTokenIdx = bridgedTokens.findIndex((token) => token === tokenId);
-
-        if (bridgedTokenIdx === -1) {
-            return true
-        }
-
-        bridgedTokens.splice(bridgedTokenIdx, 1)
-    }))
+    const nftsFromWallet = excludeBridgedNfts(nfts, bridgedTokens) 
   
     return nftsFromWallet;
 }
