@@ -49,6 +49,10 @@ class NftStore {
     setSelectedNetworkType(type: BridgeType) {
         this.currentNetworkType = type;
     }
+
+    resetNfts() {
+        this.nfts = [];
+    }
 }
 
 export default new NftStore();

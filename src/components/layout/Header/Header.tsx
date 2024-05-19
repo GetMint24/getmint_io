@@ -47,6 +47,10 @@ function Header() {
         if (address) {
             void fetchAccount()
         }
+
+        if (!isConnected) {
+            NftStore.resetNfts()
+        }
     }, [isConnected, address]);
 
     return (
