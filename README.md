@@ -1,28 +1,26 @@
-Запуск сервисов docker-контейнерами
+Running services with Docker containers
 
-Для работы приложения необходимо поднять контейнеры с базой данных с помощью docker-compose. Для этого можно воспользоваться файлом, расположенном по пути `.docker/docker-compose-infra.yml`
+For run the application, containers with the database need to be initiated using docker-compose. To do this, you can use the file located at`.docker/docker-compose-infra.yml`
 
-Команда для запуска контейнеров с сервисами:
-
+Command to start containers with services:
 ```bash
 $ docker-compose -f ./.docker/docker-compose-infra.yml up -d
 ```
 
-Может понадобиться создать `localhost` сеть командой:
+You may need to create a localhost network with a command:
 
 ```bash
 $ docker network create localhost
 ```
 
-Перед запуском приложения потребуется выполнить команду в `packages/front`
+Before starting the application, it will be necessary to execute the command in `packages/front`
 ```bash
 $ npx prisma generate
 ```
 
-# Добавление новой сети через seed
-1. Добавить новую сеть в prisma/seed
-2. Выполнить команду `npx prisma db seed`
-
+# Add new chain via seed
+1. Add new chain in в prisma/seed
+2. Run command: `npx prisma db seed`
 
 # Next.js
 
